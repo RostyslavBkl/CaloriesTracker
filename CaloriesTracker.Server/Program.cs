@@ -1,5 +1,5 @@
 using CaloriesTracker.Server.Data.Ado;
-using CaloriesTracker.Server.Repositories;
+using CaloriesTracker.Server.Repositories.Interfaces;
 using Microsoft.Data.SqlClient;
 
 var builder = WebApplication.CreateBuilder(args);

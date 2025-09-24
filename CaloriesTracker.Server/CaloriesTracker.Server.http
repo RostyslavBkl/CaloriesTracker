@@ -1,6 +1,6 @@
 @CaloriesTracker.Server_HostAddress = http://localhost:5001
 
-GET {{CaloriesTracker.Server_HostAddress}}/weatherforecast/
+GET {{CaloriesTracker.Server_HostAddress}}/api/
 Accept: application/json
 
 ###

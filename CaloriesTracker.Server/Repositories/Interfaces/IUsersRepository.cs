@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 using CaloriesTracker.Server.Data.Ado;
 using CaloriesTracker.Server.Models;
 
-namespace CaloriesTracker.Server.Repositories;
+namespace CaloriesTracker.Server.Repositories.Interfaces;
 
 public interface IUsersRepository
 {

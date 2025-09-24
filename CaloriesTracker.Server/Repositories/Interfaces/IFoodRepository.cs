@@ -1,6 +1,6 @@
 ﻿using CaloriesTracker.Server.Models;
 
-namespace CaloriesTracker.Server.Repositories
+namespace CaloriesTracker.Server.Repositories.Interfaces
 {
     public interface IFoodRepository
     {
@@ -13,14 +13,6 @@ namespace CaloriesTracker.Server.Repositories
         Task<Food> UpdateCustomFoodAsync(Food food, long UserId);
         Task<Food> DeleteCustomFoodAsync(long Id, long UserId);
     }
-
-    //public class FoodRepository : IFoodRepository
-    //{
-    //    public async Task<Food> GetFoodByIdAsync(long Id)
-    //    {
-    //        return await GetFoodByIdAsync(Id);
-    //    }
-    //}
 }
 
 

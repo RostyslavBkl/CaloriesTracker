@@ -1,0 +1,34 @@
+﻿namespace CaloriesTracker.Server.Models
+{
+    public enum SexType
+    {
+        male,
+        female
+    }
+
+    public enum HeightUnit
+    {
+        cm,
+        inches,
+        ft_in
+    }
+    public enum WeightUnit
+    {
+        kg,
+        lb,
+        st_lb
+    }
+    public enum MealType
+    {
+        breakfest,
+        lunch,
+        dinner,
+        snack,
+        other
+    }
+    public enum Type
+    {
+        api,
+        custom
+    }
+}

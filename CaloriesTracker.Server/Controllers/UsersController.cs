@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Models;
+using CaloriesTracker.Server.Repositories.Interfaces;
 
 namespace CaloriesTracker.Server.Controllers;
 
