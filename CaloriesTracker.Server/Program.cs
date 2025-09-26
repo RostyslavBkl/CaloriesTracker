@@ -1,4 +1,5 @@
 using CaloriesTracker.Server.Data.Ado;
+using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using Microsoft.Data.SqlClient;
 
@@ -9,6 +10,7 @@ builder.Services.AddOpenApi();
 
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 
 var app = builder.Build();
 
