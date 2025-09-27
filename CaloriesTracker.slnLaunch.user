@@ -4,12 +4,12 @@
     "Projects": [
       {
         "Path": "caloriestracker.client\\caloriestracker.client.esproj",
-        "Action": "StartWithoutDebugging"
+        "Action": "Start"
       },
       {
         "Path": "CaloriesTracker.Server\\CaloriesTracker.Server.csproj",
-        "Action": "StartWithoutDebugging",
-        "DebugTarget": "http"
+        "Action": "Start",
+        "DebugTarget": "https"
       }
     ]
   }
