@@ -15,7 +15,7 @@ namespace CaloriesTracker.Server.Services
             _logger = logger;
         }
 
-        public async Task<Food> GetFoodByIdAsync(long id, long userId)
+        public async Task<Food> GetFoodByIdAsync(Guid id, Guid userId)
         {
             var food = await _foodRepository.GetFoodByIdAsync(id);
 
@@ -25,13 +25,13 @@ namespace CaloriesTracker.Server.Services
             return food;
         }
 
-        public async Task<List<Food>> GetCustomFoodsAsync(long userId)
+        public async Task<List<Food>> GetCustomFoodsAsync(Guid userId)
         {
             // Validate user 
             return await _foodRepository.GetCustomFoodsAsync(userId);
         }
 
-        public async Task<Food> CreateCustomFoodAsync(Food food, long userId)
+        public async Task<Food> CreateCustomFoodAsync(Food food, Guid userId)
         {
             ValidateCreateData(food);
 
@@ -68,7 +68,7 @@ namespace CaloriesTracker.Server.Services
                 throw new Exception("Food not found");
         }
 
-        private void ValidateFoodAccess(Food food, long userId)
+        private void ValidateFoodAccess(Food food, Guid userId)
         {
             if (food.Type == Models.Type.custom && food.UserId != userId)
                 throw new Exception("Can't access other user's food");

@@ -17,7 +17,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<Food?> GetFoodByIdAsync(long id)
+        public async Task<Food> GetFoodByIdAsync(Guid id)
         {
             try {
 
@@ -36,118 +36,58 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             }
         }
 
-        /*public async Task<Food?> GetFoodByIdAsync(long Id)
+        public async Task<List<Food>> GetCustomFoodsAsync(Guid userId)
         {
             try
             {
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
-        
-                using var cmd = new SqlCommand(@"SELECT id, UserId, type, name, weight_g, protein_g, fat_g, carbs_g FROM Foods
-                WHERE Id = @id", connection);
-                cmd.Parameters.AddWithValue("@id", Id);
 
-                using var reader = await cmd.ExecuteReaderAsync();
-                if(await reader.ReadAsync())
-                {
-                    var food = new Food
-                    {
-                        Id = reader.GetInt64("id"),
-                        UserId = await reader.IsDBNullAsync("UserId") ? null : reader.GetInt64("UserId"),
-                        Type = Enum.Parse<Models.Type>(reader.GetString("type"), true),
-                        Name = reader.GetString("name"),
-                        WeightG = reader.IsDBNull("weight_g") ? null : reader.GetDecimal("weight_g"),
-                        ProteinG =  reader.IsDBNull("protein_g") ? null : reader.GetDecimal("protein_g"),
-                        FatG =  reader.IsDBNull("fat_g") ? null : reader.GetDecimal("fat_g"),
-                        CarbsG =  reader.IsDBNull("carbs_g") ? null : reader.GetDecimal("carbs_g"),
-                    };
-                    return food;
-                }
-                return null;
-            }
-            catch(SqlException ex)
-            {
-                _logger.LogError(ex, $"Database error while getting food with ID {Id}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Unexpected error while getting food with ID {Id}");
-                throw;
-            }
-        }*/
+                var sql = "SELECT * FROM Foods WHERE userId = @UserId";
+                var foods = (await connection.QueryAsync<Food>(sql, new { UserId = userId })).ToList();
 
-        public async Task<List<Food>> GetCustomFoodsAsync(long userId)
-        {
-            try
-            {
-                var foods = new List<Food>();
-
-                using var connection = _connectionFactory.Create();
-                await connection.OpenAsync();
-
-                using var cmd = new SqlCommand(@"SELECT Id, UserId, Type, Name, WeightG, ProteinG, FatG, CarbsG FROM Foods
-                WHERE userId = @UserId", connection);
-                cmd.Parameters.AddWithValue("@UserId", userId);
-
-                using var reader = await cmd.ExecuteReaderAsync();
-                while(await reader.ReadAsync())
-                {
-                    var newFood = new Food
-                    {
-                        Id = reader.GetInt64("Id"),
-                        UserId = await reader.IsDBNullAsync("UserId") ? null : reader.GetInt64("UserId"),
-                        Type = Enum.Parse<Models.Type>(reader.GetString("Type"), true),
-                        Name = reader.GetString("Name"),
-                        WeightG = reader.IsDBNull("WeightG") ? null : reader.GetDecimal("WeightG"),
-                        ProteinG = reader.IsDBNull("ProteinG") ? null : reader.GetDecimal("ProteinG"),
-                        FatG = reader.IsDBNull("FatG") ? null : reader.GetDecimal("FatG"),
-                        CarbsG = reader.IsDBNull("CarbsG") ? null : reader.GetDecimal("CarbsG"),
-                    };
-                    foods.Add(newFood);
-                }
                 return foods;
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
-                _logger.LogError(ex, $"Database error while getting custom foods for user {userId}");
+                _logger.LogError(ex, "Database error while getting custom foods for user {userId}", userId);
                 throw;
             }
         }
-        public async Task<Food> CreateCustomFoodAsync(Food food, long userId)
+
+        public async Task<Food> CreateCustomFoodAsync(Food food, Guid userId)
         {
             try
             {
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
 
-                using var cmd = new SqlCommand(@"
-                    INSERT INTO Foods (UserId, Type, Name, WeightG, ProteinG, FatG, CarbsG) 
-                    VALUES (@UserId, @Type, @Name, @WeightG, @ProteinG, @FatG, @CarbsG )", connection);
+                var sql = "INSERT INTO Foods (UserId, Type, Name, WeightG, ProteinG, FatG, CarbsG) VALUES (@UserId, @Type, @Name, @WeightG, @ProteinG, @FatG, @CarbsG )";
 
-                cmd.Parameters.AddWithValue("@UserId", userId);
-                cmd.Parameters.AddWithValue("@Type", food.Type.ToString().ToLower());
-                cmd.Parameters.AddWithValue("@Name", food.Name);
-                cmd.Parameters.AddWithValue("@WeightG", food.WeightG ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@ProteinG", food.ProteinG ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@FatG", food.FatG ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@CarbsG", food.CarbsG ?? (object)DBNull.Value);
-
-                await cmd.ExecuteNonQueryAsync();
+                await connection.ExecuteAsync(sql, new
+                {
+                    UserId = userId,
+                    Type = food.Type,
+                    Name = food.Name,
+                    WeightG = food.WeightG,
+                    ProteinG = food.ProteinG,
+                    FatG = food.FatG,
+                    CarbsG = food.CarbsG,
+                });
 
                 food.UserId = userId;
                 food.Type = Models.Type.custom;
 
                 return food;
             }
-            catch (SqlException ex)
+            catch(SqlException ex)
             {
-                _logger.LogError(ex, $"Database error while creating custom food for user {userId}");
+                _logger.LogError(ex, "Database error while creating custom food for user {userId}", userId);
                 throw;
             }
         }
 
-        public async Task<Food> DeleteCustomFoodAsync(long id, long userId)
+        public async Task<Food?> DeleteCustomFoodAsync(Guid id, Guid userId)
         {
             try
             {
@@ -158,65 +98,57 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
 
-                using var cmd = new SqlCommand(@"DELETE From Foods Where id = @Id AND userId = @UserId", connection);
+                var sql = "" +
+                    "DELETE From Foods" +
+                    "OUTPUT DELETED.Id, DELETED.UserId, DELETED.Type, DELETED.Name, DELETED.WeightG, DELETED.ProteinG, DELETED.FatG, DELETED.CarbsG" +
+                    "Where id = @Id AND userId = @UserId";
 
-                cmd.Parameters.AddWithValue("@Id", foodToDelete.Id);
-                cmd.Parameters.AddWithValue("@UserId", foodToDelete.UserId);
-
-                var rowsAffected = await cmd.ExecuteNonQueryAsync();
-                return rowsAffected > 0 ? foodToDelete : null;
+                var deletedFood = await connection.QuerySingleOrDefaultAsync<Food>(sql, new {Id = id, UserId = userId});
+                
+                return deletedFood;
             }
             catch (SqlException ex)
             {
-                _logger.LogError(ex, $"Database error while deleting custom food {id} for user {userId}");
+                _logger.LogError(ex, "Database error while deleting custom food {id} for user {userId}", id, userId);
                 throw;
             }
         }
 
-        public async Task<Food?> UpdateCustomFoodAsync(Food food, long userId)
+        public async Task<Food?> UpdateCustomFoodAsync(Food food, Guid userId)
         {
             try
             {
-                var foodToUpdate = await GetFoodByIdAsync(food.Id);
-                if (foodToUpdate == null || foodToUpdate.UserId != userId)
-                    return null;
-
+ 
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
 
-                using var cmd = new SqlCommand(@"UPDATE Foods SET Name = @Name, WeightG = @WeightG, 
-                ProteinG = @ProteinG, FatG = @FatG, CarbsG = @CarbsG WHERE Id = @Id AND userId = @UserId", connection);
+                var sql = "UPDATE Foods " +
+                    "SET Name = @Name, WeightG = @WeightG, ProteinG = @ProteinG, FatG = @FatG, CarbsG = @CarbsG " +
+                    "OUTPUT INSERTED.Id, INSERTED.UserId, INSERTED.Type, INSERTED.Name, INSERTED.WeightG, INSERTED.ProteinG, INSERTED.FatG, INSERTED.CarbsG" +
+                    "WHERE Id = @Id AND userId = @UserId";
 
-                cmd.Parameters.AddWithValue("@id", food.Id);
-                cmd.Parameters.AddWithValue("@UserId", userId);
-                cmd.Parameters.AddWithValue("@Name", food.Name);
-                cmd.Parameters.AddWithValue("@WeightG", food.WeightG ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@ProteinG", food.ProteinG ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@FatG", food.FatG ?? (object)DBNull.Value);
-                cmd.Parameters.AddWithValue("@CarbsG", food.CarbsG ?? (object)DBNull.Value);
-
-                var rowsAffected = await cmd.ExecuteNonQueryAsync();
-
-                if(rowsAffected > 0)
+                var updatedFood = await connection.QueryFirstOrDefaultAsync<Food>(sql, new
                 {
-                    food.UserId = userId;
-                    return food;
-                }
-                return null;
+                    food.Id,
+                    UserId = userId,
+                    // target-typed property shorthand
+                    food.Name,
+                    food.WeightG,
+                    food.ProteinG,
+                    food.FatG,
+                    food.CarbsG,
+                    food.Type,
+                });
+                return updatedFood;
             }
             catch (SqlException ex)
             {
-                _logger.LogError(ex, $"Database error while updating food custom {food.Id} for user {userId}");
-                throw;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, $"Unexpected error while updating custom food {food.Id} for user {userId}");
+                _logger.LogError(ex, "Database error while updating food custom {food.Id} for user {userId}", food.Id, userId);
                 throw;
             }
         }
 
-        public Task<List<Food>> SearchFoodAsync(string query, long UserId)
+        public Task<List<Food>> SearchFoodAsync(string query, Guid UserId)
         {
             throw new NotImplementedException();
         }

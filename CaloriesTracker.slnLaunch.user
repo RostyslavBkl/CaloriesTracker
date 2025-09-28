@@ -9,7 +9,7 @@
       {
         "Path": "CaloriesTracker.Server\\CaloriesTracker.Server.csproj",
         "Action": "Start",
-        "DebugTarget": "https"
+        "DebugTarget": "http"
       }
     ]
   }
