@@ -47,8 +47,20 @@ export default defineConfig({
     },
     server: {
         proxy: {
-            '^/weatherforecast': {
-                target,
+            '^/auth/register': {
+                target: 'https://localhost:7285',
+                secure: false
+            },
+            '^/auth/login': {
+                target: 'https://localhost:7285',
+                secure: false
+            },
+            '^/auth/user': {
+                target: 'https://localhost:7285',
+                secure: false
+            },
+            '^/auth/logout': {
+                target: 'https://localhost:7285',
                 secure: false
             }
         },

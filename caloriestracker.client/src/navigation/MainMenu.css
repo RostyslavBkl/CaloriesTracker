@@ -1,0 +1,39 @@
+.main-menu {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #333;
+  padding: 0 10px;
+  height: 50px; /* Фіксована висота для меню */
+}
+
+.main-menu ul {
+  display: flex;
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  align-items: center; /* Вирівнювання елементів по вертикалі */
+}
+
+.main-menu ul li {
+  margin-right: 20px;
+}
+
+.main-menu ul li:last-child {
+  margin-right: 0;
+}
+
+.main-menu ul li a, .main-menu ul li button {
+  color: white;
+  text-decoration: none;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: inline-block;
+  padding: 10px 15px; /* Уніфікований падінг для усіх елементів */
+  height: 100%; /* Висота елементів розтягується на всю висоту меню */
+}
+
+.main-menu ul li a:hover, .main-menu ul li button:hover {
+  text-decoration: underline;
+}
