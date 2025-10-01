@@ -1,0 +1,89 @@
+2025-10-02 00:08:15.507 +02:00 [INF] TEST DELETE FOR: Id: "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2", UserId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-02 00:08:15.558 +02:00 [INF] == Test Delete Custom Food 
+2025-10-02 00:08:15.624 +02:00 [ERR] Database error while deleting custom food "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+Microsoft.Data.SqlClient.SqlException (0x80131904): Incorrect syntax near 'DELETED'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at CaloriesTracker.Server.Repositories.Implementations.FoodRepository.DeleteCustomFoodAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Repositories\Implementations\FoodRepository.cs:line 102
+ClientConnectionId:8c961e8f-af3b-45d9-a4f6-4b86185cab0d
+Error Number:102,State:1,Class:15
+2025-10-02 00:08:15.943 +02:00 [ERR] Error while deleting food "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+Microsoft.Data.SqlClient.SqlException (0x80131904): Incorrect syntax near 'DELETED'.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at CaloriesTracker.Server.Repositories.Implementations.FoodRepository.DeleteCustomFoodAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Repositories\Implementations\FoodRepository.cs:line 102
+   at CaloriesTracker.Server.Services.FoodService.DeleteCustomFoodAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 80
+   at CaloriesTracker.Server.Services.DbTester.TestDeleteCustomFood(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 166
+ClientConnectionId:8c961e8f-af3b-45d9-a4f6-4b86185cab0d
+Error Number:102,State:1,Class:15
+2025-10-02 00:08:56.071 +02:00 [INF] TEST DELETE FOR: Id: "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2", UserId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-02 00:08:56.120 +02:00 [INF] == Test Delete Custom Food 
+2025-10-02 00:08:56.186 +02:00 [ERR] Database error while deleting custom food "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+Microsoft.Data.SqlClient.SqlException (0x80131904): The target table 'Foods' of the DML statement cannot have any enabled triggers if the statement contains an OUTPUT clause without INTO clause.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at CaloriesTracker.Server.Repositories.Implementations.FoodRepository.DeleteCustomFoodAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Repositories\Implementations\FoodRepository.cs:line 102
+ClientConnectionId:4217b51d-ddcc-4e87-bb60-026a53545bc8
+Error Number:334,State:1,Class:16
+2025-10-02 00:08:56.421 +02:00 [ERR] Error while deleting food "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+Microsoft.Data.SqlClient.SqlException (0x80131904): The target table 'Foods' of the DML statement cannot have any enabled triggers if the statement contains an OUTPUT clause without INTO clause.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__195_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at CaloriesTracker.Server.Repositories.Implementations.FoodRepository.DeleteCustomFoodAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Repositories\Implementations\FoodRepository.cs:line 102
+   at CaloriesTracker.Server.Services.FoodService.DeleteCustomFoodAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 80
+   at CaloriesTracker.Server.Services.DbTester.TestDeleteCustomFood(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 166
+ClientConnectionId:4217b51d-ddcc-4e87-bb60-026a53545bc8
+Error Number:334,State:1,Class:16
+2025-10-02 00:15:49.885 +02:00 [INF] TEST DELETE FOR: Id: "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2", UserId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-02 00:15:49.936 +02:00 [INF] == Test Delete Custom Food 
+2025-10-02 00:15:50.030 +02:00 [INF]  SUCCESS! Food DELETED:
+2025-10-02 00:15:50.032 +02:00 [INF]   Id: "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2"
+2025-10-02 00:15:50.033 +02:00 [INF]   UserId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-02 00:15:50.034 +02:00 [INF]   Name: Chicken
+2025-10-02 00:15:50.035 +02:00 [INF]   Type: "custom"
+2025-10-02 00:15:50.036 +02:00 [INF]   Weight: 100.0000g
+2025-10-02 00:15:50.039 +02:00 [INF]   Protein: 10.00g
+2025-10-02 00:15:50.040 +02:00 [INF]   Fat: 2.40g
+2025-10-02 00:15:50.041 +02:00 [INF]   Carbs: 3.00g
+2025-10-02 00:15:50.043 +02:00 [INF] END
+2025-10-02 00:15:50.125 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.
+2025-10-02 00:15:50.304 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.
+2025-10-02 00:17:19.272 +02:00 [ERR] Error while deleting food "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e9"
+System.ArgumentNullException: Food can't be null (Parameter 'food')
+   at CaloriesTracker.Server.Models.FoodValidator.ValidateCommonArgs(Food food) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodValidator.cs:line 19
+   at CaloriesTracker.Server.Services.FoodService.GetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 25
+   at CaloriesTracker.Server.Services.DbTester.TestDeleteCustomFood(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 152
+2025-10-02 00:18:57.810 +02:00 [ERR] Error while deleting food "1e94b097-b577-4170-973e-66e358ac84a6" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e9"
+System.UnauthorizedAccessException: Can't do any actions with api food
+   at CaloriesTracker.Server.Models.FoodValidator.ValidateUserAccess(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodValidator.cs:line 35
+   at CaloriesTracker.Server.Services.FoodService.GetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 26
+   at CaloriesTracker.Server.Services.DbTester.TestDeleteCustomFood(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 152
+2025-10-02 00:19:50.454 +02:00 [ERR] Error while deleting food "11ee0004-9ddb-47a2-a09f-8990291101f6" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e9"
+System.UnauthorizedAccessException: Can't do any actions with other user's food
+   at CaloriesTracker.Server.Models.FoodValidator.ValidateUserAccess(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodValidator.cs:line 37
+   at CaloriesTracker.Server.Services.FoodService.GetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 26
+   at CaloriesTracker.Server.Services.DbTester.TestDeleteCustomFood(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 152

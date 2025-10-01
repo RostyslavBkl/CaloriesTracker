@@ -98,14 +98,13 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
 
-                var sql = "" +
-                    "DELETE From Foods" +
-                    "OUTPUT DELETED.Id, DELETED.UserId, DELETED.Type, DELETED.Name, DELETED.WeightG, DELETED.ProteinG, DELETED.FatG, DELETED.CarbsG" +
-                    "Where id = @Id AND userId = @UserId";
+                var sql = "DELETE FROM Foods WHERE id = @Id AND userId = @UserId";
 
-                var deletedFood = await connection.QuerySingleOrDefaultAsync<Food>(sql, new {Id = id, UserId = userId});
-                
-                return deletedFood;
+                var rowsAffected = await connection.ExecuteAsync(sql, new {Id = id, UserId = userId});
+                if (rowsAffected == 0)
+                    return null;
+
+                return foodToDelete;
             }
             catch (SqlException ex)
             {

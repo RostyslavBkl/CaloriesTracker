@@ -49,6 +49,41 @@ namespace CaloriesTracker.Server.Services
             }
         }
 
+        public async Task TestKcal(Guid id, Guid userId)
+        {
+            try
+            {
+                _logger.LogInformation("== Test Calc Kcal ");
+                _logger.LogInformation("Food Id: {id}", id);
+
+                var result = await _foodServ.GetFoodByIdAsync(id, userId);
+
+                _logger.LogInformation("  Portion From DB");
+                _logger.LogInformation("  Weight: {Weight}g", result.WeightG);
+                _logger.LogInformation("  Protein: {Protein}g", result.ProteinG);
+                _logger.LogInformation("  Fat: {Fat}g", result.FatG);
+                _logger.LogInformation("  Carbs: {Carbs}g", result.CarbsG);
+
+                _logger.LogInformation(" ======================");
+                result.ActualWeightG = 250;
+
+                _logger.LogInformation(" Actual Food Portion:");
+                _logger.LogInformation("  Actual Weight: {Weight}g", result.ActualWeightG);
+                _logger.LogInformation("  Actual Protein: {Protein:F2}g", result.ActualProteinG);
+                _logger.LogInformation("  Actual Fat: {Fat:F2}g", result.ActualFatG);
+                _logger.LogInformation("  Actual Carbs: {Carbs:F2}g", result.ActualCarbsG);
+                _logger.LogInformation("  Actual Calories: {Kcal:F2} kcal", result.TotalKcal);
+
+                _logger.LogInformation("✅ Test completed successfully");
+
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Error while calculating nutrients");
+                throw;
+            }
+        }
+
         public async Task TestGetFoodByIdAsync(Guid id, Guid userId)
         {
             try
@@ -112,11 +147,8 @@ namespace CaloriesTracker.Server.Services
         {
             try
             {
-                var customFoodsExist = await _foodServ.GetCustomFoodsAsync(userId);
-                foreach (var f in customFoodsExist)
-                {
-                    _logger.LogInformation("Food: Id={Id}, Name={Name}", f.Id, f.Name);
-                }
+                var foodUPD = await _foodServ.GetFoodByIdAsync(food.Id, userId);
+                _logger.LogInformation("Id: {id}, UserId: {userId}, Type: {type}", food.Id, userId, food.Type);
                 _logger.LogInformation("Checking against: Id={Id}, Name={Name}", food.Id, food.Name);
                 _logger.LogInformation("== Test Update Custom Food ");
                 _logger.LogInformation("UserId: {userId}", userId);
@@ -144,6 +176,45 @@ namespace CaloriesTracker.Server.Services
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Error while updating food {id} for user {userId}", food.Id, userId);
+                throw;
+            }
+        }
+
+        public async Task TestDeleteCustomFood(Guid id, Guid userId)
+        {
+            try
+            {
+                var foodUPD = await _foodServ.GetFoodByIdAsync(id, userId);
+                _logger.LogInformation("TEST DELETE FOR: " +
+                    "Id: {id}, UserId: {userId}", id, userId);
+                _logger.LogInformation("== Test Delete Custom Food ");
+                //_logger.LogInformation("UserId: {userId}", userId);
+                //_logger.LogInformation("Prev data of custom food:");
+                //_logger.LogInformation(" Name: '{Name}'", food.Name);
+                //_logger.LogInformation(" Type: {Type}", food.Type);
+                //_logger.LogInformation(" UserId: {UserId}", food.UserId);
+                //_logger.LogInformation(" Weight: {Weight}g", food.WeightG);
+                //_logger.LogInformation(" Protein: {Protein}g", food.ProteinG);
+                //_logger.LogInformation(" Fat: {Fat}g", food.FatG);
+                //_logger.LogInformation(" Carbs: {Carbs}g", food.CarbsG);
+
+                var result = await _foodServ.DeleteCustomFoodAsync(id, userId);
+
+                _logger.LogInformation(" SUCCESS! Food DELETED:");
+                _logger.LogInformation("  Id: {Id}", result.Id);
+                _logger.LogInformation("  UserId: {UserId}", result.UserId);
+                _logger.LogInformation("  Name: {Name}", result.Name);
+                _logger.LogInformation("  Type: {Type}", result.Type);
+                _logger.LogInformation("  Weight: {Weight}g", result.WeightG);
+                _logger.LogInformation("  Protein: {Protein}g", result.ProteinG);
+                _logger.LogInformation("  Fat: {Fat}g", result.FatG);
+                _logger.LogInformation("  Carbs: {Carbs}g", result.CarbsG);
+                _logger.LogInformation("END");
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error while deleting food {id} for user {userId}", id, userId);
                 throw;
             }
         }

@@ -1,0 +1,24 @@
+2025-10-02 01:32:00.181 +02:00 [INF] == Test Calc Kcal 
+2025-10-02 01:32:00.228 +02:00 [INF] Food Id: "4ccdfb79-6590-4c3b-81e7-eee3d013d5c7"
+2025-10-02 01:32:01.087 +02:00 [ERR] Error while calculating nutrients
+System.UnauthorizedAccessException: Can't do any actions with other user's food
+   at CaloriesTracker.Server.Models.FoodValidator.ValidateUserAccess(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodValidator.cs:line 37
+   at CaloriesTracker.Server.Services.FoodService.GetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 26
+   at CaloriesTracker.Server.Services.DbTester.TestKcal(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 59
+2025-10-02 01:32:45.130 +02:00 [INF] == Test Calc Kcal 
+2025-10-02 01:32:45.180 +02:00 [INF] Food Id: "4ccdfb79-6590-4c3b-81e7-eee3d013d5c7"
+2025-10-02 01:32:45.640 +02:00 [INF]   Portion From DB
+2025-10-02 01:32:45.642 +02:00 [INF]   Weight: 100.0000g
+2025-10-02 01:32:45.645 +02:00 [INF]   Protein: 10.00g
+2025-10-02 01:32:45.647 +02:00 [INF]   Fat: 2.40g
+2025-10-02 01:32:45.648 +02:00 [INF]   Carbs: 3.00g
+2025-10-02 01:32:45.650 +02:00 [INF]  ======================
+2025-10-02 01:32:45.651 +02:00 [INF]  Actual Food Portion:
+2025-10-02 01:32:45.651 +02:00 [INF]   Actual Weight: 250g
+2025-10-02 01:32:45.654 +02:00 [INF]   Actual Protein: 25.00g
+2025-10-02 01:32:45.655 +02:00 [INF]   Actual Fat: 6.00g
+2025-10-02 01:32:45.657 +02:00 [INF]   Actual Carbs: 7.50g
+2025-10-02 01:32:45.658 +02:00 [INF]   Actual Calories: 184.00 kcal
+2025-10-02 01:32:45.659 +02:00 [INF] ✅ Test completed successfully
+2025-10-02 01:32:45.733 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.
+2025-10-02 01:32:45.871 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.

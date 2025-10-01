@@ -8,7 +8,7 @@ using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/testUpdateCustomFood2-.txt", rollingInterval: RollingInterval.Hour)
+    .WriteTo.File("logs/testCalcKcal-.txt", rollingInterval: RollingInterval.Hour)
     .CreateLogger();
 
 
@@ -49,18 +49,21 @@ var app = builder.Build();
 }*/
 
 //DONE: Test GET Food By Id
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
 
     var tester = new DbTester(foodService, logger);
 
-    var id = Guid.Parse("1AC9B605-59D6-4CFB-AD51-267C63C9DDD2");
-    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E8");
 
-    await tester.TestGetFoodByIdAsync(id, userId);
-}*/
+
+
+    var id = Guid.Parse("4CCDFB79-6590-4C3B-81E7-EEE3D013D5C7");
+    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E7");
+
+    await tester.TestKcal(id, userId);
+}
 
 // WIP: Test GET Custom Food by UserId VALIDATION FOR USER
 /*using (var scope = app.Services.CreateScope())
@@ -75,8 +78,8 @@ var app = builder.Build();
     await tester.TestGetCustomFoods(userId);
 }*/
 
-// WIP: Test UPDATE Custom Food 
-using (var scope = app.Services.CreateScope())
+// DONE: Test UPDATE Custom Food 
+/*using (var scope = app.Services.CreateScope())
 {
     var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
@@ -87,10 +90,10 @@ using (var scope = app.Services.CreateScope())
 
     var testFood = new Food
     {
-        Id = Guid.Parse("4CCDFB79-6590-4C3B-81E7-EEE3D013D5C7"),
+        Id = Guid.Parse("1E94B097-B577-4170-973E-66E358AC84A6"),
         UserId = userId,
         Type = CaloriesTracker.Server.Models.Type.custom,
-        Name = "Chicken",
+        Name = "New Food",
         WeightG = 100m,
         ProteinG = 10m,
         FatG = 2.4m,
@@ -98,7 +101,23 @@ using (var scope = app.Services.CreateScope())
     };
 
     await tester.TestUpdateCustomFood(testFood, userId);
-}
+}*/
+
+// WIP: Test DELETING Custom Food 
+/*using (var scope = app.Services.CreateScope())
+{
+    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
+
+    var tester = new DbTester(foodService, logger);
+
+    var id = Guid.Parse("11EE0004-9DDB-47A2-A09F-8990291101F6");
+    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E7");
+
+
+    await tester.TestDeleteCustomFood(id, userId);
+}*/
+
 
 //app.MapGet("/health/db", async (IDbConnectionFactory factory, CancellationToken ct) =>
 //{
