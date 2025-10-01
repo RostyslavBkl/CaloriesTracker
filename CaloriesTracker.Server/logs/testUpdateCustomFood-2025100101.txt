@@ -1,0 +1,15 @@
+2025-10-01 01:59:10.882 +02:00 [INF] == Test Update Custom Food 
+2025-10-01 01:59:10.971 +02:00 [INF] UserId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-01 01:59:10.975 +02:00 [INF] Prev data of custom food:
+2025-10-01 01:59:10.976 +02:00 [INF]  Name: 'Falafel'
+2025-10-01 01:59:10.978 +02:00 [INF]  Type: "api"
+2025-10-01 01:59:10.980 +02:00 [INF]  UserId: null
+2025-10-01 01:59:10.981 +02:00 [INF]  Weight: 100g
+2025-10-01 01:59:10.984 +02:00 [INF]  Protein: 10g
+2025-10-01 01:59:10.985 +02:00 [INF]  Fat: 2.4g
+2025-10-01 01:59:10.986 +02:00 [INF]  Carbs: 3g
+2025-10-01 01:59:11.063 +02:00 [ERR] Error while updating food "4ccdfb79-6590-4c3b-81e7-eee3d013d5c7" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+System.InvalidOperationException: Can't modify food from API
+   at CaloriesTracker.Server.Models.FoodValidator.ValidateUpdating(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodValidator.cs:line 16
+   at CaloriesTracker.Server.Services.FoodService.UpdateCustomFoodAsync(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 57
+   at CaloriesTracker.Server.Services.DbTester.TestUpdateCustomFood(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 126

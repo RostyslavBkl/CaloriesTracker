@@ -1,0 +1,27 @@
+2025-10-01 00:15:04.527 +02:00 [INF] == Test Get food by Id
+2025-10-01 00:15:04.578 +02:00 [INF] Food Id: "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2", for userId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-01 00:15:05.292 +02:00 [INF]  SUCCESS! Food was gotten by ID:
+2025-10-01 00:15:05.293 +02:00 [INF]   Name: 'Chicken'
+2025-10-01 00:15:05.295 +02:00 [INF]   Type: "custom"
+2025-10-01 00:15:05.296 +02:00 [INF]   UserId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-01 00:15:05.297 +02:00 [INF]   Weight: 100.0000g
+2025-10-01 00:15:05.300 +02:00 [INF]   Protein: 0.00g
+2025-10-01 00:15:05.302 +02:00 [INF]   Fat: 0.00g
+2025-10-01 00:15:05.304 +02:00 [INF]   Carbs: 0.00g
+2025-10-01 00:15:05.305 +02:00 [INF] END
+2025-10-01 00:15:05.380 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.
+2025-10-01 00:15:05.508 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.
+2025-10-01 00:15:53.842 +02:00 [INF] == Test Get food by Id
+2025-10-01 00:15:53.889 +02:00 [INF] Food Id: "1ac9b605-59d6-4cfb-ad51-267c63c9ddd3", for userId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-01 00:15:54.464 +02:00 [ERR] Error while get foodId "1ac9b605-59d6-4cfb-ad51-267c63c9ddd3" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+System.Exception: Food not found
+   at CaloriesTracker.Server.Services.FoodService.ValidateFoodExists(Food food) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 70
+   at CaloriesTracker.Server.Services.FoodService.GetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 23
+   at CaloriesTracker.Server.Services.DbTester.TestGetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 59
+2025-10-01 00:16:24.410 +02:00 [INF] == Test Get food by Id
+2025-10-01 00:16:24.467 +02:00 [INF] Food Id: "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2", for userId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e8"
+2025-10-01 00:16:25.104 +02:00 [ERR] Error while get foodId "1ac9b605-59d6-4cfb-ad51-267c63c9ddd2" for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e8"
+System.Exception: Can't access other user's food
+   at CaloriesTracker.Server.Services.FoodService.ValidateFoodAccess(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 76
+   at CaloriesTracker.Server.Services.FoodService.GetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 24
+   at CaloriesTracker.Server.Services.DbTester.TestGetFoodByIdAsync(Guid id, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 59

@@ -1,0 +1,80 @@
+2025-10-01 00:00:39.381 +02:00 [INF] === TEST CREATE CUSTOM FOOD ===
+2025-10-01 00:00:39.487 +02:00 [INF] Owner: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-01 00:00:39.496 +02:00 [INF] Input data:
+2025-10-01 00:00:39.498 +02:00 [INF]   Name: 'Falafel'
+2025-10-01 00:00:39.500 +02:00 [INF]   Weight: 240g
+2025-10-01 00:00:39.504 +02:00 [INF]   Protein: 16g
+2025-10-01 00:00:39.506 +02:00 [INF]   Fat: 3.4g
+2025-10-01 00:00:39.507 +02:00 [INF]   Carbs: 3g
+2025-10-01 00:00:40.857 +02:00 [INF] SUCCESS. Food was added!
+2025-10-01 00:00:40.859 +02:00 [INF]   Name: 'Falafel' (після trim)
+2025-10-01 00:00:40.862 +02:00 [INF]   Type: "custom"
+2025-10-01 00:00:40.864 +02:00 [INF]   UserId: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-01 00:00:40.866 +02:00 [INF]   Weight: 240g
+2025-10-01 00:00:40.867 +02:00 [INF]   Protein: 16g
+2025-10-01 00:00:40.869 +02:00 [INF]   Fat: 3.4g
+2025-10-01 00:00:40.870 +02:00 [INF]   Carbs: 3g
+2025-10-01 00:00:40.871 +02:00 [INF] END TEST
+2025-10-01 00:00:40.964 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.
+2025-10-01 00:00:41.135 +02:00 [WRN] The WebRootPath was not found: C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\wwwroot. Static files may be unavailable.
+2025-10-01 00:02:02.236 +02:00 [INF] === TEST CREATE CUSTOM FOOD ===
+2025-10-01 00:02:02.320 +02:00 [INF] User: "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+2025-10-01 00:02:02.326 +02:00 [INF] Input data:
+2025-10-01 00:02:02.328 +02:00 [INF]   Name: ''
+2025-10-01 00:02:02.330 +02:00 [INF]   Weight: 240g
+2025-10-01 00:02:02.334 +02:00 [INF]   Protein: 16g
+2025-10-01 00:02:02.335 +02:00 [INF]   Fat: 3.4g
+2025-10-01 00:02:02.336 +02:00 [INF]   Carbs: 3g
+2025-10-01 00:02:02.468 +02:00 [ERR] Error while creating custom food for "d29a5515-82dd-4fe3-bc9f-da2dff0800e7"
+System.Exception: The name of Food is required
+   at CaloriesTracker.Server.Services.FoodService.ValidateCreateData(Food food) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 63
+   at CaloriesTracker.Server.Services.FoodService.CreateCustomFoodAsync(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 37
+   at CaloriesTracker.Server.Services.DbTester.TestCreateCustomFood(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 33
+2025-10-01 00:03:56.218 +02:00 [INF] === TEST CREATE CUSTOM FOOD ===
+2025-10-01 00:03:56.265 +02:00 [INF] User: "d29a5515-82dd-4fe3-bc9f-da2dff0800e6"
+2025-10-01 00:03:56.278 +02:00 [INF] Input data:
+2025-10-01 00:03:56.279 +02:00 [INF]   Name: 'Falafel'
+2025-10-01 00:03:56.281 +02:00 [INF]   Weight: 240g
+2025-10-01 00:03:56.287 +02:00 [INF]   Protein: 16g
+2025-10-01 00:03:56.290 +02:00 [INF]   Fat: 3.4g
+2025-10-01 00:03:56.292 +02:00 [INF]   Carbs: 3g
+2025-10-01 00:03:56.975 +02:00 [ERR] Database error while creating custom food for user "d29a5515-82dd-4fe3-bc9f-da2dff0800e6"
+Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Foods_Users_UserId". The conflict occurred in database "CaloriesTrackerApp", table "dbo.Users", column 'Id'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at CaloriesTracker.Server.Repositories.Implementations.FoodRepository.CreateCustomFoodAsync(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Repositories\Implementations\FoodRepository.cs:line 67
+ClientConnectionId:c7738457-5a79-4e57-bbb7-3b5f0c19a73c
+Error Number:547,State:0,Class:16
+2025-10-01 00:03:57.193 +02:00 [ERR] Error while creating custom food for "d29a5515-82dd-4fe3-bc9f-da2dff0800e6"
+Microsoft.Data.SqlClient.SqlException (0x80131904): The INSERT statement conflicted with the FOREIGN KEY constraint "FK_Foods_Users_UserId". The conflict occurred in database "CaloriesTrackerApp", table "dbo.Users", column 'Id'.
+The statement has been terminated.
+   at Microsoft.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection, Action`1 wrapCloseInAction)
+   at Microsoft.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj, SqlCommand command, Boolean callerHasConnectionLock, Boolean asyncClose)
+   at Microsoft.Data.SqlClient.TdsParser.TryRun(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj, Boolean& dataReady)
+   at Microsoft.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString, Boolean isInternal, Boolean forDescribeParameterEncryption, Boolean shouldCacheForAlwaysEncrypted)
+   at Microsoft.Data.SqlClient.SqlCommand.CompleteAsyncExecuteReader(Boolean isInternal, Boolean forDescribeParameterEncryption)
+   at Microsoft.Data.SqlClient.SqlCommand.InternalEndExecuteNonQuery(IAsyncResult asyncResult, Boolean isInternal, String endMethod)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryInternal(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.EndExecuteNonQueryAsync(IAsyncResult asyncResult)
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<InternalExecuteNonQueryAsync>b__193_1(IAsyncResult asyncResult)
+   at System.Threading.Tasks.TaskFactory`1.FromAsyncCoreLogic(IAsyncResult iar, Func`2 endFunction, Action`1 endAction, Task`1 promise, Boolean requiresSynchronization)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.ExecuteImplAsync(IDbConnection cnn, CommandDefinition command, Object param) in /_/Dapper/SqlMapper.Async.cs:line 662
+   at CaloriesTracker.Server.Repositories.Implementations.FoodRepository.CreateCustomFoodAsync(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Repositories\Implementations\FoodRepository.cs:line 67
+   at CaloriesTracker.Server.Services.FoodService.CreateCustomFoodAsync(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\FoodService.cs:line 49
+   at CaloriesTracker.Server.Services.DbTester.TestCreateCustomFood(Food food, Guid userId) in C:\Users\user\Desktop\Sana CaloriesTracker\CaloriesTracker.Server\Services\DbTester.cs:line 33
+ClientConnectionId:c7738457-5a79-4e57-bbb7-3b5f0c19a73c
+Error Number:547,State:0,Class:16

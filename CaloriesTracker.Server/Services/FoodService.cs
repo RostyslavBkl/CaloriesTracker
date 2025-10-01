@@ -1,17 +1,20 @@
 ﻿using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories.Implementations;
+using CaloriesTracker.Server.Repositories.Interfaces;
 using Microsoft.Identity.Client;
 
 namespace CaloriesTracker.Server.Services
 {
     public class FoodService
     {
-        private readonly FoodRepository _foodRepository;
+        private readonly IFoodRepository _foodRepository;
+        private readonly FoodValidator _foodValidator;
         private readonly ILogger<FoodService> _logger;
 
-        public FoodService(FoodRepository foodRepository, ILogger<FoodService> logger)
+        public FoodService(IFoodRepository foodRepository, FoodValidator foodValidator , ILogger<FoodService> logger)
         {
             _foodRepository = foodRepository;
+            _foodValidator = foodValidator;
             _logger = logger;
         }
 
@@ -19,8 +22,8 @@ namespace CaloriesTracker.Server.Services
         {
             var food = await _foodRepository.GetFoodByIdAsync(id);
 
-            ValidateFoodExists(food);
-            ValidateFoodAccess(food, userId);
+            _foodValidator.ValidateCommonArgs(food);
+            _foodValidator.ValidateUserAccess(food, userId);
 
             return food;
         }
@@ -33,11 +36,12 @@ namespace CaloriesTracker.Server.Services
 
         public async Task<Food> CreateCustomFoodAsync(Food food, Guid userId)
         {
-            ValidateCreateData(food);
+            // Check if user exist in db
+            _foodValidator.ValidateCreating(food);
 
             var customFoodsExist = await GetCustomFoodsAsync(userId);
             if(customFoodsExist.Any(f => string.Equals(f.Name, food.Name, StringComparison.OrdinalIgnoreCase)))
-                throw new InvalidOperationException("Food already exist");
+                throw new InvalidOperationException($"Food with Name: {food.Name} already exist");
 
             food.Type = Models.Type.custom;
             food.UserId = userId;
@@ -48,30 +52,28 @@ namespace CaloriesTracker.Server.Services
             return await _foodRepository.CreateCustomFoodAsync(food, userId);
         }
 
+        public async Task<Food> UpdateCustomFoodAsync(Food food, Guid userId)
+        {
+            _foodValidator.ValidateUpdating(food, userId);
+
+            var customFoodsExist = await GetCustomFoodsAsync(userId);
+            if (customFoodsExist.Any(f => f.Id != food.Id && string.Equals(f.Name?.Trim(), food.Name?.Trim(), StringComparison.OrdinalIgnoreCase)))
+                throw new InvalidOperationException($"Food with Name: {food.Name} already exist");
+
+            food.UserId = userId;
+            food.Name = food.Name.Trim();
+
+            SetDefaultNutrients(food);
+
+            return await _foodRepository.UpdateCustomFoodAsync(food, userId);
+        }
+
         public void SetDefaultNutrients(Food food)
         {
             food.WeightG ??= 100.00m;
-            food.ProteinG = 0.00m;
-            food.FatG = 0.00m;
-            food.CarbsG = 0.00m;
-        }
-
-        private void ValidateCreateData(Food food)
-        {
-            if (food == null) throw new ArgumentNullException("Food data is required");
-            if (string.IsNullOrWhiteSpace(food.Name)) throw new Exception("The name of Food is required");
-        }
-
-        private void ValidateFoodExists(Food food)
-        {
-            if (food == null)
-                throw new Exception("Food not found");
-        }
-
-        private void ValidateFoodAccess(Food food, Guid userId)
-        {
-            if (food.Type == Models.Type.custom && food.UserId != userId)
-                throw new Exception("Can't access other user's food");
+            food.ProteinG ??= 0.00m;
+            food.FatG ??= 0.00m;
+            food.CarbsG ??= 0.00m;
         }
     }
 }

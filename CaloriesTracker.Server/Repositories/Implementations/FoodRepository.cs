@@ -67,7 +67,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 await connection.ExecuteAsync(sql, new
                 {
                     UserId = userId,
-                    Type = food.Type,
+                    Type = food.Type.ToString(),
                     Name = food.Name,
                     WeightG = food.WeightG,
                     ProteinG = food.ProteinG,
@@ -124,7 +124,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
 
                 var sql = "UPDATE Foods " +
                     "SET Name = @Name, WeightG = @WeightG, ProteinG = @ProteinG, FatG = @FatG, CarbsG = @CarbsG " +
-                    "OUTPUT INSERTED.Id, INSERTED.UserId, INSERTED.Type, INSERTED.Name, INSERTED.WeightG, INSERTED.ProteinG, INSERTED.FatG, INSERTED.CarbsG" +
+                    "OUTPUT INSERTED.Id, INSERTED.UserId, INSERTED.Type, INSERTED.Name, INSERTED.WeightG, INSERTED.ProteinG, INSERTED.FatG, INSERTED.CarbsG " +
                     "WHERE Id = @Id AND userId = @UserId";
 
                 var updatedFood = await connection.QueryFirstOrDefaultAsync<Food>(sql, new
