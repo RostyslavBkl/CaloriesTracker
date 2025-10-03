@@ -3,8 +3,6 @@ using CaloriesTracker.Server.Models.AuthModels;
 using CaloriesTracker.Server.Repositories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace CaloriesTracker.Server.Controllers
 {
@@ -99,11 +97,13 @@ namespace CaloriesTracker.Server.Controllers
             return Ok(resp);
         }
 
-
         [HttpGet("user")]
         public async Task<IActionResult> GetUser()
         {
             var jwt = Request.Cookies["jwt"];
+
+            if (jwt == null)
+                return NotFound();
 
             var token = jwtTokenRepository.EncodeAndVerify(jwt);
 

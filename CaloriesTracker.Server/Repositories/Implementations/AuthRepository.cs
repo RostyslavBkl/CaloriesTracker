@@ -5,13 +5,13 @@ namespace CaloriesTracker.Server.Repositories
 {
     public class AuthRepository
     {
-        private readonly IUserRepository _users;
-        private readonly JwtTokenRepository _jwt;
+        private readonly IUserRepository users;
+        private readonly JwtTokenRepository jwt;
 
         public AuthRepository(IUserRepository users, JwtTokenRepository jwt)
         {
-            _users = users;
-            _jwt = jwt;
+            this.users = users;
+            this.jwt = jwt;
         }
 
         public async Task<AuthResponse> RegisterAsync(User user)
@@ -19,10 +19,13 @@ namespace CaloriesTracker.Server.Repositories
             if (user == null)
                 return new AuthResponse { Success = false, Message = "Invalid request" };
 
-            if (await _users.EmailExistsAsync(user.Email))
+            if (await users.EmailExistsAsync(user.Email))
                 return new AuthResponse { Success = false, Message = "Email already exists" };
 
-            await _users.CreateUserAsync(user);
+            if (user.PasswordHash.Length < 6)
+                return new AuthResponse { Success = false, Message = "Password is too short" };
+
+            await users.CreateUserAsync(user);
 
             return new AuthResponse
             {
@@ -37,11 +40,11 @@ namespace CaloriesTracker.Server.Repositories
             if (request == null)
                 return new AuthResponse { Success = false, Message = "Invalid request" };
 
-            var user = await _users.GetByEmailAsync(request.Email);
+            var user = await users.GetByEmailAsync(request.Email);
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 return new AuthResponse { Success = false, Message = "Invalid data" };
 
-            var token = _jwt.Generate(user.Id);
+            var token = jwt.Generate(user.Id);
             return new AuthResponse
             {
                 Success = true,

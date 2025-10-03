@@ -91,7 +91,7 @@ const Register = () => {
           <button type="submit">Register</button>
         </div>
         <div>
-          <button onClick={() => navigate("/login")}>Go to Login</button>
+          <button type="button" onClick={() => navigate("/login")}>Go to Login</button>
         </div>
       </form>
       {error && <p className="error">{error}</p>}

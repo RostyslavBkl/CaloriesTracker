@@ -41,10 +41,10 @@ const AuthorizeView = ({ children }: Props) => {
         }
       }
     }
-
+      console.log("console");
     fetchWithRetry("/auth/user", { method: "GET", credentials: "include" })
       .catch(error => console.log(error.message));
-  }, [setUser]);
+  }, []);
 
   if (loading) {
     return <p>Loading...</p>;
