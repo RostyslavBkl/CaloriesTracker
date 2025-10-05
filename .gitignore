@@ -2,3 +2,7 @@
 bin/
 obj/
 logs/
+
+vite.config.js
+DbTester.cs
+appsettings.Development.json
