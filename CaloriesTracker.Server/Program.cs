@@ -1,3 +1,4 @@
+using CaloriesTracker.Server.API;
 using CaloriesTracker.Server.Data.Ado;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories.Implementations;
@@ -8,7 +9,7 @@ using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/testCalcKcal-.txt", rollingInterval: RollingInterval.Hour)
+    .WriteTo.File("logs/testSearchFoodInApi-.txt", rollingInterval: RollingInterval.Minute)
     .CreateLogger();
 
 
@@ -17,14 +18,31 @@ builder.Host.UseSerilog();
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
+builder.Services.AddHttpClient();
+builder.Services.Configure<FatSecretConfig>(builder.Configuration.GetSection("FatSecret"));
 
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
+builder.Services.AddScoped<FatSecretApi>();
 
 var app = builder.Build();
+
+// Test SEARCH food in API
+/*using (var scope = app.Services.CreateScope())
+{
+    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
+
+    var tester = new DbTester(foodService, logger);
+
+    var query = "apple";
+
+    await tester.TestSaveFoopApi(query);
+    //await tester.TestSearchFoopApi(query);
+}*/
 
 // DONE: Test Create Custom Food
 /*(var scope = app.Services.CreateScope())
@@ -49,7 +67,7 @@ var app = builder.Build();
 }*/
 
 //DONE: Test GET Food By Id
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
@@ -59,11 +77,11 @@ using (var scope = app.Services.CreateScope())
 
 
 
-    var id = Guid.Parse("4CCDFB79-6590-4C3B-81E7-EEE3D013D5C7");
-    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E7");
+    var id = Guid.Parse("7AF92951-4C9E-4AC3-880D-05D9A9F48002");
+    var userId = Guid.("NULL");
 
     await tester.TestKcal(id, userId);
-}
+}*/
 
 // WIP: Test GET Custom Food by UserId VALIDATION FOR USER
 /*using (var scope = app.Services.CreateScope())

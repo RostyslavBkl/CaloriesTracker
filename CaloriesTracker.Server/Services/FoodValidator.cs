@@ -3,9 +3,18 @@
     public class FoodValidator
     {
 
-        public void ValidateCreating(Food food)
+        public void ValidateAdd(Food food)
         {
             ValidateCommonArgs(food);
+        }
+         public void ValidateFoodApi(Food food)
+        {
+            ValidateCommonArgs(food);
+            if (food.Type != Models.Type.api)
+                throw new Exception("Can't save not Food from API");
+            if (food.UserId != null)
+                throw new Exception("Api's Food can't has UserId");
+
         }
 
         public void ValidateUpdating(Food food, Guid userId)
