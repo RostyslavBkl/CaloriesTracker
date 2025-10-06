@@ -142,18 +142,14 @@ namespace CaloriesTracker.Server.Services
 
             try
             {
-                // "Per 100g - Calories: 165kcal | Fat: 3.60g | Carbs: 0.00g | Protein: 31.00g"
                 var parts = description.Split('|');
 
-                // Знаходимо частину з потрібним keyword
                 var part = parts.FirstOrDefault(p => p.Contains(keyword));
                 if (part == null) return null;
 
-                // "Protein: 31.00g" → ["Protein", " 31.00g"]
                 var colonSplit = part.Split(':');
                 if (colonSplit.Length < 2) return null;
 
-                // " 31.00g" → "31.00"
                 var valueText = colonSplit[1].Trim();
                 var numberPart = new string(valueText.TakeWhile(c => char.IsDigit(c) || c == '.').ToArray());
 
