@@ -1,15 +1,14 @@
-using CaloriesTracker.Server.API;
 using CaloriesTracker.Server.Data.Ado;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using CaloriesTracker.Server.Services;
-using Microsoft.Data.SqlClient;
+using CaloriesTracker.Server.Services.FoodService;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/testSearchFoodInApi-.txt", rollingInterval: RollingInterval.Minute)
+    .WriteTo.File($"logs/testGetOrCreate-.txt", rollingInterval: RollingInterval.Minute)
     .CreateLogger();
 
 
@@ -24,25 +23,27 @@ builder.Services.Configure<FatSecretConfig>(builder.Configuration.GetSection("Fa
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+builder.Services.AddScoped<IFoodApiRepository, FoodApiRepository>();
 builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
-builder.Services.AddScoped<FatSecretApi>();
+builder.Services.AddScoped<FoodApiService>();
 
 var app = builder.Build();
 
 // Test SEARCH food in API
-/*using (var scope = app.Services.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
     var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
+    var foodApiService = scope.ServiceProvider.GetRequiredService<FoodApiService>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
 
-    var tester = new DbTester(foodService, logger);
+    var tester = new DbTester(foodService, foodApiService, logger);
 
-    var query = "apple";
+    var query = "cheescake";
 
-    await tester.TestSaveFoopApi(query);
+    await tester.TestGetOrCreateFoopApi(query);
     //await tester.TestSearchFoopApi(query);
-}*/
+}
 
 // DONE: Test Create Custom Food
 /*(var scope = app.Services.CreateScope())

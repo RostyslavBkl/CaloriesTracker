@@ -8,6 +8,7 @@ public class Food
     public Guid Id { get; set; }
     public Guid? UserId { get; set; }
     public Type Type { get; set; }
+    public string? ExternalId { get; set; }
 
     [Required(ErrorMessage = "Name of Product is reqired")]
     public string? Name { get; set; }

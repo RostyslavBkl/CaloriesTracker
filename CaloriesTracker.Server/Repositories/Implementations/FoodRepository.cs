@@ -17,36 +17,6 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<Food> SaveApiFoodToDb(Food food)
-        {
-            try
-            {
-                using var connection = _connectionFactory.Create();
-                await connection.OpenAsync();
-
-                var sql = "INSERT INTO Foods (Type, Name, WeightG, ProteinG, FatG, CarbsG) VALUES (@Type, @Name, @WeightG, @ProteinG, @FatG, @CarbsG )";
-
-                await connection.ExecuteAsync(sql, new
-                {
-                    Type = food.Type.ToString(),
-                    Name = food.Name,
-                    WeightG = food.WeightG,
-                    ProteinG = food.ProteinG,
-                    FatG = food.FatG,
-                    CarbsG = food.CarbsG,
-                });
-
-                food.Type = Models.Type.api;
-
-                return food;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error while saving API food to Db");
-                throw;
-            }
-        }
-
         public async Task<Food> GetFoodByIdAsync(Guid id)
         {
             try {

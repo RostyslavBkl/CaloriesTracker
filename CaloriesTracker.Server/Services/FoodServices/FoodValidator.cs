@@ -10,6 +10,10 @@
          public void ValidateFoodApi(Food food)
         {
             ValidateCommonArgs(food);
+            if(food.ExternalId == null)
+            {
+                throw new ArgumentNullException(nameof(food.ExternalId), "ExternalIs is required for API foods");
+            }
             if (food.Type != Models.Type.api)
                 throw new Exception("Can't save not Food from API");
             if (food.UserId != null)
