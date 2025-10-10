@@ -6,7 +6,6 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  //const [name, setName] = useState("");
   const navigate = useNavigate();
 
   const [error, setError] = useState("");
@@ -16,40 +15,67 @@ const Register = () => {
     if (name === "email") setEmail(value);
     if (name === "password") setPassword(value);
     if (name === "confirmPassword") setConfirmPassword(value);
-    //if (name === "name") setName(value);
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email || !password || !confirmPassword) {
+      if (!email || !password || !confirmPassword)
+      {
       setError("Please fill in all fields.");
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      }
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))
+      {
       setError("Please enter a valid email address.");
-    } else if (password !== confirmPassword) {
+      }
+      else if (password !== confirmPassword)
+      {
       setError("Passwords do not match.");
-    } else {
+      }
+      else
+      {
       setError("");
-      fetch("/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      })
-        .then((data) => {
-          if (data.ok)
-            setError("Successful register.");
-          else
-            setError("Error registering.");
-        })
-        .catch((error) => {
-          console.error(error);
-          setError("Error registering.");
-        });
-    }
+          const response = await fetch("/graphql", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              credentials: "include",
+              body: JSON.stringify({
+                  query: `
+            mutation {
+            register(request: { email: "${email}", password: "${password}" }) {
+              success
+              message
+              token
+              user {
+                id
+                email
+              }
+            }
+          }`
+              }),
+          });
+            const result = await response.json();
+          if (result?.errors?.length) {
+              setError(result.errors[0].message || "Registration failed.");
+              return;
+          }
+           const payload = result?.data?.register;
+           if (!payload?.success) {
+              setError(payload?.message ?? "Registration failed.");
+              return;
+              }
+              setError("Successful register.");
+            };
+    //    .then((data) => {
+    //      if (data.ok)
+    //        setError("Successful register.");
+    //      else
+    //        setError("Error registering.");
+    //    })
+    //    .catch((error) => {
+    //      console.error(error);
+    //      setError("Error registering.");
+    //    });
+    //}
   };
 
   return (

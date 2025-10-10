@@ -4,13 +4,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using CaloriesTracker.Server.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
-
-var jwt = builder.Configuration.GetSection("Jwt");
-var jwtKey = jwt["SecureKey"] ?? throw new InvalidOperationException("Jwt:SecureKey missing");
-var jwtIssuer = jwt["Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer missing");
-var jwtAudience = jwt["Audience"] ?? throw new InvalidOperationException("Jwt:Audience missing");
 
 builder.Services.AddAuthentication(o =>
 {
@@ -21,6 +17,12 @@ builder.Services.AddAuthentication(o =>
     {
         o.RequireHttpsMetadata = true;
         o.SaveToken = true;
+
+        var jwt = builder.Configuration.GetSection("Jwt");
+        var jwtKey = jwt["SecureKey"] ?? throw new InvalidOperationException("Jwt:SecureKey missing");
+        var jwtIssuer = jwt["Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer missing");
+        var jwtAudience = jwt["Audience"] ?? throw new InvalidOperationException("Jwt:Audience missing");
+
         o.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
@@ -37,18 +39,18 @@ builder.Services.AddAuthentication(o =>
             ClockSkew = TimeSpan.FromMinutes(1)
         };
 
-    o.Events = new JwtBearerEvents
-    {
-        OnMessageReceived = context =>
+        o.Events = new JwtBearerEvents
         {
-            var token = context.Request.Cookies["jwt"];
-            if (!string.IsNullOrEmpty(token))
-                context.Token = token;
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Cookies["jwt"];
+                if (!string.IsNullOrEmpty(token))
+                    context.Token = token;
 
-            return Task.CompletedTask;
-        }
-    };
-});
+                return Task.CompletedTask;
+            }
+        };
+    });
 
 builder.Services.AddCors(options =>
 {
@@ -61,6 +63,7 @@ builder.Services.AddCors(options =>
     });
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<AuthRepository>();
@@ -68,8 +71,18 @@ builder.Services.AddScoped<JwtTokenRepository>();
 
 builder.Services.AddScoped<IPasswordHasher<CaloriesTracker.Server.Models.User>, PasswordHasher<CaloriesTracker.Server.Models.User>>();
 
+builder.Services.AddScoped<AuthQuery>();
+builder.Services.AddScoped<AuthMutation>();
+
 builder.Services.AddControllers();
 builder.Services.AddAuthorization();
+
+builder.Services
+    .AddGraphQLServer()
+    .AddAuthorization()
+    //.AddHttpRequestInterceptor<JwtHttpRequestInterceptor>()
+    .AddQueryType<AuthQuery>()
+    .AddMutationType<AuthMutation>();
 
 var app = builder.Build();
 
@@ -82,6 +95,8 @@ app.UseHttpsRedirection();
 app.UseCors("ReactApp");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseWebSockets();
 app.MapControllers();
+app.MapGraphQL();
 
 app.Run();

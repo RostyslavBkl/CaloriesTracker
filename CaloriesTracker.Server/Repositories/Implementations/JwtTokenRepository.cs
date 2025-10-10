@@ -9,14 +9,19 @@ namespace CaloriesTracker.Server.Repositories
     {
         private readonly string key;
         private readonly int accessMinutes;
+        private readonly string issuer;
+        private readonly string audience;
 
         public JwtTokenRepository(IConfiguration configuration)
         {
-            var key = configuration["Jwt:SecureKey"];
-            if (string.IsNullOrWhiteSpace(key))
-                throw new InvalidOperationException("JWT key is missing (Jwt:Key or Jwt:SecureKey)");
+            this.key = configuration["Jwt:SecureKey"] ??
+                throw new InvalidOperationException("Jwt key is missing (Jwt:SecureKey)");
 
-            this.key = key;
+            this.issuer = configuration["Jwt:Issuer"] ??
+                throw new InvalidOperationException("Jwt issuer is missing");
+
+            this.audience = configuration["Jwt:Audience"] ??
+                throw new InvalidOperationException("Jwt audience is missing");
 
             var minutesRaw = configuration["Jwt:AccessTokenMinutes"];
             this.accessMinutes = int.TryParse(minutesRaw, out var mins) && mins > 0 ? mins : 60;
@@ -26,12 +31,21 @@ namespace CaloriesTracker.Server.Repositories
         {
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
-            var header = new JwtHeader(credentials);
 
-            var payload = new JwtPayload(userId.ToString(), audience: null, claims: null, notBefore: null, expires: DateTime.Today.AddDays(10));
-            var securityToken = new JwtSecurityToken(header, payload);
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString())
+            };
 
-            return new JwtSecurityTokenHandler().WriteToken(securityToken);
+            var token = new JwtSecurityToken(
+                issuer: this.issuer,
+                audience: this.audience,
+                claims: claims,
+                notBefore: DateTime.UtcNow,
+                expires: DateTime.UtcNow.AddMinutes(this.accessMinutes),
+                signingCredentials: credentials);
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
         public JwtSecurityToken EncodeAndVerify(string jwt)
@@ -43,8 +57,10 @@ namespace CaloriesTracker.Server.Repositories
             {
                 ValidateIssuerSigningKey = true,
                 IssuerSigningKey = key,
-                ValidateIssuer = false,
-                ValidateAudience = false,
+                ValidateIssuer = true,
+                ValidIssuer = issuer,
+                ValidateAudience = true,
+                ValidAudience = audience,
                 ValidateLifetime = true,
                 ClockSkew = TimeSpan.FromMinutes(1)
             }, out var validated);

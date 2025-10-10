@@ -16,15 +16,6 @@ namespace CaloriesTracker.Server.Repositories
 
         public async Task<AuthResponse> RegisterAsync(User user)
         {
-            if (user == null)
-                return new AuthResponse { Success = false, Message = "Invalid request" };
-
-            if (await users.EmailExistsAsync(user.Email))
-                return new AuthResponse { Success = false, Message = "Email already exists" };
-
-            if (user.PasswordHash.Length < 6)
-                return new AuthResponse { Success = false, Message = "Password is too short" };
-
             await users.CreateUserAsync(user);
 
             return new AuthResponse

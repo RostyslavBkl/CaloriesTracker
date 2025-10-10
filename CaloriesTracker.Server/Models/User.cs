@@ -12,5 +12,4 @@ public class User
     public decimal? WeightKg { get; set; }
     public string? PreferredHeightUnit { get; set; }
     public string? PreferredWeightUnit { get; set; }
- 
 }

@@ -54,7 +54,6 @@ namespace CaloriesTracker.Server.Repositories
             return await reader.ReadAsync().ConfigureAwait(false);
         }
 
-
         public async Task<Guid> CreateUserAsync(User user)
         {
             using var connection = connectionFactory.Create();
