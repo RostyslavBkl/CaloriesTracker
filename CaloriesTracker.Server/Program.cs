@@ -1,9 +1,18 @@
 using CaloriesTracker.Server.Data.Ado;
+using CaloriesTracker.Server.GraphQL.Mutations;
+using CaloriesTracker.Server.GraphQL.Queries;
+using CaloriesTracker.Server.GraphQL.Schemas;
+using CaloriesTracker.Server.GraphQL.Type;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using CaloriesTracker.Server.Services;
 using CaloriesTracker.Server.Services.FoodService;
+using GraphQL;
+using GraphQL.Server.Ui.GraphiQL;
+using GraphQL.Server.Ui.Playground;
+using GraphQL.Types;
+using Microsoft.AspNetCore.Builder;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
@@ -28,10 +37,30 @@ builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
 builder.Services.AddScoped<FoodApiService>();
 
+// Reg GraphQL
+builder.Services.AddSingleton<FoodQuery>();
+builder.Services.AddSingleton<FoodMutation>();
+// Types
+builder.Services.AddSingleton<FoodType>();
+builder.Services.AddSingleton<FoodInputType>();
+builder.Services.AddSingleton<ISchema, FoodSchema>();
+
+builder.Services.AddGraphQL(b => b
+    .AddSchema<FoodSchema>()
+    .AddSystemTextJson());
+
+
 var app = builder.Build();
 
+app.UseGraphQL<ISchema>("/graphql");
+
+app.UseGraphQLGraphiQL("/ui/graphiql", new GraphiQLOptions
+{
+    GraphQLEndPoint = "/graphql"
+});
+
 // Test SEARCH food in API
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
     var foodApiService = scope.ServiceProvider.GetRequiredService<FoodApiService>();
@@ -43,7 +72,7 @@ using (var scope = app.Services.CreateScope())
 
     await tester.TestGetOrCreateFoopApi(query);
     //await tester.TestSearchFoopApi(query);
-}
+}*/
 
 // DONE: Test Create Custom Food
 /*(var scope = app.Services.CreateScope())
@@ -160,4 +189,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
-//app.Run();
+app.Run();

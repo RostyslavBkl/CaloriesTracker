@@ -26,7 +26,7 @@ namespace CaloriesTracker.Server.Services.FoodService
             _logger = logger;
         }
 
-        public async Task<string> FetchFoodDataFromApiAsync(string query)
+        private async Task<string> FetchFoodDataFromApiAsync(string query)
         {
             var url = "https://platform.fatsecret.com/rest/server.api";
             var httpMethod = "GET";
