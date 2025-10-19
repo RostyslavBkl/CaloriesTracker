@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
 using System.Text.Json.Serialization;
 
-namespace CaloriesTracker.Server.API
+namespace CaloriesTracker.Server.Models
 {
-    public class FatSecretFoodRes
+    public class FoodResApi
     {
         [JsonPropertyName("foods")]
         [JsonProperty("foods")]
@@ -26,5 +26,9 @@ namespace CaloriesTracker.Server.API
         [JsonPropertyName("food_description")]
         [JsonProperty("food_description")]
         public string FoodDescription { get; set; }
+
+        [JsonPropertyName("food_id")]
+        [JsonProperty("food_id")]
+        public string FoodId { get; set; }
     }
 }

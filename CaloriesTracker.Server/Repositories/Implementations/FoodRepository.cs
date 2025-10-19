@@ -17,36 +17,6 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<Food> SaveApiFoodToDb(Food food)
-        {
-            try
-            {
-                using var connection = _connectionFactory.Create();
-                await connection.OpenAsync();
-
-                var sql = "INSERT INTO Foods (Type, Name, WeightG, ProteinG, FatG, CarbsG) VALUES (@Type, @Name, @WeightG, @ProteinG, @FatG, @CarbsG )";
-
-                await connection.ExecuteAsync(sql, new
-                {
-                    Type = food.Type.ToString(),
-                    Name = food.Name,
-                    WeightG = food.WeightG,
-                    ProteinG = food.ProteinG,
-                    FatG = food.FatG,
-                    CarbsG = food.CarbsG,
-                });
-
-                food.Type = Models.Type.api;
-
-                return food;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error while saving API food to Db");
-                throw;
-            }
-        }
-
         public async Task<Food> GetFoodByIdAsync(Guid id)
         {
             try {
@@ -143,7 +113,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             }
         }
 
-        public async Task<Food?> UpdateCustomFoodAsync(Food food, Guid userId)
+        public async Task<Food> UpdateCustomFoodAsync(Food food, Guid userId)
         {
             try
             {
@@ -154,7 +124,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 var sql = "UPDATE Foods " +
                     "SET Name = @Name, WeightG = @WeightG, ProteinG = @ProteinG, FatG = @FatG, CarbsG = @CarbsG " +
                     "OUTPUT INSERTED.Id, INSERTED.UserId, INSERTED.Type, INSERTED.Name, INSERTED.WeightG, INSERTED.ProteinG, INSERTED.FatG, INSERTED.CarbsG " +
-                    "WHERE Id = @Id AND userId = @UserId";
+                    "WHERE id = @Id AND userId = @UserId";
 
                 var updatedFood = await connection.QueryFirstOrDefaultAsync<Food>(sql, new
                 {
@@ -166,7 +136,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     food.ProteinG,
                     food.FatG,
                     food.CarbsG,
-                    food.Type,
+                    //food.Type,
                 });
                 return updatedFood;
             }

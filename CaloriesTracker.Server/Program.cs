@@ -1,15 +1,23 @@
-using CaloriesTracker.Server.API;
 using CaloriesTracker.Server.Data.Ado;
+using CaloriesTracker.Server.GraphQL.Mutations;
+using CaloriesTracker.Server.GraphQL.Queries;
+using CaloriesTracker.Server.GraphQL.Schemas;
+using CaloriesTracker.Server.GraphQL.Type;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using CaloriesTracker.Server.Services;
-using Microsoft.Data.SqlClient;
+using CaloriesTracker.Server.Services.FoodService;
+using GraphQL;
+using GraphQL.Server.Ui.GraphiQL;
+using GraphQL.Server.Ui.Playground;
+using GraphQL.Types;
+using Microsoft.AspNetCore.Builder;
 using Serilog;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("logs/testSearchFoodInApi-.txt", rollingInterval: RollingInterval.Minute)
+    .WriteTo.File($"logs/testGetOrCreate-.txt", rollingInterval: RollingInterval.Minute)
     .CreateLogger();
 
 
@@ -24,23 +32,46 @@ builder.Services.Configure<FatSecretConfig>(builder.Configuration.GetSection("Fa
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
+builder.Services.AddScoped<IFoodApiRepository, FoodApiRepository>();
 builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
-builder.Services.AddScoped<FatSecretApi>();
+builder.Services.AddScoped<FoodApiService>();
+
+// Reg GraphQL
+builder.Services.AddSingleton<FoodQuery>();
+builder.Services.AddSingleton<FoodMutation>();
+// Types
+builder.Services.AddSingleton<FoodType>();
+builder.Services.AddSingleton<FoodInputType>();
+builder.Services.AddSingleton<FoodApiInputType>();
+builder.Services.AddSingleton<ISchema, FoodSchema>();
+
+builder.Services.AddGraphQL(b => b
+    .AddSchema<FoodSchema>()
+    .AddSystemTextJson());
+
 
 var app = builder.Build();
+
+app.UseGraphQL<ISchema>("/graphql");
+
+app.UseGraphQLGraphiQL("/ui/graphiql", new GraphiQLOptions
+{
+    GraphQLEndPoint = "/graphql"
+});
 
 // Test SEARCH food in API
 /*using (var scope = app.Services.CreateScope())
 {
     var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
+    var foodApiService = scope.ServiceProvider.GetRequiredService<FoodApiService>();
     var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
 
-    var tester = new DbTester(foodService, logger);
+    var tester = new DbTester(foodService, foodApiService, logger);
 
-    var query = "apple";
+    var query = "cheescake";
 
-    await tester.TestSaveFoopApi(query);
+    await tester.TestGetOrCreateFoopApi(query);
     //await tester.TestSearchFoopApi(query);
 }*/
 
@@ -159,4 +190,4 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
 app.MapFallbackToFile("/index.html");
-//app.Run();
+app.Run();
