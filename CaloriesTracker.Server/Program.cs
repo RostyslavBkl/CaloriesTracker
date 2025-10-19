@@ -1,4 +1,5 @@
 using CaloriesTracker.Server.Data.Ado;
+using CaloriesTracker.Server.GraphQL;
 using CaloriesTracker.Server.GraphQL.Mutations;
 using CaloriesTracker.Server.GraphQL.Queries;
 using CaloriesTracker.Server.GraphQL.Schemas;
@@ -20,6 +21,13 @@ Log.Logger = new LoggerConfiguration()
     .WriteTo.File($"logs/testGetOrCreate-.txt", rollingInterval: RollingInterval.Minute)
     .CreateLogger();
 
+using CaloriesTracker.Server.DataBase;
+using CaloriesTracker.Server.Repositories;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CaloriesTracker.Server.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog();
@@ -28,6 +36,15 @@ builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 builder.Services.AddHttpClient();
 builder.Services.Configure<FatSecretConfig>(builder.Configuration.GetSection("FatSecret"));
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = true;
+        o.SaveToken = true;
 
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
@@ -49,9 +66,17 @@ builder.Services.AddSingleton<ISchema, FoodSchema>();
 builder.Services.AddGraphQL(b => b
     .AddSchema<FoodSchema>()
     .AddSystemTextJson());
+        var jwt = builder.Configuration.GetSection("Jwt");
+        var jwtKey = jwt["SecureKey"] ?? throw new InvalidOperationException("Jwt:SecureKey missing");
+        var jwtIssuer = jwt["Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer missing");
+        var jwtAudience = jwt["Audience"] ?? throw new InvalidOperationException("Jwt:Audience missing");
 
 
 var app = builder.Build();
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
 
 app.UseGraphQL<ISchema>("/graphql");
 
@@ -59,113 +84,6 @@ app.UseGraphQLGraphiQL("/ui/graphiql", new GraphiQLOptions
 {
     GraphQLEndPoint = "/graphql"
 });
-
-// Test SEARCH food in API
-/*using (var scope = app.Services.CreateScope())
-{
-    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
-    var foodApiService = scope.ServiceProvider.GetRequiredService<FoodApiService>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
-
-    var tester = new DbTester(foodService, foodApiService, logger);
-
-    var query = "cheescake";
-
-    await tester.TestGetOrCreateFoopApi(query);
-    //await tester.TestSearchFoopApi(query);
-}*/
-
-// DONE: Test Create Custom Food
-/*(var scope = app.Services.CreateScope())
-{
-    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
-
-    var tester = new DbTester(foodService, logger);
-
-    var testFood = new Food
-    {
-        Name = "Falafel",
-        WeightG = 240m,
-        ProteinG = 16m,
-        FatG = 3.4m,
-        CarbsG = 3m
-    };
-
-    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E7");
-
-    await tester.TestCreateCustomFood(testFood, userId);
-}*/
-
-//DONE: Test GET Food By Id
-/*using (var scope = app.Services.CreateScope())
-{
-    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
-
-    var tester = new DbTester(foodService, logger);
-
-
-
-
-    var id = Guid.Parse("7AF92951-4C9E-4AC3-880D-05D9A9F48002");
-    var userId = Guid.("NULL");
-
-    await tester.TestKcal(id, userId);
-}*/
-
-// WIP: Test GET Custom Food by UserId VALIDATION FOR USER
-/*using (var scope = app.Services.CreateScope())
-{
-    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
-
-    var tester = new DbTester(foodService, logger);
-
-    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E8");
-
-    await tester.TestGetCustomFoods(userId);
-}*/
-
-// DONE: Test UPDATE Custom Food 
-/*using (var scope = app.Services.CreateScope())
-{
-    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
-
-    var tester = new DbTester(foodService, logger);
-    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E7");
-
-
-    var testFood = new Food
-    {
-        Id = Guid.Parse("1E94B097-B577-4170-973E-66E358AC84A6"),
-        UserId = userId,
-        Type = CaloriesTracker.Server.Models.Type.custom,
-        Name = "New Food",
-        WeightG = 100m,
-        ProteinG = 10m,
-        FatG = 2.4m,
-        CarbsG = 3m
-    };
-
-    await tester.TestUpdateCustomFood(testFood, userId);
-}*/
-
-// WIP: Test DELETING Custom Food 
-/*using (var scope = app.Services.CreateScope())
-{
-    var foodService = scope.ServiceProvider.GetRequiredService<FoodService>();
-    var logger = scope.ServiceProvider.GetRequiredService<ILogger<DbTester>>();
-
-    var tester = new DbTester(foodService, logger);
-
-    var id = Guid.Parse("11EE0004-9DDB-47A2-A09F-8990291101F6");
-    var userId = Guid.Parse("D29A5515-82DD-4FE3-BC9F-DA2DFF0800E7");
-
-
-    await tester.TestDeleteCustomFood(id, userId);
-}*/
 
 
 //app.MapGet("/health/db", async (IDbConnectionFactory factory, CancellationToken ct) =>
@@ -178,16 +96,40 @@ app.UseGraphQLGraphiQL("/ui/graphiql", new GraphiQLOptions
 //    return Results.Ok(new { status = "ok", db = result });
 //});
 
-app.UseDefaultFiles();
-app.MapStaticAssets();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDbConnectionFactory, SqlConnectionFactory>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<AuthRepository>();
+builder.Services.AddScoped<JwtTokenRepository>();
+
+builder.Services.AddScoped<IPasswordHasher<CaloriesTracker.Server.Models.User>, PasswordHasher<CaloriesTracker.Server.Models.User>>();
+
+builder.Services.AddScoped<AuthQuery>();
+builder.Services.AddScoped<AuthMutation>();
+
+builder.Services.AddControllers();
+builder.Services.AddAuthorization();
+
+builder.Services
+    .AddGraphQLServer()
+    .AddAuthorization()
+    //.AddHttpRequestInterceptor<JwtHttpRequestInterceptor>()
+    .AddQueryType<AuthQuery>()
+    .AddMutationType<AuthMutation>();
+
+var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
+app.UseCors("ReactApp");
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseWebSockets();
 app.MapControllers();
-app.MapFallbackToFile("/index.html");
+app.MapGraphQL();
+
 app.Run();
