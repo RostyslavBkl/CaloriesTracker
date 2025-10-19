@@ -1,37 +1,102 @@
-using CaloriesTracker.Server.Data.Ado;
+using CaloriesTracker.Server.DataBase;
 using CaloriesTracker.Server.Repositories;
-using Microsoft.Data.SqlClient;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using CaloriesTracker.Server.GraphQL;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddOpenApi();
+builder.Services.AddAuthentication(o =>
+{
+    o.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    o.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(o =>
+    {
+        o.RequireHttpsMetadata = true;
+        o.SaveToken = true;
 
-builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+        var jwt = builder.Configuration.GetSection("Jwt");
+        var jwtKey = jwt["SecureKey"] ?? throw new InvalidOperationException("Jwt:SecureKey missing");
+        var jwtIssuer = jwt["Issuer"] ?? throw new InvalidOperationException("Jwt:Issuer missing");
+        var jwtAudience = jwt["Audience"] ?? throw new InvalidOperationException("Jwt:Audience missing");
+
+        o.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
+
+            ValidateIssuer = true,
+            ValidIssuer = jwtIssuer,
+
+            ValidateAudience = true,
+            ValidAudience = jwtAudience,
+
+            ValidateLifetime = true,
+            RequireExpirationTime = true,
+            ClockSkew = TimeSpan.FromMinutes(1)
+        };
+
+        o.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var token = context.Request.Cookies["jwt"];
+                if (!string.IsNullOrEmpty(token))
+                    context.Token = token;
+
+                return Task.CompletedTask;
+            }
+        };
+    });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IDbConnectionFactory, SqlConnectionFactory>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<AuthRepository>();
+builder.Services.AddScoped<JwtTokenRepository>();
+
+builder.Services.AddScoped<IPasswordHasher<CaloriesTracker.Server.Models.User>, PasswordHasher<CaloriesTracker.Server.Models.User>>();
+
+builder.Services.AddScoped<AuthQuery>();
+builder.Services.AddScoped<AuthMutation>();
+
+builder.Services.AddControllers();
+builder.Services.AddAuthorization();
+
+builder.Services
+    .AddGraphQLServer()
+    .AddAuthorization()
+    //.AddHttpRequestInterceptor<JwtHttpRequestInterceptor>()
+    .AddQueryType<AuthQuery>()
+    .AddMutationType<AuthMutation>();
 
 var app = builder.Build();
 
-app.MapGet("/health/db", async (IDbConnectionFactory factory, CancellationToken ct) =>
-{
-    await using var conn = factory.Create();
-    await conn.OpenAsync(ct);
-
-    await using var cmd = new SqlCommand("SELECT 1", conn);
-    var result = await cmd.ExecuteScalarAsync(ct);
-    return Results.Ok(new { status = "ok", db = result });
-});
-
-app.UseDefaultFiles();
-app.MapStaticAssets();
-
 if (app.Environment.IsDevelopment())
 {
-    app.MapOpenApi();
+    app.UseDeveloperExceptionPage();
 }
 
 app.UseHttpsRedirection();
+app.UseCors("ReactApp");
+app.UseAuthentication();
 app.UseAuthorization();
+app.UseWebSockets();
 app.MapControllers();
-app.MapFallbackToFile("/index.html");
+app.MapGraphQL();
+
 app.Run();

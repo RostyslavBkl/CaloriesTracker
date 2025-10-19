@@ -1,7 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.Extensions.Configuration;
 
-namespace CaloriesTracker.Server.Data.Ado;
+namespace CaloriesTracker.Server.DataBase;
 
 public interface IDbConnectionFactory
 {

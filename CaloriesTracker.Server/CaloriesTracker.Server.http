@@ -1,6 +1,26 @@
 @CaloriesTracker.Server_HostAddress = http://localhost:5001
 
-GET {{CaloriesTracker.Server_HostAddress}}/weatherforecast/
+### Отримати користувача за id
+GET {{CaloriesTracker.Server_HostAddress}}/api/users/1
 Accept: application/json
+
+###
+
+### Створити нового користувача
+POST {{CaloriesTracker.Server_HostAddress}}/api/users
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "passwordHash": "hash",
+  "salt": "salt",
+  "displayName": "Test User",
+  "sex": null,
+  "birthDate": null,
+  "heightCm": null,
+  "weightKg": null,
+  "preferredHeightUnit": "cm",
+  "preferredWeightUnit": "kg"
+}
 
 ###
