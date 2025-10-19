@@ -1,5 +1,5 @@
 export enum NavigationPathes {
-  Home = "/",
+  Home = "/home",
   Register = "/register",
   Login = "/login"
 }

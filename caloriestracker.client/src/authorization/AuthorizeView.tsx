@@ -1,71 +1,26 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
-import { UserContext } from '../context';
+import { useAppDispatch, useAppSelector } from '../store/hooks';
+import { selectUser, selectAuthLoading } from '../auth/Selectors';
+import { checkAuthStart } from '../auth/AuthSlices';
 
-interface Props {
-  children: React.ReactNode;
-}
+type Props = {
+    children: React.ReactNode;
+};
 
-const AuthorizeView = ({ children }: Props) => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const { user, setUser } = useContext(UserContext);
+const AuthorizeView: React.FC<Props> = ({ children }) => {
+    const dispatch = useAppDispatch();
+    const user = useAppSelector(selectUser);
+    const loading = useAppSelector(selectAuthLoading);
 
-  useEffect(() => {
-    const maxRetries = 5;
-    const delay = 1000;
+    useEffect(() => {
+        dispatch(checkAuthStart());
+    }, []);
 
-    async function wait(delay: number) {
-      return new Promise(resolve => setTimeout(resolve, delay));
-    }
+    if (loading) return <p>Loading...</p>;
+    if (user) return <>{children}</>;
 
-    async function fetchWithRetry(url: string, options: any, retryCount: number = 0) {
-      try {
-        const response = await fetch(url, options);
-        if (response.ok) {
-          const userData = await response.json();
-          setUser({ email: userData.email, userId: userData.userId });
-          setLoading(false);
-        } else if (response.status >= 500) {
-          throw new Error("Server error");
-        } else {
-          setLoading(false);
-          return response;
-        }
-      } catch (error) {
-        if (retryCount < maxRetries) {
-          await wait(delay);
-          return fetchWithRetry(url, options, retryCount + 1);
-        } else {
-          setLoading(false);
-          throw error;
-        }
-      }
-    }
-    console.log("console");
-    fetchWithRetry("/graphql", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        query: `
-            query{
-              me{
-                id
-                email
-                }
-              }`
-      }),
-      credentials: "include"
-    })
-      .catch(error => console.log(error.message));
-  }, []);
-
-  if (loading) {
-    return <p>Loading...</p>;
-  } else if (user) {
-    return <>{children}</>;
-  } else {
-    return <Navigate to="/login" />;
-  }
+    return <Navigate to="/login" replace />;
 };
 
 export default AuthorizeView;

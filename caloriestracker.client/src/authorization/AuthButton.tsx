@@ -1,32 +1,39 @@
-import { useContext } from 'react';
 import { Link } from 'react-router-dom';
-import useLogout from '../behavior';
 import { NavigationPathes } from '../navigation/constants';
-import { UserContext } from '../context';
+import { useAppSelector } from '../store/hooks';
+import { selectUser } from '../auth/Selectors';
+import { useDispatch } from 'react-redux';
+import { logoutStart } from '../auth/AuthSlices';
 
-const buttonStyle = {
-	color: 'white',
-	background: 'none',
-	border: 'none',
-	cursor: 'pointer',
+const buttonStyle: React.CSSProperties = {
+    color: 'white',
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
 };
 
-const linkStyle = {
-	color: 'white',
-	textDecoration: 'none',
+const linkStyle: React.CSSProperties = {
+    color: 'white',
+    textDecoration: 'none',
 };
 
 const AuthButton = () => {
-	const { user } = useContext(UserContext);
-	const logout = useLogout();
+    const user = useAppSelector(selectUser);
+    const dispatch = useDispatch();
 
-	return user ? (
-		<button onClick={logout} style={buttonStyle}>Logout</button>
-	) : (
-		<Link to={NavigationPathes.Login} style={linkStyle}>
-			Login
-		</Link>
-	);
+    const handleLogout = () => {
+        dispatch(logoutStart());
+    }
+
+    return user ? (
+        <button onClick={() => handleLogout()} style={buttonStyle}>
+            Logout
+        </button>
+    ) : (
+        <Link to={NavigationPathes.Login} style={linkStyle}>
+            Login
+        </Link>
+    );
 };
 
 export default AuthButton;

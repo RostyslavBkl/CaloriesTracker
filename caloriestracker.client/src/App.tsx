@@ -1,20 +1,20 @@
-import './App.css';
+import { useEffect } from 'react';
+import { useAppDispatch } from './store/hooks';
+import { checkAuthStart } from './auth/AuthSlices';
 import MainMenu from './navigation/MainMenu';
 import AppRoutes from './navigation/AppRoutes';
-import { UserProvider } from './context/UserContext';
-import { BrowserRouter as Router } from 'react-router-dom';
+import './App.css'
 
 const App = () => {
-  return (
-    <UserProvider>
-      <Router>
+    const dispatch = useAppDispatch();
+    useEffect(() => { dispatch(checkAuthStart()); }, [dispatch]);
+
+    return (
         <div>
-          <MainMenu />
-          <AppRoutes />
+            <MainMenu />
+            <AppRoutes />
         </div>
-      </Router>
-    </UserProvider>
-  );
-}
+    );
+};
 
 export default App;

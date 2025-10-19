@@ -1,17 +1,16 @@
-import { Route, Routes } from 'react-router-dom';
-import Home from '../Home';
-import { NavigationPathes } from './constants'
+﻿import { Navigate, Routes, Route } from 'react-router-dom';
+import Home from '../pages/Home';
+import Login from '../pages/Login';
 import Register from '../pages/Register';
-import Login from '../pages/Login';  
+import { NavigationPathes } from './constants';
 
-const AppRoutes = () => {
-  return (
+const AppRoutes = () => (
     <Routes>
-      <Route path={NavigationPathes.Home} element={<Home />} />
-      <Route path={NavigationPathes.Register} element={<Register />} />
-      <Route path={NavigationPathes.Login} element={<Login />} />
+        <Route path="/" element={<Navigate to={NavigationPathes.Home} replace />} />
+        <Route path={NavigationPathes.Login} element={<Login />} />
+        <Route path={NavigationPathes.Register} element={<Register />} />
+        <Route path={NavigationPathes.Home} element={<Home />} />
     </Routes>
-  );
-};
+);
 
 export default AppRoutes;

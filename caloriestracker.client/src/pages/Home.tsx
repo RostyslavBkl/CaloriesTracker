@@ -1,4 +1,6 @@
-import AuthorizeView from "./authorization/AuthorizeView";
+import AuthorizeView from "../authorization/AuthorizeView";
+import '../index.css';
+
 
 const Home = () => {
   return (

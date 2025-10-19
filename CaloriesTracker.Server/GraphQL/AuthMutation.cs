@@ -41,7 +41,6 @@ public class AuthMutation
 
         var user = new User
         {
-            Id = Guid.NewGuid(),
             Email = request.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password)
         };

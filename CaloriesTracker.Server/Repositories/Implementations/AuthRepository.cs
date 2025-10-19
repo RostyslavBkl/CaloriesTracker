@@ -35,12 +35,10 @@ namespace CaloriesTracker.Server.Repositories
             if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
                 return new AuthResponse { Success = false, Message = "Invalid data" };
 
-            var token = jwt.Generate(user.Id);
             return new AuthResponse
             {
                 Success = true,
                 Message = "Logged in",
-                Token = token,
                 User = new UserDto(user.Id, user.Email)
             };
         }
