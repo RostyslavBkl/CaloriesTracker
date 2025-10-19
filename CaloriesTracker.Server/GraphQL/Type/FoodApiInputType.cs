@@ -1,12 +1,14 @@
-﻿using GraphQL.Types;
+﻿using CaloriesTracker.Server.Models;
+using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Type
 {
-    public class FoodInputType : InputObjectGraphType
+    public class FoodApiInputType : InputObjectGraphType
     {
-        public FoodInputType()
+        public FoodApiInputType()
         {
-            Name = "FoodInput";
+            Name = "FoodApiInput";
+            Field<NonNullGraphType<StringGraphType>>("externalId");
             Field<StringGraphType>("name");
             Field<DecimalGraphType>("weightG").DefaultValue(100m);
             Field<DecimalGraphType>("proteinG");

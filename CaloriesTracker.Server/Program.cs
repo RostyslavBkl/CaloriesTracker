@@ -43,6 +43,7 @@ builder.Services.AddSingleton<FoodMutation>();
 // Types
 builder.Services.AddSingleton<FoodType>();
 builder.Services.AddSingleton<FoodInputType>();
+builder.Services.AddSingleton<FoodApiInputType>();
 builder.Services.AddSingleton<ISchema, FoodSchema>();
 
 builder.Services.AddGraphQL(b => b

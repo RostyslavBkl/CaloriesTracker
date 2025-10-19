@@ -54,7 +54,6 @@ namespace CaloriesTracker.Server.Services.FoodService
         {
             _foodValidator.ValidateUpdating(food, userId);
 
-
             var customFoodsExist = await GetCustomFoodsAsync(userId);
             if (customFoodsExist.Any(f => f.Id != food.Id && string.Equals(f.Name?.Trim(), food.Name?.Trim(), StringComparison.OrdinalIgnoreCase)))
                 throw new InvalidOperationException($"Food with Name: {food.Name} already exist");
@@ -62,7 +61,7 @@ namespace CaloriesTracker.Server.Services.FoodService
             food.UserId = userId;
             food.Name = food.Name.Trim();
 
-            SetDefaultNutrients(food);
+            //SetDefaultNutrients(food);
 
             return await _foodRepository.UpdateCustomFoodAsync(food, userId);
         }

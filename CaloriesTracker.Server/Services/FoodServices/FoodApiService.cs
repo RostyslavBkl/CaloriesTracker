@@ -123,7 +123,6 @@ namespace CaloriesTracker.Server.Services.FoodService
             _foodValidator.ValidateFoodApi(selectedFood);
 
             var foodExists = await _foodApiRepository.GetFoodByExternalIdAsync(selectedFood.ExternalId);
-
             if (foodExists != null)
                 return foodExists;
 
