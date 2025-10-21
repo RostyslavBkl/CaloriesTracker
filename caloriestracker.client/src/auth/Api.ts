@@ -14,7 +14,7 @@ async function gql<T>(query: string, variables?: unknown): Promise<GraphQLResult
 
 export async function loginApi(email: string, password: string) {
   const query = `
-    mutation ($request: LoginInput!) {
+    mutation ($request: LogInput!) {
       login(request: $request) {
         success
         message
@@ -27,8 +27,8 @@ export async function loginApi(email: string, password: string) {
 
 export async function registerApi(email: string, password: string) {
   const query = `
-    mutation ($request: RegistrationInput!) {
-      register(request: $request) {
+    mutation ($request: RegInput!) {
+      registr(request: $request) {
         success
         message
         token

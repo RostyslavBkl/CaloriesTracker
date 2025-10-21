@@ -1,21 +1,22 @@
+using CaloriesTracker.Server.DataBase;
 using CaloriesTracker.Server.GraphQL.Mutations;
 using CaloriesTracker.Server.GraphQL.Queries;
 using CaloriesTracker.Server.GraphQL.Schemas;
 using CaloriesTracker.Server.GraphQL.Type;
+using CaloriesTracker.Server.GraphQL.Types;
 using CaloriesTracker.Server.Models;
+using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using CaloriesTracker.Server.Services.FoodService;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using CaloriesTracker.Server.DataBase;
-using CaloriesTracker.Server.Repositories;
 using Serilog;
-using CaloriesTracker.Server.GraphQL.Types;
+using System.Text;
 
 
 Log.Logger = new LoggerConfiguration()
@@ -64,7 +65,21 @@ builder.Services.AddAuthentication(o =>
         };
     });
 
+
+
 builder.Services.AddAuthorization();
+
+// CORS - ????? ????? app.Build()
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(policy =>
+    {
+        policy.WithOrigins("https://localhost:35431") // ???? Vite dev server
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 // Database and Repositories
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
@@ -99,6 +114,8 @@ builder.Services.AddSingleton<FoodApiInputType>();
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<AuthResponseType>();
 builder.Services.AddSingleton<RegInputType>();
+builder.Services.AddSingleton<LogInputType>();
+
 
 
 // GraphQL Schema and Server (GraphQL-Core for Food)
@@ -106,14 +123,6 @@ builder.Services.AddSingleton<RootSchema>();
 builder.Services.AddGraphQL(b => b
     .AddSchema<RootSchema>()
     .AddSystemTextJson());
-    
-
-// GraphQL Server (HotChocolate for Auth)
-//builder.Services
-//    .AddGraphQLServer()
-//    .AddAuthorization()
-//    .AddQueryType<AuthQuery>()
-//    .AddMutationType<AuthMutation>();
 
 var app = builder.Build();
 
@@ -124,6 +133,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseWebSockets();
+
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 

@@ -63,9 +63,11 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
 
-                var sql = "INSERT INTO Foods (UserId, Type, Name, WeightG, ProteinG, FatG, CarbsG) VALUES (@UserId, @Type, @Name, @WeightG, @ProteinG, @FatG, @CarbsG )";
+                var sql = @"INSERT INTO Foods (UserId, Type, Name, WeightG, ProteinG, FatG, CarbsG) 
+                    OUTPUT INSERTED.Id
+                    VALUES (@UserId, @Type, @Name, @WeightG, @ProteinG, @FatG, @CarbsG)";
 
-                await connection.ExecuteAsync(sql, new
+                var foodId = await connection.QuerySingleAsync<Guid>(sql, new
                 {
                     UserId = userId,
                     Type = food.Type.ToString(),
@@ -76,6 +78,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     CarbsG = food.CarbsG,
                 });
 
+                food.Id = foodId;
                 food.UserId = userId;
                 food.Type = Models.Type.custom;
 

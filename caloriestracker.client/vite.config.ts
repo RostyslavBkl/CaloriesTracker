@@ -52,6 +52,11 @@ export default defineConfig({
             '^/api': {
                 target,
                 secure: false
+            },
+            '/graphql': {
+                target,  // використовує ту ж саму target змінну
+                secure: false,
+                changeOrigin: true
             }
         },
         port: parseInt(env.DEV_SERVER_PORT || '35431'),

@@ -10,6 +10,6 @@ public class User
     public DateOnly? BirthDate { get; set; }
     public decimal? HeightCm { get; set; }
     public decimal? WeightKg { get; set; }
-    public string? PreferredHeightUnit { get; set; } = "cm";
-    public string? PreferredWeightUnit { get; set; } = "kg";
+    public string? PreferredHeightUnit { get; set; }
+    public string? PreferredWeightUnit { get; set; }
 }
