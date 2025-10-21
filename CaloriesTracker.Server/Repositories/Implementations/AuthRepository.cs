@@ -1,5 +1,6 @@
 ﻿using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Models.AuthModels;
+using Microsoft.Extensions.Configuration.UserSecrets;
 
 namespace CaloriesTracker.Server.Repositories
 {
@@ -16,13 +17,14 @@ namespace CaloriesTracker.Server.Repositories
 
         public async Task<AuthResponse> RegisterAsync(User user)
         {
-            await users.CreateUserAsync(user);
+            //await users.CreateUserAsync(user);
+            var userId = await users.CreateUserAsync(user);
 
             return new AuthResponse
             {
                 Success = true,
                 Message = "Registered",
-                User = new UserDto(user.Id, user.Email)
+                User = new UserDto(userId, user.Email)
             };
         }
 

@@ -1,7 +1,7 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
-using CaloriesTracker.Server.Data.Ado;
+using CaloriesTracker.Server.DataBase;
 using CaloriesTracker.Server.Models;
 
 namespace CaloriesTracker.Server.Repositories.Interfaces;

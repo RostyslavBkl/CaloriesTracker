@@ -15,10 +15,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-		<PackageReference Include="Dapper" Version="2.1.66" />
-		<PackageReference Include="HotChocolate.AspNetCore" Version="15.1.10" />
-		<PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="15.1.10" />
-		<PackageReference Include="HotChocolate.Authorization" Version="15.1.10" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.Cookies" Version="2.3.0" />
 		<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="9.0.9" />
 		<PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.3.1" />
