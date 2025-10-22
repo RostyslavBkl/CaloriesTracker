@@ -11,7 +11,6 @@ using CaloriesTracker.Server.Repositories.Interfaces;
 using CaloriesTracker.Server.Services.FoodService;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;

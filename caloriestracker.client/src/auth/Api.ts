@@ -28,7 +28,7 @@ export async function loginApi(email: string, password: string) {
 export async function registerApi(email: string, password: string) {
   const query = `
     mutation ($request: RegInput!) {
-      registr(request: $request) {
+      register(request: $request) {
         success
         message
         token

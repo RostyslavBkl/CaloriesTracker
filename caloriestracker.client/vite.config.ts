@@ -47,14 +47,14 @@ export default defineConfig({
         }
     },
     server: {
-        open: true,  // ← додати цю лінію
+        open: true,
         proxy: {
             '^/api': {
                 target,
                 secure: false
             },
             '/graphql': {
-                target,  // використовує ту ж саму target змінну
+                target,
                 secure: false,
                 changeOrigin: true
             }

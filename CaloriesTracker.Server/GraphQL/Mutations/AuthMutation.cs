@@ -1,11 +1,9 @@
-﻿using Azure.Core;
-using CaloriesTracker.Server.GraphQL.Types;
+﻿using CaloriesTracker.Server.GraphQL.Types;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Models.AuthModels;
 using CaloriesTracker.Server.Repositories;
 using GraphQL;
 using GraphQL.Types;
-using Microsoft.AspNetCore.Http;
 
 namespace CaloriesTracker.Server.GraphQL.Mutations;
 
@@ -13,7 +11,7 @@ public class AuthMutation : ObjectGraphType
 {
     public AuthMutation()
     {
-        Field<AuthResponseType>("Registr")
+        Field<AuthResponseType>("Register")
             .Argument<NonNullGraphType<RegInputType>>("request")
             .ResolveAsync(async context =>
             {
@@ -105,7 +103,7 @@ public class AuthMutation : ObjectGraphType
                     Token = jwt
                 };
             });
-        Field<BooleanGraphType>("LogOut")
+        Field<BooleanGraphType>("Logout")
             .ResolveAsync(async context =>
             {
                 var httpContextAccessor = context.RequestServices!.GetRequiredService<IHttpContextAccessor>();

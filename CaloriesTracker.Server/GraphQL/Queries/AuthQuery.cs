@@ -2,8 +2,6 @@
 using CaloriesTracker.Server.Models.AuthModels;
 using CaloriesTracker.Server.Repositories;
 using GraphQL.Types;
-using Microsoft.AspNetCore.Authorization;
-using System.Security.Claims;
 
 namespace CaloriesTracker.Server.GraphQL.Queries;
 
@@ -16,17 +14,18 @@ public class AuthQuery : ObjectGraphType
             {
                 var httpContextAccessor = context.RequestServices!.GetRequiredService<IHttpContextAccessor>();
                 var userRepository = context.RequestServices!.GetRequiredService<IUserRepository>();
+                var jwtService = context.RequestServices!.GetRequiredService<JwtTokenRepository>();
 
                 if (httpContextAccessor.HttpContext == null)
                     return null;
 
-                var idClaim = httpContextAccessor.HttpContext.User.FindFirst(c =>
-                    c.Type == "sub" ||
-                    c.Type == ClaimTypes.NameIdentifier ||
-                    c.Type == "nameid" ||
-                    c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier");
+                var jwt = httpContextAccessor.HttpContext!.Request.Cookies["jwt"];
+                if (jwt == null)
+                    return null;
 
-                if (idClaim is null || !Guid.TryParse(idClaim.Value, out var userId))
+                var token = jwtService.EncodeAndVerify(jwt);
+
+                if (!Guid.TryParse(token.Issuer, out var userId))
                     return null;
 
                 var user = await userRepository.GetById(userId);

@@ -1,7 +1,7 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.IdentityModel.Tokens;
 
 namespace CaloriesTracker.Server.Repositories
 {
@@ -27,25 +27,16 @@ namespace CaloriesTracker.Server.Repositories
             this.accessMinutes = int.TryParse(minutesRaw, out var mins) && mins > 0 ? mins : 60;
         }
 
-        public string Generate(Guid userId)
+        public string Generate(Guid id)
         {
             var symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
+            var header = new JwtHeader(credentials);
 
-            var claims = new[]
-            {
-            new Claim(JwtRegisteredClaimNames.Sub, userId.ToString())
-            };
+            var payload = new JwtPayload(id.ToString(), audience: null, claims: null, notBefore: null, expires: DateTime.Today.AddDays(10));
+            var securityToken = new JwtSecurityToken(header, payload);
 
-            var token = new JwtSecurityToken(
-                issuer: this.issuer,
-                audience: this.audience,
-                claims: claims,
-                notBefore: DateTime.UtcNow,
-                expires: DateTime.UtcNow.AddMinutes(this.accessMinutes),
-                signingCredentials: credentials);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return new JwtSecurityTokenHandler().WriteToken(securityToken);
         }
 
         public JwtSecurityToken EncodeAndVerify(string jwt)
@@ -55,17 +46,14 @@ namespace CaloriesTracker.Server.Repositories
 
             handler.ValidateToken(jwt, new TokenValidationParameters
             {
-                ValidateIssuerSigningKey = true,
-                IssuerSigningKey = key,
-                ValidateIssuer = true,
-                ValidIssuer = issuer,
-                ValidateAudience = true,
-                ValidAudience = audience,
-                ValidateLifetime = true,
-                ClockSkew = TimeSpan.FromMinutes(1)
-            }, out var validated);
 
-            return (JwtSecurityToken)validated;
+                IssuerSigningKey = key,
+                ValidateIssuerSigningKey = true,
+                ValidateIssuer = false,
+                ValidateAudience = false,
+            }, out SecurityToken validatedToken);
+
+            return (JwtSecurityToken)validatedToken;
         }
 
         public static Guid GetUserId(JwtSecurityToken token)
