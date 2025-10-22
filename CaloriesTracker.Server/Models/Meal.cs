@@ -4,6 +4,6 @@ public class Meal
 {
     public long Id { get; set; }
     public long DiaryDayId { get; set; }
-    public string MealType { get; set; }
+    public MealType MealType { get; set; }
     public DateTimeOffset? EatenAt { get; set; }
 }

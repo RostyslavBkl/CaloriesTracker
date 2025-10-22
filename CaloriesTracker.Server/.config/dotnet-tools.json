@@ -4,8 +4,11 @@
   "tools": {
     "microsoft.dotnet-msidentity": {
       "version": "2.0.8",
+    "dotnet-ef": {
+      "version": "9.0.9",
       "commands": [
         "dotnet-msidentity"
+        "dotnet-ef"
       ],
       "rollForward": false
     }

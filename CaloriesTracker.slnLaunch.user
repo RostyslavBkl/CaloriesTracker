@@ -1,0 +1,16 @@
+[
+  {
+    "Name": "New Profile",
+    "Projects": [
+      {
+        "Path": "caloriestracker.client\\caloriestracker.client.esproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "CaloriesTracker.Server\\CaloriesTracker.Server.csproj",
+        "Action": "Start",
+        "DebugTarget": "http"
+      }
+    ]
+  }
+]
