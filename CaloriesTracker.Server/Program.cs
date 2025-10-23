@@ -4,11 +4,13 @@ using CaloriesTracker.Server.GraphQL.Queries;
 using CaloriesTracker.Server.GraphQL.Schemas;
 using CaloriesTracker.Server.GraphQL.Type;
 using CaloriesTracker.Server.GraphQL.Types;
+using CaloriesTracker.Server.GraphQL.Types.NutritionGoal;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using CaloriesTracker.Server.Services.FoodService;
+using CaloriesTracker.Server.Services.NutritionalGoalServices;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -82,15 +84,24 @@ builder.Services.AddCors(options =>
 
 // Database and Repositories
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
+
 builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodApiRepository, FoodApiRepository>();
+
+builder.Services.AddScoped<INutritionGoalRepository, NutritionGoalRepository>();
+
+
 
 // Services
 builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
 builder.Services.AddScoped<FoodApiService>();
+
+builder.Services.AddScoped<NutritionalGoalService>();
+
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<JwtTokenRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -103,12 +114,16 @@ builder.Services.AddSingleton<AuthQuery>();
 
 builder.Services.AddSingleton<RootMutations>();
 builder.Services.AddSingleton<FoodMutation>();
+builder.Services.AddSingleton<NutritionGoalMutations>();
 builder.Services.AddSingleton<AuthMutation>();
 
-// GraphQL Types
+// Food Types
 builder.Services.AddSingleton<FoodType>();
 builder.Services.AddSingleton<FoodInputType>();
 builder.Services.AddSingleton<FoodApiInputType>();
+// Nutritional Goal Types
+builder.Services.AddSingleton<NutritionGoalType>();
+builder.Services.AddSingleton<GoalInputType>();
 // Auth Types
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<AuthResponseType>();
