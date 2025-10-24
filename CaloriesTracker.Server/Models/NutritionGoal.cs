@@ -10,4 +10,8 @@ public class NutritionGoal
     public decimal? FatG { get; set; }
     public decimal? CarbG { get; set; }
     public Guid UserId { get; set; }
+
+    public bool IsActive =>
+       StartDate <= DateTime.UtcNow.Date &&
+       EndDate >= DateTime.UtcNow.Date;
 }

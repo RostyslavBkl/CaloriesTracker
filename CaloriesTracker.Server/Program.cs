@@ -109,6 +109,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 // GraphQL Registration
 builder.Services.AddSingleton<RootQuery>();
 builder.Services.AddSingleton<FoodQuery>();
+builder.Services.AddSingleton<NutritionGoalQuery>();
 builder.Services.AddSingleton<AuthQuery>();
 
 

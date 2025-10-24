@@ -15,6 +15,7 @@ namespace CaloriesTracker.Server.GraphQL.Types.NutritionGoal
             Field<DecimalGraphType>("FatG");
             Field<DecimalGraphType>("CarbG");
             Field<NonNullGraphType<GuidGraphType>>("userId");
+            Field<NonNullGraphType<BooleanGraphType>>("isActive");
         }
     }
 }
