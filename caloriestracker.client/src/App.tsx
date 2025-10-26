@@ -4,6 +4,7 @@ import { checkAuthStart } from './auth/AuthSlices';
 import MainMenu from './navigation/MainMenu';
 import AppRoutes from './navigation/AppRoutes';
 import './App.css'
+import './index.css'
 
 const App = () => {
     const dispatch = useAppDispatch();
