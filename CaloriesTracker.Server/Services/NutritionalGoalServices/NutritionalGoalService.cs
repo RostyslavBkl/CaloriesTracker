@@ -47,30 +47,42 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             return goal;
         }
 
-        public async Task<NutritionGoal> GetActiveGoal()
+        // повертає активну ціль
+        public async Task<NutritionGoal?> GetActiveGoal()
         {
             var userId = await GetUserId();
             if(userId == Guid.Empty)
                 throw new UnauthorizedAccessException("User not authenticated");
 
             var goal = await _goalRepo.GetActiveGoal(userId);
-
-            if (goal?.IsActive == false)
-                throw new Exception("Goal is not active anymore");
+        
+            if(goal != null)
+            {
+                if (goal.isActive == false)
+                    throw new Exception("Goal is not active anymore");
+            }
+         
 
             return goal;
         }
 
         public async Task<NutritionGoal> SetGoal(NutritionGoal goal)
         {
-            ValidateGoal(goal);
-
             var userId = await GetUserId();
+            // отримати активну ціль
+            var currGoal = await GetActiveGoal();
+            if (currGoal != null)
+            {
+                currGoal.EndDate ??= DateTime.UtcNow.Date;
+                currGoal.isActive = false;
+                await _goalRepo.UpdateGoal(currGoal, userId);
+            }
+
+            ValidateGoal(goal);
+            goal.StartDate ??= DateTime.UtcNow.Date;
+            goal.isActive = true;
 
             await CalculateNutr(goal);
-
-            //goal.IsActive = true;
-
             return await _goalRepo.SetGoal(goal, userId);
         }
 
@@ -116,5 +128,6 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             if (goal.CarbG.HasValue && goal.CarbG.Value < 0)
                 throw new ArgumentException("Carbs must be positive", nameof(goal.CarbG));
         }
+
     }
 }

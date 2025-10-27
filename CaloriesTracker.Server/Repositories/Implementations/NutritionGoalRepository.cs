@@ -39,25 +39,17 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             }
         }
 
-        public async Task<NutritionGoal> GetActiveGoal(Guid userId)
+        public async Task<NutritionGoal?> GetActiveGoal(Guid userId)
         {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("UserId cannot be empty", nameof(userId));
             try
             {
                 using var conn = _connectionFactory.Create();
                 await conn.OpenAsync();
 
-                if (userId == Guid.Empty)
-                    throw new ArgumentException("UserId cannot be empty", nameof(userId));
-
-                var sql = @"SELECT TOP 1 * FROM NutritionGoals Where UserId = @UserId AND StartDate <= @Today AND EndDate >= @Today ORDER BY StartDate DESC";
-
-                var today = DateTime.UtcNow.Date;
-
-                var active = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(sql, new
-                {
-                    UserId = userId,
-                    Today = today,
-                });
+                var sql = @"SELECT * FROM NutritionGoals Where UserId = @UserId and IsActive = 1";
+                var active = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(sql, new { UserId = userId });
 
                 return active;
             }
@@ -75,7 +67,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 using var conn = _connectionFactory.Create();
                 await conn.OpenAsync();
 
-                var sql = @"INSERT INTO NutritionGoals (UserId, StartDate, EndDate, TargetCalories, ProteinG, FatG, CarbG) OUTPUT INSERTED.Id VALUES (@UserId, @StartDate, @EndDate, @TargetCalories, @ProteinG, @FatG, @CarbG)";
+                var sql = @"INSERT INTO NutritionGoals (UserId, StartDate, EndDate, TargetCalories, ProteinG, FatG, CarbG, IsActive) OUTPUT INSERTED.Id VALUES (@UserId, @StartDate, @EndDate, @TargetCalories, @ProteinG, @FatG, @CarbG, @IsActive)";
                 var goalId = await conn.QuerySingleAsync<Guid>(sql, new
                 {
                     UserId = userId,
@@ -85,6 +77,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     ProteinG = goal.ProteinG,
                     FatG = goal.FatG,
                     CarbG = goal.CarbG,
+                    IsActive = goal.isActive
                 });
 
                 goal.Id = goalId;
@@ -99,15 +92,23 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             }
         }
 
-        public async Task<NutritionGoal?> UpdateGoal(NutritionGoal goal, Guid userId)
+        public async Task<NutritionGoal> UpdateGoal(NutritionGoal goal, Guid userId)
         {
             try
             {
                 using var conn = _connectionFactory.Create();
                 await conn.OpenAsync();
 
-                var sql = @"UPDATE NutritionGoals SET StartDate = @StartDate, EndDate = @EndDate, TargetCalories = @TargetCalories, ProteinG = @ProteinG, FatG = @FatG, CarbG = @CarbG OUTPUT INSERTED.Id, INSERTED.UserId, INSERTED.StartDate, INSERTED.EndDate, INSERTED.TargetCalories, INSERTED.ProteinG, INSERTED.FatG, INSERTED.CarbG
-                  WHERE id = @Id AND userId = @UserId";
+                var sql =  @"UPDATE NutritionGoals " +
+                    "SET StartDate = @StartDate, " +
+                    "EndDate = @EndDate, " +
+                    "TargetCalories = @TargetCalories, " +
+                    "ProteinG = @ProteinG, " +
+                    "FatG = @FatG, " +
+                    "CarbG = @CarbG," +
+                    "IsActive = @IsActive " +
+                    "OUTPUT INSERTED.*  " +
+                    "WHERE id = @Id AND userId = @UserId";
 
                 var updGoal = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(sql, new
                 {
@@ -118,11 +119,16 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     TargetCalories = goal.TargetCalories,
                     ProteinG = goal.ProteinG,
                     FatG = goal.FatG,
-                    CarbG = goal.CarbG
+                    CarbG = goal.CarbG,
+                    goal.isActive
                 });
 
-                return updGoal;
+                if (updGoal == null)
+                {
+                    throw new InvalidOperationException($"Goal with Id {goal.Id} not found for user {userId}");
+                }
 
+                return updGoal;
             }
             catch (SqlException ex)
             {
@@ -130,6 +136,5 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 throw;
             }
         }
-
     }
 }

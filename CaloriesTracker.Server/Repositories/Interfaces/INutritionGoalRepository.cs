@@ -10,5 +10,6 @@ namespace CaloriesTracker.Server.Repositories.Interfaces
         Task<NutritionGoal> SetGoal(NutritionGoal goal, Guid userId);
 
         Task<NutritionGoal> UpdateGoal(NutritionGoal goal, Guid userId);
+
     }
 }
