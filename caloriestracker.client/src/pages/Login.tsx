@@ -24,7 +24,6 @@ function Login() {
     const pwdRef = useRef<HTMLInputElement | null>(null);
     const isValidEmail = (v: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
 
-    // Розподіляємо помилку з API по полям
     useEffect(() => {
         if (!apiError) {
             setEmailError('');
@@ -37,11 +36,9 @@ function Login() {
 
         const msg = String(apiError).toLowerCase();
 
-        // "Invalid data" від backend - розумний розподіл помилки
         if (msg.includes('invalid data') || msg.includes('invalid email or password') ||
             msg.includes('invalid credentials')) {
 
-            // Якщо email валідний формат - показуємо помилку тільки під password
             if (isValidEmail(email)) {
                 setPasswordError('Invalid email or password');
                 setEmailError('');
@@ -49,7 +46,6 @@ function Login() {
                 emailRef.current?.classList.remove('input--error');
                 pwdRef.current?.focus();
             }
-            // Якщо email невалідний формат - показуємо під обома
             else {
                 setEmailError('Invalid email or password');
                 setPasswordError('Invalid email or password');
@@ -59,7 +55,6 @@ function Login() {
             }
             setGeneralError('');
         }
-        // Інші загальні помилки логіну
         else if (msg.includes('invalid') || msg.includes('credentials') ||
             msg.includes('401') || msg.includes('unauthorized')) {
             setPasswordError(apiError);
@@ -69,7 +64,6 @@ function Login() {
             emailRef.current?.classList.remove('input--error');
             pwdRef.current?.focus();
         }
-        // Network та інші невідомі помилки
         else {
             setGeneralError(apiError);
             setEmailError('');
@@ -114,7 +108,6 @@ function Login() {
             pwdRef.current?.classList.remove('input--error');
         }
 
-        // Очищаємо помилки
         setGeneralError('');
         dispatch(clearError());
     };
@@ -122,12 +115,10 @@ function Login() {
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Очищаємо всі помилки
         setEmailError('');
         setPasswordError('');
         setGeneralError('');
 
-        // Валідація на клієнті
         if (!email || !password) {
             setGeneralError("Please fill in all fields");
             return;
