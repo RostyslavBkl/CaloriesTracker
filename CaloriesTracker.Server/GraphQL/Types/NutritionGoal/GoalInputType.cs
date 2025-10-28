@@ -1,4 +1,5 @@
-﻿using GraphQL.Types;
+﻿using CaloriesTracker.Server.Models;
+using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Types.NutritionGoal
 {
@@ -13,6 +14,7 @@ namespace CaloriesTracker.Server.GraphQL.Types.NutritionGoal
             Field<DecimalGraphType>("ProteinG");
             Field<DecimalGraphType>("FatG");
             Field<DecimalGraphType>("CarbG");
+            //Field<EnumerationGraphType<Plan>>("plan");
         }
     }
 }

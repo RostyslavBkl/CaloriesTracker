@@ -16,6 +16,12 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                     var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
                     return await service.GetActiveGoal();
                 });
+            Field<ListGraphType<NutritionGoalType>>("getHistory")
+                .ResolveAsync(async context =>
+                {
+                    var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
+                    return await service.GetGoalsHistory();
+                });
         }
     }
 }

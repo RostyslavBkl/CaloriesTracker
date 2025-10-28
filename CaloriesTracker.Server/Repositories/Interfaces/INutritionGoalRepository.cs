@@ -4,8 +4,10 @@ namespace CaloriesTracker.Server.Repositories.Interfaces
 {
     public interface INutritionGoalRepository
     {
-        Task<NutritionGoal> GetGoalById(Guid id);
+        Task<NutritionGoal> GetGoal(Guid id, Guid userId);
         Task<NutritionGoal> GetActiveGoal(Guid userId);
+
+        Task<List<NutritionGoal>> GetGoalsHistory(Guid userId);
 
         Task<NutritionGoal> SetGoal(NutritionGoal goal, Guid userId);
 

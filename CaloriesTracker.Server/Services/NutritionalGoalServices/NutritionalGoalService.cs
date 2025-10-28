@@ -2,6 +2,8 @@
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
+using System.Numerics;
+using System.Reflection.Metadata;
 
 namespace CaloriesTracker.Server.Services.NutritionalGoalServices
 {
@@ -41,13 +43,17 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             return user.Id;
         }
 
-        public async Task<NutritionGoal> GetGoalById(Guid id)
+        public async Task<List<NutritionGoal>> GetGoalsHistory()
         {
-            var goal = await _goalRepo.GetGoalById(id);
-            return goal;
+            var userId = await GetUserId();
+            if (userId == Guid.Empty)
+                throw new UnauthorizedAccessException("User not authenticated");
+
+            var history = await _goalRepo.GetGoalsHistory(userId);
+
+            return history;
         }
 
-        // повертає активну ціль
         public async Task<NutritionGoal?> GetActiveGoal()
         {
             var userId = await GetUserId();
@@ -56,17 +62,10 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
 
             var goal = await _goalRepo.GetActiveGoal(userId);
         
-            if(goal != null)
-            {
-                if (goal.isActive == false)
-                    throw new Exception("Goal is not active anymore");
-            }
-         
-
             return goal;
         }
 
-        public async Task<NutritionGoal> SetGoal(NutritionGoal goal)
+        public async Task<NutritionGoal> SetGoal(NutritionGoal goal, Plan plan)
         {
             var userId = await GetUserId();
             // отримати активну ціль
@@ -82,11 +81,11 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             goal.StartDate ??= DateTime.UtcNow.Date;
             goal.isActive = true;
 
-            await CalculateNutr(goal);
+            await CalculateNutritionPlan(goal, plan);
             return await _goalRepo.SetGoal(goal, userId);
         }
 
-        public async Task<NutritionGoal> UpdateGoal(NutritionGoal goal)
+        public async Task<NutritionGoal> UpdateGoal(NutritionGoal goal, Plan plan)
         {
             ValidateGoal(goal);
 
@@ -95,27 +94,45 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             // Втановити аби уникнути нулів в айді
             goal.UserId = userId;
 
-            Console.WriteLine($"userId = {userId}, goal.UserId = {goal.UserId}");
-
-            await CalculateNutr(goal);
+            await CalculateNutritionPlan(goal, plan);
 
             var upd = await _goalRepo.UpdateGoal(goal, userId);
             if (upd == null)
                 throw new UnauthorizedAccessException("Goal not found or access denied");
 
-
             return upd;
         }
 
-        private async Task<NutritionGoal> CalculateNutr(NutritionGoal goal)
+        private async Task CalculateNutritionPlan(NutritionGoal goal, Plan plan)
         {
-            goal.ProteinG = (goal.TargetCalories * 0.20m) / 4m;
-            goal.FatG = (goal.TargetCalories * 0.30m) / 9m;
-            goal.CarbG = (goal.TargetCalories * 0.50m) / 4m;
-
-            return goal;
+            switch (plan)
+            {
+                case Plan.Balanced:
+                    goal.ProteinG = (goal.TargetCalories * 0.20m) / 4m;
+                    goal.FatG = (goal.TargetCalories * 0.30m) / 9m;
+                    goal.CarbG = (goal.TargetCalories * 0.50m) / 4m;
+                    break;
+                case Plan.HighProtein:
+                    goal.ProteinG = (goal.TargetCalories * 0.40m) / 4m;
+                    goal.FatG = (goal.TargetCalories * 0.30m) / 9m;
+                    goal.CarbG = (goal.TargetCalories * 0.30m) / 4m;
+                    break;
+                case Plan.LowCarb:
+                    goal.ProteinG = (goal.TargetCalories * 0.30m) / 4m;
+                    goal.FatG = (goal.TargetCalories * 0.50m) / 9m;
+                    goal.CarbG = (goal.TargetCalories * 0.20m) / 4m;
+                    break;
+                case Plan.HighCarb:
+                    goal.ProteinG = (goal.TargetCalories * 0.20m) / 4m;
+                    goal.FatG = (goal.TargetCalories * 0.20m) / 9m;
+                    goal.CarbG = (goal.TargetCalories * 0.60m) / 4m;
+                    break;
+                default:
+                    throw new ArgumentException($"Unknown name of: {plan}");
+            }
         }
 
+     
         private void ValidateGoal(NutritionGoal goal)
         {
             // Validate Dates
