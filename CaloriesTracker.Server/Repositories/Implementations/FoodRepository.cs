@@ -1,10 +1,8 @@
-﻿//using CaloriesTracker.Server.Data.Ado;
-using CaloriesTracker.Server.DataBase;
+﻿using CaloriesTracker.Server.DataBase;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using Dapper;
 using Microsoft.Data.SqlClient;
-using System.Data;
 
 namespace CaloriesTracker.Server.Repositories.Implementations
 {
@@ -20,17 +18,18 @@ namespace CaloriesTracker.Server.Repositories.Implementations
 
         public async Task<Food> GetFoodByIdAsync(Guid id)
         {
-            try {
+            try
+            {
 
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
 
                 var sql = "SELECT * FROM Foods WHERE id = @Id";
-                var food = await connection.QuerySingleOrDefaultAsync<Food>(sql, new {Id = id});
+                var food = await connection.QuerySingleOrDefaultAsync<Food>(sql, new { Id = id });
 
                 return food;
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 _logger.LogError(ex, "Database error while getting food with ID {id}", id);
                 throw;
@@ -84,7 +83,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
 
                 return food;
             }
-            catch(SqlException ex)
+            catch (SqlException ex)
             {
                 _logger.LogError(ex, "Database error while creating custom food for user {userId}", userId);
                 throw;
@@ -104,7 +103,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
 
                 var sql = "DELETE FROM Foods WHERE id = @Id AND userId = @UserId";
 
-                var rowsAffected = await connection.ExecuteAsync(sql, new {Id = id, UserId = userId});
+                var rowsAffected = await connection.ExecuteAsync(sql, new { Id = id, UserId = userId });
                 if (rowsAffected == 0)
                     return null;
 
@@ -121,7 +120,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
         {
             try
             {
- 
+
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
 
@@ -156,6 +155,6 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             throw new NotImplementedException();
         }
 
-       
+
     }
 }
