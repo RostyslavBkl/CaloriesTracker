@@ -118,6 +118,9 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
                     goal.FatG = (goal.TargetCalories * 0.20m) / 9m;
                     goal.CarbG = (goal.TargetCalories * 0.60m) / 4m;
                     break;
+                case Plan.Custom:
+                    ValidateGoal(goal);
+                    break;
                 default:
                     throw new ArgumentException($"Unknown name of: {plan}");
             }
