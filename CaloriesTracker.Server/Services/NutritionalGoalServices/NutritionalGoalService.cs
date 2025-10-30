@@ -72,9 +72,10 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             var currGoal = await GetActiveGoal();
             if (currGoal != null)
             {
-                currGoal.EndDate ??= DateTime.UtcNow.Date;
-                currGoal.isActive = false;
-                await _goalRepo.UpdateGoal(currGoal, userId);
+                await _goalRepo.DeactivateGoal(currGoal.Id, userId);
+                //currGoal.EndDate ??= DateTime.UtcNow.Date;
+                //currGoal.isActive = false;
+                //await _goalRepo.UpdateGoal(currGoal, userId);
             }
 
             ValidateGoal(goal);
@@ -86,20 +87,15 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
         }
 
         public async Task<NutritionGoal> UpdateGoal(NutritionGoal goal, Plan plan)
-        {
-            ValidateGoal(goal);
-
+        {           
             var userId = await GetUserId();
 
-            // Втановити аби уникнути нулів в айді
-            goal.UserId = userId;
+            ValidateGoal(goal);
 
             await CalculateNutritionPlan(goal, plan);
 
             var upd = await _goalRepo.UpdateGoal(goal, userId);
-            if (upd == null)
-                throw new UnauthorizedAccessException("Goal not found or access denied");
-
+       
             return upd;
         }
 
@@ -135,7 +131,7 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
      
         private void ValidateGoal(NutritionGoal goal)
         {
-            // Validate Dates
+            // валідація калорій і бжв
             if (goal.TargetCalories <= 0)
                 throw new ArgumentException("TargetCalories must be positive", nameof(goal.TargetCalories));
             if (goal.ProteinG.HasValue && goal.ProteinG.Value < 0)
@@ -144,6 +140,22 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
                 throw new ArgumentException("Fats must be positive", nameof(goal.FatG));
             if (goal.CarbG.HasValue && goal.CarbG.Value < 0)
                 throw new ArgumentException("Carbs must be positive", nameof(goal.CarbG));
+
+            var today = DateTime.UtcNow.Date;
+
+            // валідація дати(початок)
+            if (goal.StartDate.HasValue)
+            {
+                if (goal.StartDate.Value < today)
+                    throw new ArgumentException("StartDate cannot be in the past");
+            }
+
+            // валідація дати(кінець)
+            if (goal.EndDate.HasValue && goal.StartDate.HasValue)
+            {
+                if (goal.EndDate.Value <= goal.StartDate.Value)
+                    throw new ArgumentException("The difference between EndDate and StartDate must be at least one day");
+            }
         }
 
     }
