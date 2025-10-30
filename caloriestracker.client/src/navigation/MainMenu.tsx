@@ -1,17 +1,7 @@
-import './MainMenu.css';
-import { Link } from 'react-router-dom';
-import { NavigationPathes } from './constants';
-import AuthButton from '../authorization/AuthButton';
+import React from 'react';
 
-const MainMenu = () => {
-    return (
-        <nav className="main-menu">
-            <ul>
-                <li><Link to={NavigationPathes.Home}>Home</Link></li>
-            </ul>
-            <AuthButton />
-        </nav>
-    );
-}
+const MainMenu: React.FC = () => {
+    return <></>;
+};
 
 export default MainMenu;

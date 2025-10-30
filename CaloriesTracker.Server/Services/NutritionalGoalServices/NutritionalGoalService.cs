@@ -71,17 +71,13 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             // отримати активну ціль
             var currGoal = await GetActiveGoal();
             if (currGoal != null)
-            {
                 await _goalRepo.DeactivateGoal(currGoal.Id, userId);
-                //currGoal.EndDate ??= DateTime.UtcNow.Date;
-                //currGoal.isActive = false;
-                //await _goalRepo.UpdateGoal(currGoal, userId);
-            }
 
-            ValidateGoal(goal);
             goal.StartDate ??= DateTime.UtcNow.Date;
             goal.isActive = true;
 
+            ValidateGoal(goal);
+            
             await CalculateNutritionPlan(goal, plan);
             return await _goalRepo.SetGoal(goal, userId);
         }
@@ -89,10 +85,9 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
         public async Task<NutritionGoal> UpdateGoal(NutritionGoal goal, Plan plan)
         {           
             var userId = await GetUserId();
+            await CalculateNutritionPlan(goal, plan);
 
             ValidateGoal(goal);
-
-            await CalculateNutritionPlan(goal, plan);
 
             var upd = await _goalRepo.UpdateGoal(goal, userId);
        
@@ -157,6 +152,7 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
                     throw new ArgumentException("The difference between EndDate and StartDate must be at least one day");
             }
         }
+
 
     }
 }

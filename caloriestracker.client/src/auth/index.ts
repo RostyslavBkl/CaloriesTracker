@@ -4,4 +4,3 @@ export { default as authReducer } from './AuthSlices';
 export * from './AuthSlices';
 export * from './Epics';
 export * from './Api';
-import './index.css';

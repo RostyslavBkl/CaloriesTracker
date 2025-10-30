@@ -84,8 +84,7 @@ builder.Services.AddCors(options =>
 
 // Database and Repositories
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
-
-builder.Services.AddScoped<IUsersRepository, UsersRepository>();
+//builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
