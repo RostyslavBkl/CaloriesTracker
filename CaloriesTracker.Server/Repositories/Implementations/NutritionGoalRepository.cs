@@ -16,30 +16,6 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<NutritionGoal?> GetGoal(Guid id, Guid userId)
-        {
-            try
-            {
-                using var conn = _connectionFactory.Create();
-                await conn.OpenAsync();
-
-                var sql = @"SELECT * FROM NutritionGoals Where id = @Id AND UserId = @UserId";
-
-                var goal = await conn.QuerySingleOrDefaultAsync<NutritionGoal>(sql, new
-                {
-                    Id = id,
-                    UserId = userId
-                });
-
-                return goal;
-            }
-            catch (SqlException ex)
-            {
-                _logger.LogError(ex, "Database error while getting goals by id: {Id}", id);
-                throw;
-            }
-        }
-
         public async Task<NutritionGoal?> GetActiveGoal(Guid userId)
         {
             if (userId == Guid.Empty)
@@ -139,7 +115,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 {
                     Id = activeGoal.Id,
                     UserId = userId,
-                    StartDate = goal.StartDate ?? activeGoal?.StartDate,
+                    StartDate = activeGoal?.StartDate,
                     EndDate = goal.EndDate ?? activeGoal?.EndDate,
                     TargetCalories = goal.TargetCalories > 0 ? goal.TargetCalories : activeGoal?.TargetCalories,
                     ProteinG = goal.ProteinG,

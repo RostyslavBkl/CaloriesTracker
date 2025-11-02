@@ -68,17 +68,19 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
         public async Task<NutritionGoal> SetGoal(NutritionGoal goal, Plan plan)
         {
             var userId = await GetUserId();
-            // отримати активну ціль
             var currGoal = await GetActiveGoal();
+            
+            goal.StartDate ??= DateTime.UtcNow.Date;
+            if (goal.StartDate > DateTime.UtcNow.Date)
+                throw new ArgumentException("The goal cannot be set for the future");
+          
+            ValidateGoal(goal);
+            await CalculateNutritionPlan(goal, plan);
+
             if (currGoal != null)
                 await _goalRepo.DeactivateGoal(currGoal.Id, userId);
 
-            goal.StartDate ??= DateTime.UtcNow.Date;
             goal.isActive = true;
-
-            ValidateGoal(goal);
-            
-            await CalculateNutritionPlan(goal, plan);
             return await _goalRepo.SetGoal(goal, userId);
         }
 
@@ -119,10 +121,26 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
                     goal.CarbG = (goal.TargetCalories * 0.60m) / 4m;
                     break;
                 case Plan.Custom:
-                    ValidateGoal(goal);
+                    ValidateCustomPlan(goal);
                     break;
                 default:
                     throw new ArgumentException($"Unknown name of: {plan}");
+            }
+        }
+
+        private void ValidateCustomPlan(NutritionGoal goal)
+        {
+            if(goal.ProteinG.HasValue && goal.FatG.HasValue && goal.CarbG.HasValue)
+            {
+                var totalKcal = (goal.ProteinG.Value * 4m) + (goal.FatG.Value * 9m)
+                    + (goal.CarbG.Value * 4m);
+
+                // дозволяємо 10% відхилення
+                var tolerance = goal.TargetCalories * 0.10m;
+                var diff = Math.Abs(totalKcal - goal.TargetCalories);
+
+                if (diff > tolerance)
+                    throw new ArgumentException($"The total amount of calories: {totalKcal} kcal based on nutritions: Protein({goal.ProteinG}g), Fat({goal.FatG}g), Carb({goal.CarbG}g) don't match with TargetCalories: {goal.TargetCalories} kcal. Difference: {diff} kcal", nameof(goal));
             }
         }
 
@@ -132,6 +150,8 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             // валідація калорій і бжв
             if (goal.TargetCalories <= 0)
                 throw new ArgumentException("TargetCalories must be positive", nameof(goal.TargetCalories));
+            if(goal.TargetCalories < 1000 || goal.TargetCalories > 3500)
+                throw new ArgumentException("Target calories must be in the range 1000-3500 kcal per day", nameof(goal.TargetCalories));
             if (goal.ProteinG.HasValue && goal.ProteinG.Value < 0)
                 throw new ArgumentException("Proteins must be positive", nameof(goal.ProteinG));
             if (goal.FatG.HasValue && goal.FatG.Value < 0)
