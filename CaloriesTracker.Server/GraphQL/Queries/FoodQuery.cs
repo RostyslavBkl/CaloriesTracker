@@ -11,22 +11,17 @@ namespace CaloriesTracker.Server.GraphQL.Queries
         {
             Field<FoodType>("food")
                 .Argument<IdGraphType>("id")
-                .Argument<GuidGraphType>("userId")
                 .ResolveAsync(async context =>
                 {
                     var service = context.RequestServices!.GetRequiredService<FoodService>();
                     var id = context.GetArgument<Guid>("id");
-                    var userId = context.GetArgument<Guid>("userId");
-                    return await service.GetFoodByIdAsync(id, userId);
+                    return await service.GetFoodByIdAsync(id);
                 });
             Field<ListGraphType<FoodType>>("getListCustomFood")
-               .Argument<NonNullGraphType<GuidGraphType>>("userId")
                .ResolveAsync(async context =>
                {
                    var service = context.RequestServices!.GetRequiredService<FoodService>();
-
-                   var userId = context.GetArgument<Guid>("userId");
-                   return await service.GetCustomFoodsAsync(userId);
+                   return await service.GetCustomFoodsAsync();
                });
             Field<ListGraphType<FoodType>>("ListItems")
                .Argument<NonNullGraphType<StringGraphType>>("query")
