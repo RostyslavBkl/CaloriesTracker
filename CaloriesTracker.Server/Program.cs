@@ -66,6 +66,8 @@ builder.Services.AddAuthentication(o =>
         };
     });
 
+Console.WriteLine(DateTime.UtcNow);
+Console.WriteLine(DateTime.Now);
 
 
 builder.Services.AddAuthorization();
