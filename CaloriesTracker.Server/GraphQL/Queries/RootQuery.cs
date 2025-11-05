@@ -1,5 +1,4 @@
-﻿using CaloriesTracker.Server.GraphQL.Queries;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Queries
 {

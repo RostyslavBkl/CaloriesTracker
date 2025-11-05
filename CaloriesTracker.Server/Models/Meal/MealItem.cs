@@ -1,4 +1,4 @@
-﻿namespace CaloriesTracker.Server.Models;
+﻿namespace CaloriesTracker.Server.Models.Meal;
 
 public class MealItem
 {
