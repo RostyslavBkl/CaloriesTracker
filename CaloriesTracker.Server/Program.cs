@@ -4,11 +4,13 @@ using CaloriesTracker.Server.GraphQL.Queries;
 using CaloriesTracker.Server.GraphQL.Schemas;
 using CaloriesTracker.Server.GraphQL.Type;
 using CaloriesTracker.Server.GraphQL.Types;
+using CaloriesTracker.Server.GraphQL.Types.DiaryDay;
 using CaloriesTracker.Server.GraphQL.Types.NutritionGoal;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
+using CaloriesTracker.Server.Services.DiaryDayServices;
 using CaloriesTracker.Server.Services.FoodService;
 using CaloriesTracker.Server.Services.NutritionalGoalServices;
 using GraphQL;
@@ -94,7 +96,7 @@ builder.Services.AddScoped<IFoodApiRepository, FoodApiRepository>();
 
 builder.Services.AddScoped<INutritionGoalRepository, NutritionGoalRepository>();
 
-
+builder.Services.AddScoped<IDiaryDay, DiaryDayRepository>();
 
 // Services
 builder.Services.AddScoped<FoodService>();
@@ -102,6 +104,8 @@ builder.Services.AddScoped<FoodValidator>();
 builder.Services.AddScoped<FoodApiService>();
 
 builder.Services.AddScoped<NutritionalGoalService>();
+
+builder.Services.AddScoped<DiaryDayService>();
 
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<JwtTokenRepository>();
@@ -111,6 +115,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<RootQuery>();
 builder.Services.AddSingleton<FoodQuery>();
 builder.Services.AddSingleton<NutritionGoalQuery>();
+builder.Services.AddSingleton<DiaryQuery>();
 builder.Services.AddSingleton<AuthQuery>();
 
 
@@ -118,6 +123,7 @@ builder.Services.AddSingleton<RootMutations>();
 builder.Services.AddSingleton<FoodMutation>();
 builder.Services.AddSingleton<NutritionGoalMutations>();
 builder.Services.AddSingleton<AuthMutation>();
+builder.Services.AddSingleton<DiaryDayMutations>();
 
 // Food Types
 builder.Services.AddSingleton<FoodType>();
@@ -126,12 +132,14 @@ builder.Services.AddSingleton<FoodApiInputType>();
 // Nutritional Goal Types
 builder.Services.AddSingleton<NutritionGoalType>();
 builder.Services.AddSingleton<GoalInputType>();
+// Diary Day Types
+builder.Services.AddSingleton<DiaryType>();
+builder.Services.AddSingleton<DiaryDetailsType>();
 // Auth Types
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<AuthResponseType>();
 builder.Services.AddSingleton<RegInputType>();
 builder.Services.AddSingleton<LogInputType>();
-
 
 
 // GraphQL Schema and Server (GraphQL-Core for Food)

@@ -20,7 +20,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             _logger = logger;
         }
 
-        public async Task<DiaryDay> CreateRecord(DiaryDay day, Guid userId)
+        public async Task<DiaryDay> CreateRecord(Guid userId)
         {
             // перевірка на пустий айді
             try
@@ -31,24 +31,50 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 var currGoal = await _goalRepo.GetActiveGoal(userId);
 
                 var sql = @"INSERT INTO DiaryDays (UserId, Date, NutritionGoalId) " +
-                    "OUTPUT INSERTED.Id " +
+                    "OUTPUT INSERTED.* " +
                     "VALUES (@UserId, @Date, @NutritionGoalId)";
 
-                var recordId = await conn.QuerySingleAsync<Guid>(sql, new
+                var diaryDay = await conn.QuerySingleAsync<DiaryDay>(sql, new
                 {
                     UserId = userId,
-                    Date = DateTime.UtcNow.AddDays(-1),
-                    NutritionGoalId = 1
+                    Date = DateTime.Now.Date,
+                    NutritionGoalId = currGoal.Id
                 });
 
-                day.Id = recordId;
-                day.UserId = userId;
-
-                return day;
+             
+                return diaryDay;
             }
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Error while creating record for {userId} at {date}", userId, DateTime.UtcNow.Date);
+                throw;
+            }
+        }
+
+        public async Task<DiaryDayDetails?> GetRecordByDate(DateTime date, Guid userId)
+        {
+            try
+            {
+                using var conn = _connectionFactory.Create();
+                await conn.OpenAsync();
+
+                var sql = @"SELECT DiaryDays.Id AS DiaryDayId, DiaryDays.UserId, DiaryDays.Date, " +
+                    "NutritionGoals.TargetCalories, NutritionGoals.ProteinG, NutritionGoals.FatG, NutritionGoals.CarbG, " +
+                    "NutritionGoals.Id AS NutritionGoalId " +
+                    "FROM DiaryDays " +
+                    "INNER JOIN NutritionGoals ON DiaryDays.NutritionGoalId = NutritionGoals.Id " +
+                    "WHERE Date = @Date AND DiaryDays.UserId = @UserId";
+
+                var diaryDayDetails = await conn.QueryFirstOrDefaultAsync<DiaryDayDetails>(sql, new
+                {
+                    UserId = userId,
+                    Date = date
+                });
+                return diaryDayDetails;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Error while getting record for {userId} by {date}", userId, date);
                 throw;
             }
         }

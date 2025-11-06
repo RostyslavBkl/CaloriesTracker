@@ -78,7 +78,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     IsActive = goal.isActive
                 });
 
-                //goal.Id = goalId;
+                goal.Id = goalId;
                 goal.UserId = userId;
 
                 return goal;
