@@ -10,6 +10,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
 
             var authQuery = provider.GetRequiredService<AuthQuery>();
             var foodQuery = provider.GetRequiredService<FoodQuery>();
+            var mealQuery = provider.GetRequiredService<MealQuery>();
 
             foreach (var field in authQuery.Fields)
             {
@@ -17,6 +18,10 @@ namespace CaloriesTracker.Server.GraphQL.Queries
             }
 
             foreach (var field in foodQuery.Fields)
+            {
+                AddField(field);
+            }
+            foreach (var field in mealQuery.Fields)
             {
                 AddField(field);
             }

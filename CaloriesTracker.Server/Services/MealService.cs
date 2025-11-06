@@ -74,6 +74,7 @@ namespace CaloriesTracker.Server.Services
             return await mealRepository.GetDiaryDayNutritionAsync(diaryDayId);
         }
 
+
         public static string MapMealTypeToDb(MealType mealType)
         {
             switch (mealType)
@@ -89,6 +90,9 @@ namespace CaloriesTracker.Server.Services
 
                 case MealType.snack:
                     return "snack";
+
+                case MealType.other:
+                    return "other";
 
                 default:
                     throw new ArgumentException($"Unknown MealType: {mealType}");
@@ -112,6 +116,9 @@ namespace CaloriesTracker.Server.Services
 
                 case "snack":
                     return MealType.snack;
+
+                case "other":
+                    return MealType.other;
 
                 default:
                     throw new ArgumentException($"Unknown MealType in database: {dbValue}");

@@ -47,9 +47,9 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     item.MealId = mealId;
 
                     itemCmd.Parameters.AddWithValue("@MealId", item.MealId);
-                    itemCmd.Parameters.AddWithValue("@DishId", item.DishId);
-                    itemCmd.Parameters.AddWithValue("@FoodId", item.FoodId);
-                    itemCmd.Parameters.AddWithValue("@WeightG", item.WeightG);
+                    itemCmd.Parameters.AddWithValue("@DishId", (object?)item.DishId ?? DBNull.Value);
+                    itemCmd.Parameters.AddWithValue("@FoodId", (object?)item.FoodId ?? DBNull.Value);
+                    itemCmd.Parameters.AddWithValue("@WeightG", (object?)item.WeightG ?? DBNull.Value);
 
                     item.Id = Convert.ToInt64(await itemCmd.ExecuteScalarAsync());
                 }
@@ -67,13 +67,15 @@ namespace CaloriesTracker.Server.Repositories.Implementations
         public async Task<List<Meal>> GetMealsByDiaryDayAsync(long diaryDayId)
         {
             const string sql = @"
-                SELECT 
-                    m.Id, m.DiaryDayId, m.MealType, m.EatenAt,
-                    mi.Id, mi.MealId, mi.DishId, mi.FoodId, mi.WeightG
-                FROM Meals m
-                LEFT JOIN MealItems mi ON m.Id = mi.MealId
-                WHERE m.DiaryDayId = @DiaryDayId
-                ORDER BY m.Id";
+        SELECT 
+            m.Id, m.DiaryDayId, m.MealType, m.EatenAt,
+            mi.Id      AS MealItemId,
+            mi.MealId  AS MealItemMealId,
+            mi.DishId, mi.FoodId, mi.WeightG
+        FROM Meals m
+        LEFT JOIN MealItems mi ON m.Id = mi.MealId
+        WHERE m.DiaryDayId = @DiaryDayId
+        ORDER BY m.Id, mi.Id";
 
             using var connection = connectionFactory.Create();
             await connection.OpenAsync();
@@ -81,39 +83,45 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             using var cmd = new SqlCommand(sql, (SqlConnection)connection);
             cmd.Parameters.AddWithValue("@DiaryDayId", diaryDayId);
 
-            var mealsDict = new Dictionary<long, Meal>();
+            var meals = new Dictionary<long, Meal>();
 
             using var reader = await cmd.ExecuteReaderAsync();
-
             while (await reader.ReadAsync())
             {
-                long mealId = reader.GetInt64(0);
+                var mealId = (long)reader["Id"];
 
-                if (!mealsDict.ContainsKey(mealId))
+                if (!meals.TryGetValue(mealId, out var meal))
                 {
-                    mealsDict[mealId] = new Meal
+                    var mealTypeStr = reader["MealType"] as string;
+
+                    meal = new Meal
                     {
                         Id = mealId,
-                        DiaryDayId = reader.GetInt64(1),
-                        MealType = MealService.MapMealTypeFromDb(reader.GetString(2)),
-                        EatenAt = reader.GetDateTimeOffset(3),
+                        DiaryDayId = (long)reader["DiaryDayId"],
+                        MealType = MealService.MapMealTypeFromDb(mealTypeStr ?? "breakfast"),
+                        EatenAt = reader["EatenAt"] == DBNull.Value
+                            ? (DateTimeOffset?)null
+                            : (DateTimeOffset)reader["EatenAt"],
                         Items = new List<MealItem>()
                     };
+
+                    meals.Add(mealId, meal);
                 }
 
-                if (!reader.IsDBNull(4))
+                if (reader["MealItemId"] == DBNull.Value)
+                    continue;
+
+                meal.Items.Add(new MealItem
                 {
-                    mealsDict[mealId].Items.Add(new MealItem
-                    {
-                        Id = reader.GetInt64(4),
-                        MealId = reader.GetInt64(5),
-                        DishId = reader.GetInt64(6),
-                        FoodId = reader.GetInt64(7),
-                        WeightG = reader.GetDecimal(8)
-                    });
-                }
+                    Id = (long)reader["MealItemId"],
+                    MealId = (long)reader["MealItemMealId"],
+                    DishId = reader["DishId"] == DBNull.Value ? (long?)null : (long)reader["DishId"],
+                    FoodId = reader["FoodId"] == DBNull.Value ? (long?)null : (long)reader["FoodId"],
+                    WeightG = reader["WeightG"] == DBNull.Value ? (decimal?)null : (decimal)reader["WeightG"]
+                });
             }
-            return mealsDict.Values.ToList();
+
+            return meals.Values.ToList();
         }
 
         public async Task<bool> DeleteMealAsync(long mealId)
@@ -136,13 +144,13 @@ namespace CaloriesTracker.Server.Repositories.Implementations
         public async Task<Meal?> GetMealByIdAsync(long mealId)
         {
             const string sql = @"
-                SELECT 
-                    m.Id, m.DiaryDayId, m.MealType, m.EatenAt,
-                    mi.Id, mi.MealId, mi.DishId, mi.FoodId, mi.WeightG
-                FROM Meals m
-                LEFT JOIN MealItems mi ON m.Id = mi.MealId
-                WHERE m.Id = @MealId
-                ORDER BY mi.Id";
+        SELECT 
+            m.Id, m.DiaryDayId, m.MealType, m.EatenAt,
+            mi.Id AS MealItemId, mi.MealId, mi.DishId, mi.FoodId, mi.WeightG
+        FROM Meals m
+        LEFT JOIN MealItems mi ON m.Id = mi.MealId
+        WHERE m.Id = @MealId
+        ORDER BY mi.Id;";
 
             using var connection = connectionFactory.Create();
             await connection.OpenAsync();
@@ -153,28 +161,38 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             Meal? meal = null;
 
             using var reader = await cmd.ExecuteReaderAsync();
+
             while (await reader.ReadAsync())
             {
                 if (meal == null)
                 {
+                    var mealTypeStr = reader["MealType"] as string;
+
                     meal = new Meal
                     {
-                        Id = reader.GetInt64(0),
-                        DiaryDayId = reader.GetInt64(1),
-                        MealType = MealService.MapMealTypeFromDb(reader.GetString(2)),
-                        EatenAt = reader.GetDateTimeOffset(3),
+                        Id = (long)reader["Id"],
+                        DiaryDayId = (long)reader["DiaryDayId"],
+                        MealType = MealService.MapMealTypeFromDb(mealTypeStr ?? "breakfast"),
+                        EatenAt = reader["EatenAt"] == DBNull.Value
+                            ? (DateTimeOffset?)null
+                            : (DateTimeOffset)reader["EatenAt"],
                         Items = new List<MealItem>()
                     };
                 }
 
-                meal.Items.Add(new MealItem
+                if (reader["MealItemId"] == DBNull.Value)
+                    continue;
+
+                var item = new MealItem
                 {
-                    Id = reader.GetInt64(4),
-                    MealId = reader.GetInt64(5),
-                    DishId = reader.GetInt64(6),
-                    FoodId = reader.GetInt64(7),
-                    WeightG = reader.GetDecimal(8)
-                });
+                    Id = (long)reader["MealItemId"],
+                    MealId = (long)reader["MealId"],
+                    DishId = reader["DishId"] == DBNull.Value ? (long?)null : (long)reader["DishId"],
+                    FoodId = reader["FoodId"] == DBNull.Value ? (long?)null : (long)reader["FoodId"],
+                    WeightG = reader["WeightG"] == DBNull.Value ? (decimal?)null : (decimal)reader["WeightG"]
+                };
+
+                meal.Items.Add(item);
             }
 
             return meal;
@@ -182,25 +200,34 @@ namespace CaloriesTracker.Server.Repositories.Implementations
 
         public async Task<bool> UpdateMealItemAsync(long itemId, long? dishId, long? foodId, decimal? weightG)
         {
-            const string sql = @"
-                UPDATE MealItems
-                SET 
-                    DishId = COALESCE(@DishId, DishId),
-                    FoodId = COALESCE(@FoodId, FoodId),
-                    WeightG = COALESCE(@WeightG, WeightG)
-                WHERE Id = @ItemId";
+            using var conn = connectionFactory.Create();
+            await conn.OpenAsync();
 
-            using var connection = connectionFactory.Create();
-            await connection.OpenAsync();
-            using var cmd = new SqlCommand(sql, (SqlConnection)connection);
+            using (var check = new SqlCommand("SELECT 1 FROM MealItems WHERE Id = @Id", (SqlConnection)conn))
+            {
+                check.Parameters.Add(new SqlParameter("@Id", System.Data.SqlDbType.BigInt) { Value = itemId });
+                if (await check.ExecuteScalarAsync() is null) return false;
+            }
 
-            cmd.Parameters.AddWithValue("@ItemId", itemId);
-            cmd.Parameters.AddWithValue("@DishId", (object?)dishId ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@FoodId", (object?)foodId ?? DBNull.Value);
-            cmd.Parameters.AddWithValue("@WeightG", (object?)weightG ?? DBNull.Value);
+            var sets = new List<string>();
+            var cmd = new SqlCommand { Connection = (SqlConnection)conn };
 
-            int affected = await cmd.ExecuteNonQueryAsync();
-            return affected > 0;
+            if (dishId.HasValue) { sets.Add("DishId = @DishId"); cmd.Parameters.Add(new SqlParameter("@DishId", System.Data.SqlDbType.BigInt) { Value = dishId.Value }); }
+            if (foodId.HasValue) { sets.Add("FoodId = @FoodId"); cmd.Parameters.Add(new SqlParameter("@FoodId", System.Data.SqlDbType.BigInt) { Value = foodId.Value }); }
+            if (weightG.HasValue)
+            {
+                var p = new SqlParameter("@WeightG", System.Data.SqlDbType.Decimal) { Precision = 18, Scale = 2, Value = weightG.Value };
+                sets.Add("WeightG = @WeightG");
+                cmd.Parameters.Add(p);
+            }
+
+            if (sets.Count == 0) return true;
+
+            cmd.CommandText = $"UPDATE MealItems SET {string.Join(", ", sets)} WHERE Id = @Id";
+            cmd.Parameters.Add(new SqlParameter("@Id", System.Data.SqlDbType.BigInt) { Value = itemId });
+
+            await cmd.ExecuteNonQueryAsync(); // не залежимо від affected
+            return true;
         }
 
         public async Task<SummaryNutrition> GetMealNutritionAsync(long mealId)
