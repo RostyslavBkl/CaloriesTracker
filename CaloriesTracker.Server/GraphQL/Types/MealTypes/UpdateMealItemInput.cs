@@ -7,9 +7,10 @@ namespace CaloriesTracker.Server.GraphQL.Types.MealTypes
         public UpdateMealItemInput()
         {
             Name = "UpdateMealItemInput";
-            Field<NonNullGraphType<LongGraphType>>("itemId");
-            Field<LongGraphType>("dishId");
-            Field<LongGraphType>("foodId");
+
+            Field<NonNullGraphType<GuidGraphType>>("itemId");
+            Field<GuidGraphType>("dishId");
+            Field<GuidGraphType>("foodId");
             Field<DecimalGraphType>("weightG");
         }
     }

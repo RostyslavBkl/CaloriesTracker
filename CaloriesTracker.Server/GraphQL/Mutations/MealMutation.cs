@@ -11,7 +11,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
     {
         public MealMutation()
         {
-            Field<IdGraphType>("createMealWithItems")
+            Field<GuidGraphType>("createMealWithItems")
                 .Argument<NonNullGraphType<CreateMealInputType>>("input")
                 .ResolveAsync(async ctx =>
                 {
@@ -46,7 +46,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                 });
 
             Field<BooleanGraphType>("deleteMeal")
-                .Argument<NonNullGraphType<IdGraphType>>("mealId")
+                .Argument<NonNullGraphType<GuidGraphType>>("mealId")
                 .ResolveAsync(async ctx =>
                 {
                     try

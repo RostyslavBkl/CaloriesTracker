@@ -7,10 +7,12 @@ namespace CaloriesTracker.Server.GraphQL.Types.MealTypes
     {
         public MealItemType()
         {
-            Field(x => x.Id);
-            Field(x => x.MealId);
-            Field<LongGraphType>("dishId", resolve: ctx => ctx.Source.DishId);
-            Field<LongGraphType>("foodId", resolve: ctx => ctx.Source.FoodId);
+            Name = "MealItem";
+
+            Field<NonNullGraphType<GuidGraphType>>("id", resolve: ctx => ctx.Source.Id);
+            Field<NonNullGraphType<GuidGraphType>>("mealId", resolve: ctx => ctx.Source.MealId);
+            Field<GuidGraphType>("dishId", resolve: ctx => ctx.Source.DishId);
+            Field<GuidGraphType>("foodId", resolve: ctx => ctx.Source.FoodId);
             Field<DecimalGraphType>("weightG", resolve: ctx => ctx.Source.WeightG);
         }
     }

@@ -8,8 +8,8 @@ namespace CaloriesTracker.Server.GraphQL.Types.MealTypes
         {
             Name = "MealItemInput";
 
-            Field<LongGraphType>("dishId");
-            Field<LongGraphType>("foodId");
+            Field<GuidGraphType>("dishId");
+            Field<GuidGraphType>("foodId");
             Field<DecimalGraphType>("weightG");
         }
     }

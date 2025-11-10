@@ -2,16 +2,16 @@
 
 namespace CaloriesTracker.Server.GraphQL.Types.MealTypes
 {
-    public class CreateMealInputType : InputObjectGraphType
+    public sealed class CreateMealInputType : InputObjectGraphType
     {
         public CreateMealInputType()
         {
-            Name = "CreateMealInputType";
+            Name = "CreateMealInput";
 
-            Field<NonNullGraphType<LongGraphType>>("diaryDayId");
+            Field<NonNullGraphType<GuidGraphType>>("diaryDayId");
             Field<NonNullGraphType<MealTypeEnum>>("mealType");
             Field<DateTimeOffsetGraphType>("eatenAt");
-            Field<ListGraphType<MealItemInputType>>("items");
+            Field<ListGraphType<NonNullGraphType<MealItemInputType>>>("items");
         }
     }
 }

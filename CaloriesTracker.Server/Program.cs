@@ -13,6 +13,7 @@ using CaloriesTracker.Server.Services;
 using CaloriesTracker.Server.Services.FoodService;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
@@ -110,18 +111,21 @@ builder.Services.AddSingleton<MealMutation>();
 builder.Services.AddSingleton<FoodType>();
 builder.Services.AddSingleton<FoodInputType>();
 builder.Services.AddSingleton<FoodApiInputType>();
-// Auth Types
+
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<AuthResponseType>();
 builder.Services.AddSingleton<RegInputType>();
 builder.Services.AddSingleton<LogInputType>();
 
+builder.Services.AddSingleton<MealTypeEnum>();
 builder.Services.AddSingleton<MealTypeGraph>();
 builder.Services.AddSingleton<MealItemType>();
 builder.Services.AddSingleton<SummaryNutritionType>();
 builder.Services.AddSingleton<CreateMealInputType>();
 builder.Services.AddSingleton<MealItemInputType>();
 builder.Services.AddSingleton<UpdateMealItemInput>();
+
+builder.Services.AddSingleton<GuidGraphType>();
 
 // GraphQL Schema and Server (GraphQL-Core for Food)
 builder.Services.AddSingleton<RootSchema>();

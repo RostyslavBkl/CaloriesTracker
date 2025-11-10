@@ -11,7 +11,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
         public MealQuery()
         {
             Field<ListGraphType<MealTypeGraph>>("mealsByDiaryDayId")
-                .Argument<NonNullGraphType<IdGraphType>>("diaryDayId")
+                .Argument<NonNullGraphType<GuidGraphType>>("diaryDayId")
                 .ResolveAsync(async ctx =>
                 {
                     try
@@ -27,7 +27,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 });
 
             Field<MealTypeGraph>("meal")
-                .Argument<NonNullGraphType<IdGraphType>>("id")
+                .Argument<NonNullGraphType<GuidGraphType>>("id")
                 .ResolveAsync(async ctx =>
                 {
                     try
@@ -43,7 +43,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 });
 
             Field<SummaryNutritionType>("mealNutrition")
-                .Argument<NonNullGraphType<IdGraphType>>("mealId")
+                .Argument<NonNullGraphType<GuidGraphType>>("mealId")
                 .ResolveAsync(async ctx =>
                 {
                     try
@@ -59,7 +59,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 });
 
             Field<SummaryNutritionType>("diaryDayNutrition")
-                .Argument<NonNullGraphType<IdGraphType>>("diaryDayId")
+                .Argument<NonNullGraphType<GuidGraphType>>("diaryDayId")
                 .ResolveAsync(async ctx =>
                 {
                     try
