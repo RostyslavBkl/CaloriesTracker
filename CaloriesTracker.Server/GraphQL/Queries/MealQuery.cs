@@ -11,13 +11,13 @@ namespace CaloriesTracker.Server.GraphQL.Queries
         public MealQuery()
         {
             Field<ListGraphType<MealTypeGraph>>("mealsByDiaryDayId")
-                .Argument<NonNullGraphType<LongGraphType>>("diaryDayId")
+                .Argument<NonNullGraphType<IdGraphType>>("diaryDayId")
                 .ResolveAsync(async ctx =>
                 {
                     try
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
-                        var id = ctx.GetArgument<long>("diaryDayId");
+                        var id = ctx.GetArgument<Guid>("diaryDayId");
                         return await mealService.GetMealsByDiaryDayAsync(id);
                     }
                     catch (Exception ex)
@@ -27,13 +27,13 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 });
 
             Field<MealTypeGraph>("meal")
-                .Argument<NonNullGraphType<LongGraphType>>("id")
+                .Argument<NonNullGraphType<IdGraphType>>("id")
                 .ResolveAsync(async ctx =>
                 {
                     try
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
-                        var id = ctx.GetArgument<long>("id");
+                        var id = ctx.GetArgument<Guid>("id");
                         return await mealService.GetMealByIdAsync(id);
                     }
                     catch (Exception ex)
@@ -43,13 +43,13 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 });
 
             Field<SummaryNutritionType>("mealNutrition")
-                .Argument<NonNullGraphType<LongGraphType>>("mealId")
+                .Argument<NonNullGraphType<IdGraphType>>("mealId")
                 .ResolveAsync(async ctx =>
                 {
                     try
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
-                        var id = ctx.GetArgument<long>("mealId");
+                        var id = ctx.GetArgument<Guid>("mealId");
                         return await mealService.GetMealNutritionAsync(id);
                     }
                     catch (Exception ex)
@@ -59,13 +59,13 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 });
 
             Field<SummaryNutritionType>("diaryDayNutrition")
-                .Argument<NonNullGraphType<LongGraphType>>("diaryDayId")
+                .Argument<NonNullGraphType<IdGraphType>>("diaryDayId")
                 .ResolveAsync(async ctx =>
                 {
                     try
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
-                        var id = ctx.GetArgument<long>("diaryDayId");
+                        var id = ctx.GetArgument<Guid>("diaryDayId");
                         return await mealService.GetDiaryDayNutritionAsync(id);
                     }
                     catch (Exception ex)

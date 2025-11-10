@@ -1,10 +1,11 @@
-﻿namespace CaloriesTracker.Server.Models.Meal;
-
-public class MealItem
+﻿namespace CaloriesTracker.Server.Models.Meal
 {
-    public long Id { get; set; }
-    public long MealId { get; set; }
-    public long? DishId { get; set; }
-    public long? FoodId { get; set; }
-    public decimal? WeightG { get; set; }
+    public class MealItem
+    {
+        public Guid Id { get; set; }
+        public Guid MealId { get; set; }
+        public Guid? DishId { get; set; }
+        public Guid? FoodId { get; set; }
+        public decimal? WeightG { get; set; }
+    }
 }

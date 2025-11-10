@@ -11,7 +11,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
     {
         public MealMutation()
         {
-            Field<LongGraphType>("createMealWithItems")
+            Field<IdGraphType>("createMealWithItems")
                 .Argument<NonNullGraphType<CreateMealInputType>>("input")
                 .ResolveAsync(async ctx =>
                 {
@@ -46,13 +46,13 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                 });
 
             Field<BooleanGraphType>("deleteMeal")
-                .Argument<NonNullGraphType<LongGraphType>>("mealId")
+                .Argument<NonNullGraphType<IdGraphType>>("mealId")
                 .ResolveAsync(async ctx =>
                 {
                     try
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
-                        var id = ctx.GetArgument<long>("mealId");
+                        var id = ctx.GetArgument<Guid>("mealId");
                         return await mealService.DeleteMealAsync(id);
                     }
                     catch (Exception ex)
@@ -68,7 +68,6 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                     try
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
-
                         var input = ctx.GetArgument<UpdateMealItemDto>("input");
 
                         Console.WriteLine($"UpdateMealItem: itemId={input.ItemId}, dishId={input.DishId}, foodId={input.FoodId}, weightG={input.WeightG}");
@@ -88,17 +87,16 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                         throw new ExecutionError("Failed to update meal item", ex);
                     }
                 });
-
         }
 
         private record CreateMealDto(
-            long DiaryDayId,
+            Guid DiaryDayId,
             MealType MealType,
             DateTimeOffset? EatenAt,
             List<MealItemDto>? Items);
 
-        private record MealItemDto(long? DishId, long? FoodId, decimal? WeightG);
+        private record MealItemDto(Guid? DishId, Guid? FoodId, decimal? WeightG);
 
-        private record UpdateMealItemDto(long ItemId, long? DishId, long? FoodId, decimal? WeightG);
+        private record UpdateMealItemDto(Guid ItemId, Guid? DishId, Guid? FoodId, decimal? WeightG);
     }
 }
