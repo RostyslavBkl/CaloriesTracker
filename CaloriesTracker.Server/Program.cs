@@ -4,19 +4,21 @@ using CaloriesTracker.Server.GraphQL.Queries;
 using CaloriesTracker.Server.GraphQL.Schemas;
 using CaloriesTracker.Server.GraphQL.Type;
 using CaloriesTracker.Server.GraphQL.Types;
+using CaloriesTracker.Server.GraphQL.Types.MealTypes;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
+using CaloriesTracker.Server.Services;
 using CaloriesTracker.Server.Services.FoodService;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
+using GraphQL.Types;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using Serilog;
 using System.Text;
-
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -64,8 +66,6 @@ builder.Services.AddAuthentication(o =>
         };
     });
 
-
-
 builder.Services.AddAuthorization();
 
 // CORS - ????? ????? app.Build()
@@ -82,12 +82,13 @@ builder.Services.AddCors(options =>
 
 // Database and Repositories
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
-//builder.Services.AddScoped<IUsersRepository, UsersRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodApiRepository, FoodApiRepository>();
+builder.Services.AddScoped<IMealRepository, MealRepository>();
 
 // Services
+builder.Services.AddScoped<MealService>();
 builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
 builder.Services.AddScoped<FoodApiService>();
@@ -99,23 +100,32 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<RootQuery>();
 builder.Services.AddSingleton<FoodQuery>();
 builder.Services.AddSingleton<AuthQuery>();
-
+builder.Services.AddSingleton<MealQuery>();
 
 builder.Services.AddSingleton<RootMutations>();
 builder.Services.AddSingleton<FoodMutation>();
 builder.Services.AddSingleton<AuthMutation>();
+builder.Services.AddSingleton<MealMutation>();
 
 // GraphQL Types
 builder.Services.AddSingleton<FoodType>();
 builder.Services.AddSingleton<FoodInputType>();
 builder.Services.AddSingleton<FoodApiInputType>();
-// Auth Types
+
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<AuthResponseType>();
 builder.Services.AddSingleton<RegInputType>();
 builder.Services.AddSingleton<LogInputType>();
 
+builder.Services.AddSingleton<MealTypeEnum>();
+builder.Services.AddSingleton<MealTypeGraph>();
+builder.Services.AddSingleton<MealItemType>();
+builder.Services.AddSingleton<SummaryNutritionType>();
+builder.Services.AddSingleton<CreateMealInputType>();
+builder.Services.AddSingleton<MealItemInputType>();
+builder.Services.AddSingleton<UpdateMealItemInput>();
 
+builder.Services.AddSingleton<GuidGraphType>();
 
 // GraphQL Schema and Server (GraphQL-Core for Food)
 builder.Services.AddSingleton<RootSchema>();
