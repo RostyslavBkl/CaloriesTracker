@@ -65,7 +65,7 @@ namespace CaloriesTracker.Server.Repositories
             using var cmd = new SqlCommand(sql, connection);
             cmd.Parameters.Add(new SqlParameter("@Email", SqlDbType.NVarChar, 256) { Value = user.Email });
             cmd.Parameters.Add(new SqlParameter("@PasswordHash", SqlDbType.NVarChar, -1) { Value = user.PasswordHash });
-            
+
 
             await connection.OpenAsync().ConfigureAwait(false);
             var insertedId = (Guid)await cmd.ExecuteScalarAsync().ConfigureAwait(false);

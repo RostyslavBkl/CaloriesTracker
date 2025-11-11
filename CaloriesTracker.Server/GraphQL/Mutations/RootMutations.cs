@@ -8,12 +8,17 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
         {
             var foodM = provider.GetRequiredService<FoodMutation>();
             var authM = provider.GetRequiredService<AuthMutation>();
+            var mealM = provider.GetRequiredService<MealMutation>();
 
-            foreach(var field in foodM.Fields)
+            foreach (var field in foodM.Fields)
             {
                 AddField(field);
             }
-            foreach(var field in authM.Fields)
+            foreach (var field in authM.Fields)
+            {
+                AddField(field);
+            }
+            foreach (var field in mealM.Fields)
             {
                 AddField(field);
             }

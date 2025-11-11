@@ -20,7 +20,7 @@
     }
     public enum MealType
     {
-        breakfest,
+        breakfast,
         lunch,
         dinner,
         snack,
