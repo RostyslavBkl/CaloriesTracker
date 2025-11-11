@@ -1,5 +1,4 @@
-﻿using CaloriesTracker.Server.GraphQL.Queries;
-using GraphQL.Types;
+﻿using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Queries
 {
@@ -13,6 +12,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
             var foodQuery = provider.GetRequiredService<FoodQuery>();
             var goalQuery = provider.GetRequiredService<NutritionGoalQuery>();
             var diaryQuery = provider.GetRequiredService<DiaryQuery>();
+            var mealQuery = provider.GetRequiredService<MealQuery>();
 
             foreach (var field in authQuery.Fields)
             {
@@ -28,6 +28,10 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 AddField(field);
             }
             foreach (var field in diaryQuery.Fields)
+            {
+                AddField(field);
+            }
+            foreach (var field in mealQuery.Fields)
             {
                 AddField(field);
             }
