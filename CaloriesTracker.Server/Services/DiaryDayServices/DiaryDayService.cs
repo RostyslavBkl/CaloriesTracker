@@ -19,7 +19,7 @@ namespace CaloriesTracker.Server.Services.DiaryDayServices
             _jwt = jwt;
         }
 
-        private async Task<Guid> GetUserId()
+        public async Task<Guid> GetUserId()
         {
             if (_http.HttpContext == null)
                 return Guid.Empty;

@@ -1,5 +1,5 @@
 ﻿using CaloriesTracker.Server.DataBase;
-using CaloriesTracker.Server.Models;
+using CaloriesTracker.Server.Models.Nutrition;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using Dapper;
 using Microsoft.Data.SqlClient;

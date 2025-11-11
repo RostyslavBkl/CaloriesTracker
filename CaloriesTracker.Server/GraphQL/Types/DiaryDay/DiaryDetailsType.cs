@@ -1,4 +1,6 @@
-﻿using GraphQL.Types;
+﻿using CaloriesTracker.Server.GraphQL.Types.MealTypes;
+using CaloriesTracker.Server.GraphQL.Types.NutritionGoal;
+using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Types.DiaryDay
 {
@@ -13,11 +15,9 @@ namespace CaloriesTracker.Server.GraphQL.Types.DiaryDay
             Field<NonNullGraphType<DateGraphType>>("date");
 
             // goals
-            Field<NonNullGraphType<GuidGraphType>>("nutritionGoalId");
-            Field<NonNullGraphType<IntGraphType>>("targetCalories");
-            Field<DecimalGraphType>("ProteinG");
-            Field<DecimalGraphType>("FatG");
-            Field<DecimalGraphType>("CarbG");
+            Field<NonNullGraphType<NutrtionGoalSummaryType>>("nutritionGoalSummary");
+            //Field<ListGraphType<MealTypeGraph>>("meals", resolve: ctx => ctx.Source.);
+            Field<ListGraphType<MealTypeGraph>>("meals");
         }
     }
 }

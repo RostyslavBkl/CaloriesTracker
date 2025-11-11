@@ -1,4 +1,4 @@
-﻿using CaloriesTracker.Server.Models;
+﻿using CaloriesTracker.Server.Models.Nutrition;
 
 namespace CaloriesTracker.Server.Repositories.Interfaces
 {

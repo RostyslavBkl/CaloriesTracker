@@ -1,20 +1,40 @@
 ﻿using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Models.Meal;
 using CaloriesTracker.Server.Repositories;
+using CaloriesTracker.Server.Repositories.Interfaces;
+using CaloriesTracker.Server.Services.DiaryDayServices;
 
 namespace CaloriesTracker.Server.Services
 {
     public class MealService
     {
         private readonly IMealRepository mealRepository;
+        private readonly IDiaryDay diaryDayRepository;
+        private readonly DiaryDayService diaryDayService;
 
-        public MealService(IMealRepository mealRepository)
+        public MealService(IMealRepository mealRepository, IDiaryDay diaryDayRepository, DiaryDayService diaryDayService)
         {
             this.mealRepository = mealRepository;
+            this.diaryDayRepository = diaryDayRepository;
+            this.diaryDayService = diaryDayService;
         }
 
         public async Task<Guid> CreateMealWithItemsAsync(Meal meal, List<MealItem> items)
         {
+            var today = DateTime.Now.Date;
+
+            var userId = await diaryDayService.GetUserId();
+            var diary = await diaryDayRepository.GetRecordByDate(today, userId);
+
+            if(diary == null)
+            {
+                var createDiary = await diaryDayRepository.CreateRecord(userId);
+                meal.DiaryDayId = createDiary.Id;
+            } else
+            {
+                meal.DiaryDayId = diary.DiaryDayId;
+            }
+
             if (meal == null)
                 throw new ArgumentNullException(nameof(meal));
 

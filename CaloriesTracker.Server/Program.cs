@@ -131,6 +131,7 @@ builder.Services.AddSingleton<FoodInputType>();
 builder.Services.AddSingleton<FoodApiInputType>();
 // Nutritional Goal Types
 builder.Services.AddSingleton<NutritionGoalType>();
+builder.Services.AddSingleton<NutrtionGoalSummaryType>();
 builder.Services.AddSingleton<GoalInputType>();
 // Diary Day Types
 builder.Services.AddSingleton<DiaryType>();

@@ -1,4 +1,5 @@
 ﻿using CaloriesTracker.Server.Models;
+using CaloriesTracker.Server.Models.Nutrition;
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
