@@ -2,9 +2,9 @@
 
 namespace CaloriesTracker.Server.GraphQL.Types
 {
-    public class UserProfilePatchInputType : InputObjectGraphType
+    public class UserProfileInputType : InputObjectGraphType
     {
-        public UserProfilePatchInputType()
+        public UserProfileInputType()
         {
             Name = "UserProfilePatchInput";
             Description = "Input type for patching user profile fields selectively.";

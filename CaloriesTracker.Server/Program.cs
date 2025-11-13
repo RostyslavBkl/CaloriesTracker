@@ -133,7 +133,7 @@ builder.Services.AddSingleton<UpdateMealItemInput>();
 
 builder.Services.AddSingleton<UserHeight>();
 builder.Services.AddSingleton<UserWeight>();
-builder.Services.AddSingleton<UserProfilePatchInputType>();
+builder.Services.AddSingleton<UserProfileInputType>();
 builder.Services.AddSingleton<UserProfileType>();
 builder.Services.AddSingleton<UserSex>();
 builder.Services.AddSingleton<UserType>();

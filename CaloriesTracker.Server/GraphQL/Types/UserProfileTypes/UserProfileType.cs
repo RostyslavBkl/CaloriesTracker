@@ -7,14 +7,14 @@ namespace CaloriesTracker.Server.GraphQL.Types.UserProfileTypes
     {
         public UserProfileType()
         {
-            Field(x => x.Id, nullable: true);
-            Field(x => x.UserName);
-            Field(x => x.SexType);
-            Field(x => x.BirthDate);
-            Field(x => x.HeightCm);
-            Field(x => x.WeightKg);
-            Field(x => x.PreferredWeightUnit);
-            Field(x => x.PreferredHeightUnit);
+            Field(x => x.Id);
+            Field(x => x.UserName, nullable: true);
+            Field(x => x.SexType, nullable: true);
+            Field(x => x.BirthDate, nullable: true);
+            Field(x => x.HeightCm, nullable: true);
+            Field(x => x.WeightKg, nullable: true);
+            Field(x => x.PreferredWeightUnit, nullable: true);
+            Field(x => x.PreferredHeightUnit, nullable: true);
         }
     }
 }
