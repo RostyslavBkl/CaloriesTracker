@@ -18,6 +18,8 @@ public class User
 public sealed class UserProfilePatch
 {
     public Guid UserId { get; init; }
+    public bool DisplayNameSpecified { get; init; }
+    public string? UserName { get; init; }
     public bool SexSpecified { get; init; }
     public SexType? SexType { get; init; }
     public bool HeightSpecified { get; init; }
@@ -29,5 +31,29 @@ public sealed class UserProfilePatch
     public bool PreferredWeightUnitSpecified { get; init; }
     public string? PreferredWeightUnit { get; init; }
 }
+
+public sealed class UserProfileInputDto
+{
+    public Guid UserId { get; set; }
+
+    public bool DisplayNameSpecified { get; set; }
+    public string? UserName { get; set; }
+
+    public bool SexSpecified { get; set; }
+    public SexType? SexType { get; set; }
+
+    public bool HeightSpecified { get; set; }
+    public decimal? HeightCm { get; set; }
+
+    public bool WeightSpecified { get; set; }
+    public decimal? WeightKg { get; set; }
+
+    public bool PreferredHeightUnitSpecified { get; set; }
+    public HeightUnit? PreferredHeightUnit { get; set; }
+
+    public bool PreferredWeightUnitSpecified { get; set; }
+    public WeightUnit? PreferredWeightUnit { get; set; }
+}
+
 
 

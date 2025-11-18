@@ -1,30 +1,30 @@
 ﻿using GraphQL.Types;
 
-namespace CaloriesTracker.Server.GraphQL.Types
+public class UserProfileInputType : InputObjectGraphType
 {
-    public class UserProfileInputType : InputObjectGraphType
+    public UserProfileInputType()
     {
-        public UserProfileInputType()
-        {
-            Name = "UserProfilePatchInput";
-            Description = "Input type for patching user profile fields selectively.";
+        Name = "UserProfileInput";
+        Description = "Input type for patching user profile fields selectively.";
 
-            Field<NonNullGraphType<IdGraphType>>("userId", "User ID to patch.");
+        Field<NonNullGraphType<IdGraphType>>("userId");
 
-            Field<BooleanGraphType>("sexSpecified", "Whether to update sex type.");
-            Field<UserSex>("sexType", "Sex type to set if specified.");
+        Field<BooleanGraphType>("displayNameSpecified");
+        Field<StringGraphType>("userName");
 
-            Field<BooleanGraphType>("heightSpecified", "Whether to update height.");
-            Field<DecimalGraphType>("heightCm", "Height in centimeters.");
+        Field<BooleanGraphType>("sexSpecified");
+        Field<UserSex>("sexType");
 
-            Field<BooleanGraphType>("weightSpecified", "Whether to update weight.");
-            Field<DecimalGraphType>("weightKg", "Weight in kilograms.");
+        Field<BooleanGraphType>("heightSpecified");
+        Field<DecimalGraphType>("heightCm");
 
-            Field<BooleanGraphType>("preferredHeightUnitSpecified", "Whether to update preferred height unit.");
-            Field<UserHeight>("preferredHeightUnit", "Preferred height unit (cm, inches, ft_in).");
+        Field<BooleanGraphType>("weightSpecified");
+        Field<DecimalGraphType>("weightKg");
 
-            Field<BooleanGraphType>("preferredWeightUnitSpecified", "Whether to update preferred weight unit.");
-            Field<UserWeight>("preferredWeightUnit", "Preferred weight unit (kg, lb, st_lb).");
-        }
+        Field<BooleanGraphType>("preferredHeightUnitSpecified");
+        Field<UserHeight>("preferredHeightUnit");
+
+        Field<BooleanGraphType>("preferredWeightUnitSpecified");
+        Field<UserWeight>("preferredWeightUnit");
     }
 }

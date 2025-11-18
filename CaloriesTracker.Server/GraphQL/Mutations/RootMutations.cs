@@ -23,10 +23,10 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
             {
                 AddField(field);
             }
-            /*            foreach (var field in userProfileM.Fields)
-                        {
-                            AddField(field);
-                        }*/
+            foreach (var field in userProfileM.Fields)
+            {
+                AddField(field);
+            }
         }
     }
 }
