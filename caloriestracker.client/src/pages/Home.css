@@ -112,6 +112,10 @@
   cursor: pointer;
 }
 
+.goals-menu {
+  position: relative;
+}
+
 .goals-header {
   display: flex;
   align-items: center;
@@ -119,31 +123,61 @@
   margin-bottom: 8px;
 }
 
-.goals-menu {
-  position: relative;
+.goals-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
 }
 
-.goals-menu__trigger {
+.goals-add-btn {
+  width: 26px;
+  height: 26px;
   border: none;
   background: transparent;
-  display: inline-flex;
+  color: #ffffff;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
   align-items: center;
   justify-content: center;
-  padding: 4px;
-  border-radius: 999px;
-  cursor: pointer;
+  padding: 0;
+}
+
+.goals-add-btn:hover {
+  opacity: 0.7;
 }
 
 .goals-menu__trigger:hover {
   background: rgba(148, 163, 184, 0.15);
 }
 
-.goals-menu__dot {
-  width: 3px;
-  height: 3px;
+.goals-add-btn.disabled,
+.goals-add-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+}
+
+.goals-menu__trigger {
+  border: none;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 4px;
   border-radius: 999px;
+  cursor: pointer;
+}
+
+.goals-menu__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
   background: var(--text);
-  margin: 0 1px;
+  margin: 0;
 }
 
 .goals-menu__dropdown {
@@ -269,17 +303,38 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 8px;
+  margin-top: 6px;
 }
 
 .macro-card {
   border-radius: 10px;
   padding: 8px 8px 10px;
   font-size: 11px;
-  background: rgba(15, 23, 42, 0.95);
+  background: rgba(15, 23, 42, 0.96);
   border: 1px solid rgba(148, 163, 184, 0.35);
   display: flex;
   flex-direction: column;
   gap: 4px;
+  overflow: hidden;
+  position: relative;
+}
+
+.macro-card--carbs {
+  background: linear-gradient(90deg,
+      rgba(190, 242, 100, 0.35),
+      rgba(15, 23, 42, 0.96));
+}
+
+.macro-card--protein {
+  background: linear-gradient(90deg,
+      rgba(253, 186, 116, 0.35),
+      rgba(15, 23, 42, 0.96));
+}
+
+.macro-card--fats {
+  background: linear-gradient(90deg,
+      rgba(125, 211, 252, 0.35),
+      rgba(15, 23, 42, 0.96));
 }
 
 .macro-card__label {
@@ -287,14 +342,14 @@
 }
 
 .macro-card__values {
-  opacity: 0.85;
+  opacity: 0.9;
 }
 
 .macro-card__bar {
   position: relative;
   height: 6px;
   border-radius: 999px;
-  background: rgba(30, 64, 175, 0.5);
+  background: rgba(15, 23, 42, 0.9);
   overflow: hidden;
 }
 
@@ -306,13 +361,13 @@
 }
 
 .macro-card--carbs .macro-card__bar-fill {
-  background: #4ade80;
+  background: #86efac;
 }
 
 .macro-card--protein .macro-card__bar-fill {
-  background: #fb923c;
+  background: #fdba74;
 }
 
 .macro-card--fats .macro-card__bar-fill {
-  background: #38bdf8;
+  background: #7dd3fc;
 }
