@@ -16,6 +16,7 @@ namespace CaloriesTracker.Server.GraphQL.Type
             Field(x => x.ProteinG, nullable: true);
             Field(x => x.FatG, nullable: true);
             Field(x => x.CarbsG, nullable: true);
+            Field(x => x.TotalKcal);
         }
     }
 }
