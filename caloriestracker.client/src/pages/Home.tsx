@@ -14,6 +14,13 @@ const Home: React.FC = () => {
     return today.toISOString().slice(0, 10);
   });
 
+  const [goalsMenuOpen, setGoalsMenuOpen] = useState(false);
+  const targetKcal = 2000;
+  const consumedKcal = 550;
+  const remainingKcal = Math.max(targetKcal - consumedKcal, 0);
+  const percent = Math.min((consumedKcal / targetKcal) * 100, 100);
+  const progressDeg = percent * 3.6;
+
   const handleLogout = () => {
     const theme = localStorage.getItem('ct_theme');
     localStorage.clear();
@@ -25,6 +32,14 @@ const Home: React.FC = () => {
     }
 
     window.location.href = '/login';
+  };
+
+  const toggleGoalsMenu = () => {
+    setGoalsMenuOpen((prev) => !prev);
+  };
+
+  const closeGoalsMenu = () => {
+    setGoalsMenuOpen(false);
   };
 
   return (
@@ -51,12 +66,65 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-
             <section className="home-block home-block--goals">
-              <span className="home-block__title">Nutrition goals</span>
-              <span className="home-block__placeholder">
-                Goals UI will be here.
-              </span>
+              <div className="goals-header">
+                <span className="home-block__title">Daily intake</span>
+
+                <div className="goals-menu">
+                  <button
+                    type="button"
+                    className="goals-menu__trigger"
+                    aria-label="Open goals menu"
+                    onClick={toggleGoalsMenu}
+                  >
+                    <span className="goals-menu__dot" />
+                    <span className="goals-menu__dot" />
+                    <span className="goals-menu__dot" />
+                  </button>
+
+                  {goalsMenuOpen && (
+                    <div className="goals-menu__dropdown">
+                      <button
+                        type="button"
+                        className="goals-menu__item"
+                        onClick={closeGoalsMenu}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="goals-menu__item goals-menu__item--danger"
+                        onClick={closeGoalsMenu}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              <div className="goals-content">
+                <div className="goals-summary-card">
+                  <div className="goals-summary-left">
+                    <span className="goals-summary-label">Daily intake</span>
+                    <span className="goals-summary-percent">{percent.toFixed(1)}%</span>
+                    <span className="goals-summary-target">Target: {targetKcal} kcal</span>
+                    <span className="goals-summary-remaining">Remaining: {remainingKcal} kcal</span>
+                  </div>
+
+                  <div className="goals-summary-circle">
+                    <div
+                      className="goals-summary-circle__outer"
+                      style={{ ['--goals-progress-deg' as any]: `${progressDeg}deg` }}
+                    >
+                      <div className="goals-summary-circle__inner">
+                        <span className="goals-circle-value">{consumedKcal}</span>
+                        <span className="goals-circle-unit">kcal</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </section>
 
             <section className="home-block home-block--meals">
