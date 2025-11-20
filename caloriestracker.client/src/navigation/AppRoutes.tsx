@@ -4,9 +4,9 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import { NavigationPathes } from './constants';
 
-// import FoodsPage from '../pages/FoodsPage';
-// import StatsPage from '../pages/StatsPage';
-// import ProfilePage from '../pages/ProfilePage';
+import Foods from '../pages/Foods';
+import Stats from '../pages/Stats';
+import Profile from '../pages/Profile';
 
 const AppRoutes = () => (
     <Routes>
@@ -16,9 +16,9 @@ const AppRoutes = () => (
         <Route path={NavigationPathes.Register} element={<Register />} />
 
         <Route path={NavigationPathes.Home} element={<Home />} />
-        {/* <Route path={NavigationPathes.Foods} element={<FoodsPage />} />
-        <Route path={NavigationPathes.Stats} element={<StatsPage />} />
-        <Route path={NavigationPathes.Profile} element={<ProfilePage />} /> */}
+        <Route path={NavigationPathes.Foods} element={<Foods />} />
+        <Route path={NavigationPathes.Stats} element={<Stats />} />
+        <Route path={NavigationPathes.Profile} element={<Profile />} />
     </Routes>
 );
 
