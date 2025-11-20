@@ -1,22 +1,18 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
+import { FiCalendar } from 'react-icons/fi';
 import { useAppDispatch } from '../store/hooks';
-import AuthorizeView from "../authorization/AuthorizeView";
+import AuthorizeView from '../authorization/AuthorizeView';
 import { logoutStart } from '../auth';
+import MainMenu from '../navigation/MainMenu';
+import './Home.css';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    const t = localStorage.getItem('ct_theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-  }, []);
-
-  const toggleTheme = () => {
-    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = cur === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('ct_theme', next);
-  };
+  const [selectedDate, setSelectedDate] = useState<string>(() => {
+    const today = new Date();
+    return today.toISOString().slice(0, 10);
+  });
 
   const handleLogout = () => {
     const theme = localStorage.getItem('ct_theme');
@@ -25,8 +21,7 @@ const Home: React.FC = () => {
 
     try {
       dispatch(logoutStart());
-    } catch (e) {
-
+    } catch {
     }
 
     window.location.href = '/login';
@@ -34,30 +29,51 @@ const Home: React.FC = () => {
 
   return (
     <AuthorizeView>
-      <div className='stage'>
-        <div className='board board--home'>
-          <div className="containerbox">
-            <div className="form-header">
-              <div className="header-left">
-                <h3 style={{ marginTop: 0 }}>Home</h3>
-              </div>
-              <div className="header-right" style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
-                <button className="theme-toggle theme-toggle--fixed" onClick={toggleTheme}>Theme</button>
-                <button className="btn secondary" onClick={handleLogout} style={{ padding: '6px 12px', fontSize: '14px' }}>Logout</button>
+      <div className="stage">
+        <div className="board board--home">
+          <div className="containerbox containerbox--with-nav home-layout">
+            <div className="home-top-row">
+              <div className="calendar-icon-wrapper">
+                <button
+                  type="button"
+                  className="calendar-icon-button"
+                  aria-label="Choose date"
+                >
+                  <FiCalendar size={20} />
+                </button>
+
+                <input
+                  className="calendar-date-input-hidden"
+                  type="date"
+                  value={selectedDate}
+                  onChange={(e) => setSelectedDate(e.target.value)}
+                />
               </div>
             </div>
 
-            <div style={{
-              minHeight: 240,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: 'var(--muted)',
-              padding: '20px',
-              textAlign: 'center'
-            }}>
-              <span>Welcome — content will appear here.</span>
-            </div>
+
+            <section className="home-block home-block--goals">
+              <span className="home-block__title">Nutrition goals</span>
+              <span className="home-block__placeholder">
+                Goals UI will be here.
+              </span>
+            </section>
+
+            <section className="home-block home-block--meals">
+              <span className="home-block__title">Today&apos;s meals</span>
+              <span className="home-block__placeholder">
+                Meals list will be here.
+              </span>
+            </section>
+
+            <button
+              className="btn secondary home-logout-btn"
+              onClick={handleLogout}
+            >
+              Logout
+            </button>
+
+            <MainMenu />
           </div>
         </div>
       </div>
