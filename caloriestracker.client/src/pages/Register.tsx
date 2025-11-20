@@ -32,12 +32,6 @@ const Register = () => {
   }, [user, apiError]);
 
   useEffect(() => {
-    const t = localStorage.getItem('ct_theme') ||
-      (window.matchMedia?.('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-  }, []);
-
-  useEffect(() => {
     if (!apiError) {
       setEmailError('');
       setPasswordError('');

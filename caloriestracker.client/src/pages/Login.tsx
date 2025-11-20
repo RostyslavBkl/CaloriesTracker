@@ -80,12 +80,6 @@ function Login() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    const t = localStorage.getItem('ct_theme') ||
-      (window.matchMedia?.('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-  }, []);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
