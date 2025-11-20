@@ -3,6 +3,7 @@ import { useAppDispatch } from '../store/hooks';
 import AuthorizeView from "../authorization/AuthorizeView";
 import { logoutStart } from '../auth';
 import MainMenu from '../navigation/MainMenu';
+import ThemeToggle from '../ThemeTongle';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,16 +20,6 @@ const Home: React.FC = () => {
       t === 'light' ? 'light' : 'dark'
     );
   }, []);
-
-  const toggleTheme = () => {
-    const cur =
-      document.documentElement.getAttribute('data-theme') === 'light'
-        ? 'light'
-        : 'dark';
-    const next = cur === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('ct_theme', next);
-  };
 
   const handleLogout = () => {
     const theme = localStorage.getItem('ct_theme');
@@ -56,12 +47,7 @@ const Home: React.FC = () => {
                 className="header-right"
                 style={{ display: 'flex', gap: 8, alignItems: 'center' }}
               >
-                <button
-                  className="theme-toggle theme-toggle--fixed"
-                  onClick={toggleTheme}
-                >
-                  Theme
-                </button>
+                <ThemeToggle />
                 <button
                   className="btn secondary"
                   onClick={handleLogout}

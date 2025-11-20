@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { registerStart } from '../auth/AuthSlices';
 import '../index.css';
+import ThemeToggle from '../ThemeTongle';
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -83,13 +84,6 @@ const Register = () => {
     }
   }, [apiError]);
 
-  const toggleTheme = () => {
-    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = cur === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('ct_theme', next);
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -167,9 +161,7 @@ const Register = () => {
               <h3>Register</h3>
             </div>
             <div className="header-right">
-              <button className="theme-toggle theme-toggle--fixed" onClick={toggleTheme}>
-                Theme
-              </button>
+              <ThemeToggle />
             </div>
           </div>
 
