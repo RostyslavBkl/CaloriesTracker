@@ -371,3 +371,112 @@
 .macro-card--fats .macro-card__bar-fill {
   background: #7dd3fc;
 }
+
+.meals-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.meals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.meal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 10px;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(15, 23, 42, 0.8);
+  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.7);
+}
+
+.meal-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.meal-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  background-size: cover;
+  background-position: center;
+}
+
+.meal-icon--breakfast {
+  background: linear-gradient(135deg, #f97316, #fed7aa);
+}
+
+.meal-icon--lunch {
+  background: linear-gradient(135deg, #ef4444, #fecaca);
+}
+
+.meal-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.meal-title {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.meal-kcal-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.meal-progress-bar {
+  width: 60px;
+  height: 4px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.25);
+  overflow: hidden;
+}
+
+.meal-progress-bar__fill {
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: #38bdf8;
+  transition: width 0.3s ease;
+}
+
+.meal-kcal-text {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.meal-add-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: none;
+  background: #38bdf8;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.meal-add-btn:hover {
+  filter: brightness(1.05);
+}
+
+.meal-add-btn svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.5;
+}

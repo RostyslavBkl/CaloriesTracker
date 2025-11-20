@@ -6,6 +6,13 @@ import { logoutStart } from '../auth';
 import MainMenu from '../navigation/MainMenu';
 import './Home.css';
 
+type Meal = {
+  id: string;
+  name: string;
+  currentKcal: number;
+  targetKcal: number;
+};
+
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
 
@@ -20,6 +27,11 @@ const Home: React.FC = () => {
     proteins: { current: 0, target: 128 },
     fats: { current: 0, target: 92 }
   };
+
+  const meals: Meal[] = [
+    { id: 'breakfast', name: 'Breakfast', currentKcal: 0, targetKcal: 768 },
+    { id: 'lunch', name: 'Lunch', currentKcal: 0, targetKcal: 768 }
+  ];
 
   const [goalExists, setGoalExists] = useState<boolean>(true);
   const [goalsMenuOpen, setGoalsMenuOpen] = useState(false);
@@ -70,7 +82,6 @@ const Home: React.FC = () => {
 
   const handleAddGoal = () => {
     if (goalExists) return;
-
     setGoalExists(true);
   };
 
@@ -80,6 +91,10 @@ const Home: React.FC = () => {
 
   const closeGoalsMenu = () => {
     setGoalsMenuOpen(false);
+  };
+
+  const handleAddMealClick = (meal: Meal) => {
+    console.log('Add to meal:', meal.id);
   };
 
   return (
@@ -233,19 +248,60 @@ const Home: React.FC = () => {
             </section>
 
             <section className="home-block home-block--meals">
-              <span className="home-block__title">Today&apos;s meals</span>
-              <span className="home-block__placeholder">
-                Meals list will be here.
-              </span>
+              <div className="meals-header">
+                <span className="home-block__title">Today&apos;s meals</span>
+              </div>
+
+              <div className="meals-list">
+                {meals.map((meal) => {
+                  const mealPercent =
+                    meal.targetKcal === 0
+                      ? 0
+                      : Math.min(
+                        (meal.currentKcal / meal.targetKcal) * 100,
+                        100
+                      );
+
+                  return (
+                    <div key={meal.id} className="meal-row">
+                      <div className="meal-left">
+                        <div className={`meal-icon meal-icon--${meal.id}`} />
+
+                        <div className="meal-info">
+                          <div className="meal-title">{meal.name}</div>
+
+                          <div className="meal-kcal-row">
+                            <div className="meal-progress-bar">
+                              <div
+                                className="meal-progress-bar__fill"
+                                style={{ width: `${mealPercent}%` }}
+                              />
+                            </div>
+                            <span className="meal-kcal-text">
+                              {meal.currentKcal} / {meal.targetKcal} kcal
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        className="meal-add-btn"
+                        onClick={() => handleAddMealClick(meal)}
+                        aria-label={`Add food to ${meal.name}`}>
+                        <FiPlus size={18} />
+                      </button>
+                    </div>
+                  );
+                })}
+              </div>
             </section>
 
             <button
               className="btn secondary home-logout-btn"
-              onClick={handleLogout}
-            >
+              onClick={handleLogout}>
               Logout
             </button>
-
             <MainMenu />
           </div>
         </div>
