@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useAppDispatch } from '../store/hooks';
 import AuthorizeView from "../authorization/AuthorizeView";
 import { logoutStart } from '../auth';
@@ -7,19 +7,6 @@ import ThemeToggle from '../ThemeTongle';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    const t =
-      localStorage.getItem('ct_theme') ||
-      (window.matchMedia && window.matchMedia('(prefers-color-scheme:dark)').matches
-        ? 'dark'
-        : 'light');
-
-    document.documentElement.setAttribute(
-      'data-theme',
-      t === 'light' ? 'light' : 'dark'
-    );
-  }, []);
 
   const handleLogout = () => {
     const theme = localStorage.getItem('ct_theme');
