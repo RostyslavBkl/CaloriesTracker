@@ -31,4 +31,13 @@
         api,
         custom
     }
+
+    public enum Plan
+    {
+        Balanced,
+        HighProtein,
+        LowCarb ,
+        HighCarb ,
+        Custom
+    }
 }

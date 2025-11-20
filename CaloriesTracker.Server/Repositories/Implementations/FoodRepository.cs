@@ -57,6 +57,8 @@ namespace CaloriesTracker.Server.Repositories.Implementations
 
         public async Task<Food> CreateCustomFoodAsync(Food food, Guid userId)
         {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("UserId cannot be empty", nameof(userId));
             try
             {
                 using var connection = _connectionFactory.Create();
@@ -120,9 +122,12 @@ namespace CaloriesTracker.Server.Repositories.Implementations
         {
             try
             {
-
                 using var connection = _connectionFactory.Create();
                 await connection.OpenAsync();
+
+                var currFood = await GetFoodByIdAsync(food.Id);
+                if(currFood == null)
+                    throw new InvalidOperationException($"Food: {currFood.Id} not found");
 
                 var sql = "UPDATE Foods " +
                     "SET Name = @Name, WeightG = @WeightG, ProteinG = @ProteinG, FatG = @FatG, CarbsG = @CarbsG " +
@@ -133,13 +138,11 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 {
                     food.Id,
                     UserId = userId,
-                    // target-typed property shorthand
-                    food.Name,
-                    food.WeightG,
-                    food.ProteinG,
-                    food.FatG,
-                    food.CarbsG,
-                    //food.Type,
+                    Name = food.Name ?? currFood.Name,
+                    WeightG = food.WeightG ?? currFood.WeightG,
+                    ProteinG = food.ProteinG ?? currFood.ProteinG,
+                    FatG = food.FatG ?? currFood.FatG,
+                    CarbsG = food.CarbsG ?? currFood.CarbsG,
                 });
                 return updatedFood;
             }

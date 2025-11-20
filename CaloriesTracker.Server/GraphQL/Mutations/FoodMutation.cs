@@ -12,28 +12,24 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
         {
             Field<FoodType>("createCustomFood")
                 .Argument<NonNullGraphType<FoodInputType>>("food")
-                .Argument<NonNullGraphType<GuidGraphType>>("userId")
                 .ResolveAsync(async context =>
                 {
                     var service = context.RequestServices!.GetRequiredService<FoodService>();
                     var food = context.GetArgument<Food>("food");
-                    var userId = context.GetArgument<Guid>("userId");
-                    return await service.CreateCustomFoodAsync(food, userId);
+
+                    return await service.CreateCustomFoodAsync(food);
                 });
             Field<FoodType>("deleteCustomFood")
                 .Argument<NonNullGraphType<GuidGraphType>>("id")
-                .Argument<NonNullGraphType<GuidGraphType>>("userId")
                 .ResolveAsync(async context =>
                 {
                     var service = context.RequestServices!.GetRequiredService<FoodService>();
                     var id = context.GetArgument<Guid>("id");
-                    var userId = context.GetArgument<Guid>("userId");
-                    return await service.DeleteCustomFoodAsync(id, userId);
+                    return await service.DeleteCustomFoodAsync(id);
                 });
             Field<FoodType>("updateCustomFood")
                .Argument<NonNullGraphType<GuidGraphType>>("id")
                .Argument<NonNullGraphType<FoodInputType>>("food")
-               .Argument<NonNullGraphType<GuidGraphType>>("userId")
                .ResolveAsync(async context =>
                {
                    var service = context.RequestServices!.GetRequiredService<FoodService>();
@@ -42,8 +38,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
 
                    food.Id = id;
 
-                   var userId = context.GetArgument<Guid>("userId");
-                   return await service.UpdateCustomFoodAsync(food, userId);
+                   return await service.UpdateCustomFoodAsync(food);
                });
 
 
