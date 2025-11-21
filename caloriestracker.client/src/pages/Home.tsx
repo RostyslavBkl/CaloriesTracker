@@ -1,9 +1,13 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FiCalendar, FiPlus } from 'react-icons/fi';
 import { useAppDispatch } from '../store/hooks';
+import { useSelector } from 'react-redux';
 import AuthorizeView from '../authorization/AuthorizeView';
 import { logoutStart } from '../auth';
 import MainMenu from '../navigation/MainMenu';
+import { openGoalModal, getActiveGoalRequest, deleteGoalRequest } from '../nutrition/nutritionGoalSlice';
+import { NutritionGoalModal } from '../nutrition/nutritionGoalModal';
+import { RootState } from '../store';
 import './Home.css';
 
 type Meal = {
@@ -21,51 +25,43 @@ const Home: React.FC = () => {
     return today.toISOString().slice(0, 10);
   });
 
-  const dailyGoals = {
-    caloriesTarget: 2000,
-    carbs: { current: 0, target: 225 },
-    proteins: { current: 0, target: 128 },
-    fats: { current: 0, target: 92 }
-  };
+  const { activeGoal, loading } = useSelector(
+    (state: RootState) => state.nutritionGoal
+  );
 
-  const meals: Meal[] = [
-    { id: 'breakfast', name: 'Breakfast', currentKcal: 0, targetKcal: 768 },
-    { id: 'lunch', name: 'Lunch', currentKcal: 0, targetKcal: 768 }
-  ];
+  useEffect(() => {
+    dispatch(getActiveGoalRequest());
+  }, [dispatch]);
 
-  const [goalExists, setGoalExists] = useState<boolean>(true);
-  const [goalsMenuOpen, setGoalsMenuOpen] = useState(false);
-
-  const targetKcal = dailyGoals.caloriesTarget;
   const consumedKcal = 550;
+
+  const targetKcal = activeGoal?.targetCalories ?? 0;
   const remainingKcal = Math.max(targetKcal - consumedKcal, 0);
   const percent =
     targetKcal === 0 ? 0 : Math.min((consumedKcal / targetKcal) * 100, 100);
   const progressDeg = percent * 3.6;
 
+  const carbsTarget = activeGoal?.carbG ?? 0;
+  const proteinsTarget = activeGoal?.proteinG ?? 0;
+  const fatsTarget = activeGoal?.fatG ?? 0;
+
+  const carbsCurrent = 0;
+  const proteinsCurrent = 0;
+  const fatsCurrent = 0;
+
   const carbsPercent =
-    dailyGoals.carbs.target === 0
-      ? 0
-      : Math.min(
-        (dailyGoals.carbs.current / dailyGoals.carbs.target) * 100,
-        100
-      );
-
+    carbsTarget === 0 ? 0 : Math.min((carbsCurrent / carbsTarget) * 100, 100);
   const proteinsPercent =
-    dailyGoals.proteins.target === 0
+    proteinsTarget === 0
       ? 0
-      : Math.min(
-        (dailyGoals.proteins.current / dailyGoals.proteins.target) * 100,
-        100
-      );
-
+      : Math.min((proteinsCurrent / proteinsTarget) * 100, 100);
   const fatsPercent =
-    dailyGoals.fats.target === 0
-      ? 0
-      : Math.min(
-        (dailyGoals.fats.current / dailyGoals.fats.target) * 100,
-        100
-      );
+    fatsTarget === 0 ? 0 : Math.min((fatsCurrent / fatsTarget) * 100, 100);
+
+  const meals: Meal[] = [
+    { id: 'breakfast', name: 'Breakfast', currentKcal: 0, targetKcal: 768 },
+    { id: 'lunch', name: 'Lunch', currentKcal: 0, targetKcal: 768 }
+  ];
 
   const handleLogout = () => {
     const theme = localStorage.getItem('ct_theme');
@@ -81,17 +77,13 @@ const Home: React.FC = () => {
   };
 
   const handleAddGoal = () => {
-    if (goalExists) return;
-    setGoalExists(true);
+    dispatch(openGoalModal());
   };
 
-  const toggleGoalsMenu = () => {
-    setGoalsMenuOpen((prev) => !prev);
-  };
+  const [goalsMenuOpen, setGoalsMenuOpen] = useState(false);
 
-  const closeGoalsMenu = () => {
-    setGoalsMenuOpen(false);
-  };
+  const toggleGoalsMenu = () => setGoalsMenuOpen((prev) => !prev);
+  const closeGoalsMenu = () => setGoalsMenuOpen(false);
 
   const handleAddMealClick = (meal: Meal) => {
     console.log('Add to meal:', meal.id);
@@ -128,11 +120,11 @@ const Home: React.FC = () => {
                 <div className="goals-actions">
                   <button
                     type="button"
-                    className={`goals-add-btn ${goalExists ? 'disabled' : ''
-                      }`}
+                    className="goals-add-btn"
                     onClick={handleAddGoal}
-                    disabled={goalExists}
-                    aria-label="Add daily goal"
+                    aria-label={
+                      activeGoal ? 'Edit daily goal' : 'Add daily goal'
+                    }
                   >
                     <FiPlus size={18} />
                   </button>
@@ -154,19 +146,26 @@ const Home: React.FC = () => {
                         <button
                           type="button"
                           className="goals-menu__item"
-                          onClick={closeGoalsMenu}
+                          onClick={() => {
+                            closeGoalsMenu();
+                            dispatch(openGoalModal());
+                          }}
                         >
                           Edit
                         </button>
                         <button
                           type="button"
                           className="goals-menu__item goals-menu__item--danger"
-                          onClick={closeGoalsMenu}
+                          onClick={() => {
+                            closeGoalsMenu();
+                            dispatch(deleteGoalRequest());
+                          }}
                         >
                           Delete
                         </button>
                       </div>
                     )}
+
                   </div>
                 </div>
               </div>
@@ -176,7 +175,7 @@ const Home: React.FC = () => {
                   <div className="goals-summary-left">
                     <span className="goals-summary-label">Daily intake</span>
                     <span className="goals-summary-percent">
-                      {percent.toFixed(1)}%
+                      {loading ? '...' : `${percent.toFixed(1)}%`}
                     </span>
                     <span className="goals-summary-target">
                       Target: {targetKcal} kcal
@@ -195,7 +194,7 @@ const Home: React.FC = () => {
                     >
                       <div className="goals-summary-circle__inner">
                         <span className="goals-circle-value">
-                          {consumedKcal}
+                          {remainingKcal}
                         </span>
                         <span className="goals-circle-unit">kcal</span>
                       </div>
@@ -207,7 +206,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--carbs">
                     <div className="macro-card__label">carbs</div>
                     <div className="macro-card__values">
-                      {dailyGoals.carbs.current} / {dailyGoals.carbs.target} g
+                      {carbsCurrent} / {carbsTarget} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -220,8 +219,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--protein">
                     <div className="macro-card__label">proteins</div>
                     <div className="macro-card__values">
-                      {dailyGoals.proteins.current} /{' '}
-                      {dailyGoals.proteins.target} g
+                      {proteinsCurrent} / {proteinsTarget} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -234,7 +232,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--fats">
                     <div className="macro-card__label">fats</div>
                     <div className="macro-card__values">
-                      {dailyGoals.fats.current} / {dailyGoals.fats.target} g
+                      {fatsCurrent} / {fatsTarget} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -288,7 +286,8 @@ const Home: React.FC = () => {
                         type="button"
                         className="meal-add-btn"
                         onClick={() => handleAddMealClick(meal)}
-                        aria-label={`Add food to ${meal.name}`}>
+                        aria-label={`Add food to ${meal.name}`}
+                      >
                         <FiPlus size={18} />
                       </button>
                     </div>
@@ -299,13 +298,16 @@ const Home: React.FC = () => {
 
             <button
               className="btn secondary home-logout-btn"
-              onClick={handleLogout}>
+              onClick={handleLogout}
+            >
               Logout
             </button>
             <MainMenu />
           </div>
         </div>
       </div>
+
+      <NutritionGoalModal />
     </AuthorizeView>
   );
 };

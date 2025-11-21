@@ -13,27 +13,45 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
         {
             Field<NutritionGoalType>("setGoal")
                 .Argument<NonNullGraphType<GoalInputType>>("goal")
-                .Argument<NonNullGraphType<EnumerationGraphType<Plan>>>("plan")
+                .Argument<NonNullGraphType<StringGraphType>>("plan")
                 .ResolveAsync(async context =>
                 {
                     var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
+
                     var goal = context.GetArgument<NutritionGoal>("goal");
-                    var plan = context.GetArgument<Plan>("plan");
+                    var planStr = context.GetArgument<string>("plan");
+
+                    if (!Enum.TryParse<Plan>(planStr, ignoreCase: true, out var plan))
+                    {
+                        throw new ExecutionError($"Invalid plan value: {planStr}");
+                    }
 
                     return await service.SetGoal(goal, plan);
                 });
+
             Field<NutritionGoalType>("updateGoal")
                 .Argument<NonNullGraphType<GoalInputType>>("goal")
-                .Argument<NonNullGraphType<EnumerationGraphType<Plan>>>("plan")
-                 .ResolveAsync(async context =>
-                 {
-                     var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
+                .Argument<NonNullGraphType<StringGraphType>>("plan")
+                .ResolveAsync(async context =>
+                {
+                    var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
 
-                     var goal = context.GetArgument<NutritionGoal>("goal");
-                     var plan = context.GetArgument<Plan>("plan");
+                    var goal = context.GetArgument<NutritionGoal>("goal");
+                    var planStr = context.GetArgument<string>("plan");
 
-                     return await service.UpdateGoal(goal, plan);
-                 });
+                    if (!Enum.TryParse<Plan>(planStr, ignoreCase: true, out var plan))
+                    {
+                        throw new ExecutionError($"Invalid plan value: {planStr}");
+                    }
+
+                    return await service.UpdateGoal(goal, plan);
+                });
+            Field<NutritionGoalType>("deleteGoal")
+                .ResolveAsync(async context =>
+                {
+                    var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
+                    return await service.DeleteActiveGoal();
+                });
         }
     }
 }
