@@ -30,3 +30,7 @@ export interface MealsState {
   loading: boolean;
   error: string | null;
 }
+
+export interface MealsByDayResponse {
+  mealsByDiaryDayId: Meal[];
+}

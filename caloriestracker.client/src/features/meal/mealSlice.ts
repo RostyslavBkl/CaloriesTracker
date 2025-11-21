@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MealsState, Meal, MealItem, SummaryNutrition } from "./mealTypes";
+import { MealsState, Meal } from "./mealTypes";
 
 const initialState: MealsState = {
   mealsByDay: {},
@@ -9,7 +9,30 @@ const initialState: MealsState = {
 };
 
 const mealSlice = createSlice({
-  name: "Meal",
+  name: "meal",
   initialState,
-  reducers: {},
+  reducers: {
+    getMealsByDay: (state, action: PayloadAction<string>) => {
+      state.loading = true;
+      state.error = null;
+      state.currDayId = action.payload;
+    },
+    getMealsByDaySucces: (
+      state,
+      action: PayloadAction<{ diaryDayId: string; meals: Meal[] }>
+    ) => {
+      const { diaryDayId, meals } = action.payload;
+      state.mealsByDay[diaryDayId] = meals;
+      state.loading = false;
+    },
+    getMealsByDayFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
 });
+
+export const { getMealsByDay, getMealsByDaySucces, getMealsByDayFailure } =
+  mealSlice.actions;
+
+export default mealSlice.reducer;
