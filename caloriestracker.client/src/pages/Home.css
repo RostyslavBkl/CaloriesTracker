@@ -153,10 +153,15 @@
   background: rgba(148, 163, 184, 0.15);
 }
 
-.goals-add-btn.disabled,
-.goals-add-btn:disabled {
-  opacity: 0.25;
-  cursor: not-allowed;
+.goals-add-btn--disabled {
+  opacity: 0.35;
+  cursor: default;
+  pointer-events: none;
+}
+
+.goals-add-btn--disabled:hover {
+  transform: none;
+  box-shadow: none;
 }
 
 .goals-menu__trigger {

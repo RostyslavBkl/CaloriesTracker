@@ -19,12 +19,14 @@
   border: 1px solid rgba(255, 255, 255, 0.06);
   color: var(--text);
   animation: modalFade 0.18s ease-out;
+  position: relative;
 }
 
 .goal-modal-header {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-start;
+  padding-right: 40px;
 }
 
 .goal-modal-header h2 {
@@ -34,11 +36,20 @@
 }
 
 .goal-modal-header button {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   background: rgba(148, 163, 184, 0.15);
   border: none;
-  width: 26px;
-  height: 26px;
-  border-radius: 8px;
+  border-radius: 10px;
   color: var(--muted);
   cursor: pointer;
   transition: 0.15s;
@@ -48,6 +59,7 @@
   background: rgba(148, 163, 184, 0.25);
   color: var(--text);
 }
+
 
 .goal-modal-body {
   margin-top: 16px;

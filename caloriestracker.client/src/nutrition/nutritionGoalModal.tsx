@@ -28,7 +28,7 @@ export const NutritionGoalModal = () => {
       dispatch(
         setGoalRequest({
           plan: 'Balanced',
-          targetCalories: targetCalories,
+          targetCalories,
         })
       );
       return;
@@ -37,20 +37,32 @@ export const NutritionGoalModal = () => {
     dispatch(
       setGoalRequest({
         plan: 'Custom',
-        targetCalories: targetCalories,
-        proteinG: proteinG,
-        fatG: fatG,
-        carbG: carbG,
+        targetCalories,
+        proteinG,
+        fatG,
+        carbG,
       })
     );
+  };
+
+  const handleClose = () => {
+    dispatch(closeGoalModal());
   };
 
   return (
     <div className="goal-modal-backdrop">
       <div className="goal-modal">
         <div className="goal-modal-header">
-          <h2>Daily goal</h2>
-          <button onClick={() => dispatch(closeGoalModal())}>×</button>
+          <h2 className="goal-modal-title">Daily goal</h2>
+
+          <button
+            type="button"
+            className="goal-modal-close"
+            onClick={handleClose}
+            aria-label="Close daily goal modal"
+          >
+            ×
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="goal-modal-body">
@@ -115,16 +127,21 @@ export const NutritionGoalModal = () => {
             </>
           )}
 
-          {error && <div className="error">{error}</div>}
+          {error && <div className="error goal-modal-error">{error}</div>}
 
           <div className="goal-modal-footer">
             <button
               type="button"
-              onClick={() => dispatch(closeGoalModal())}
+              onClick={handleClose}
+              className="goal-modal-btn goal-modal-btn--secondary"
             >
               Cancel
             </button>
-            <button type="submit" disabled={loading}>
+            <button
+              type="submit"
+              disabled={loading}
+              className="goal-modal-btn goal-modal-btn--primary"
+            >
               {loading ? 'Saving…' : 'Save goal'}
             </button>
           </div>

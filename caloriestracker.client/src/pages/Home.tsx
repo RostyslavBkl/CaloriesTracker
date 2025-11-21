@@ -29,6 +29,8 @@ const Home: React.FC = () => {
     (state: RootState) => state.nutritionGoal
   );
 
+  const isAddDisabled = !!activeGoal || loading;
+
   useEffect(() => {
     dispatch(getActiveGoalRequest());
   }, [dispatch]);
@@ -120,12 +122,9 @@ const Home: React.FC = () => {
                 <div className="goals-actions">
                   <button
                     type="button"
-                    className="goals-add-btn"
+                    className={`goals-add-btn ${isAddDisabled ? 'goals-add-btn--disabled' : ''}`}
                     onClick={handleAddGoal}
-                    aria-label={
-                      activeGoal ? 'Edit daily goal' : 'Add daily goal'
-                    }
-                  >
+                    aria-label="Add daily goal">
                     <FiPlus size={18} />
                   </button>
 
@@ -253,12 +252,9 @@ const Home: React.FC = () => {
               <div className="meals-list">
                 {meals.map((meal) => {
                   const mealPercent =
-                    meal.targetKcal === 0
-                      ? 0
-                      : Math.min(
-                        (meal.currentKcal / meal.targetKcal) * 100,
-                        100
-                      );
+                    meal.targetKcal === 0 ? 0 : Math.min(
+                      (meal.currentKcal / meal.targetKcal) * 100, 100
+                    );
 
                   return (
                     <div key={meal.id} className="meal-row">
