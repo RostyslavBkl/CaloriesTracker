@@ -4,14 +4,18 @@ using CaloriesTracker.Server.GraphQL.Queries;
 using CaloriesTracker.Server.GraphQL.Schemas;
 using CaloriesTracker.Server.GraphQL.Type;
 using CaloriesTracker.Server.GraphQL.Types;
+using CaloriesTracker.Server.GraphQL.Types.DiaryDay;
+using CaloriesTracker.Server.GraphQL.Types.NutritionGoal;
 using CaloriesTracker.Server.GraphQL.Types.MealTypes;
 using CaloriesTracker.Server.GraphQL.Types.UserProfileTypes;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Implementations;
 using CaloriesTracker.Server.Repositories.Interfaces;
+using CaloriesTracker.Server.Services.DiaryDayServices;
 using CaloriesTracker.Server.Services;
 using CaloriesTracker.Server.Services.FoodService;
+using CaloriesTracker.Server.Services.NutritionalGoalServices;
 using GraphQL;
 using GraphQL.Server.Ui.GraphiQL;
 using GraphQL.Types;
@@ -84,10 +88,15 @@ builder.Services.AddCors(options =>
 // Database and Repositories
 builder.Services.AddSingleton<IDbConnectionFactory, SqlConnectionFactory>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodApiRepository, FoodApiRepository>();
 builder.Services.AddScoped<IMealRepository, MealRepository>();
 builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+
+builder.Services.AddScoped<INutritionGoalRepository, NutritionGoalRepository>();
+
+builder.Services.AddScoped<IDiaryDay, DiaryDayRepository>();
 
 // Services
 builder.Services.AddScoped<UserProfileService>();
@@ -95,6 +104,11 @@ builder.Services.AddScoped<MealService>();
 builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
 builder.Services.AddScoped<FoodApiService>();
+
+builder.Services.AddScoped<NutritionalGoalService>();
+
+builder.Services.AddScoped<DiaryDayService>();
+
 builder.Services.AddScoped<AuthRepository>();
 builder.Services.AddScoped<JwtTokenRepository>();
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
@@ -102,22 +116,33 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 // GraphQL Registration
 builder.Services.AddSingleton<RootQuery>();
 builder.Services.AddSingleton<FoodQuery>();
+builder.Services.AddSingleton<NutritionGoalQuery>();
+builder.Services.AddSingleton<DiaryQuery>();
 builder.Services.AddSingleton<AuthQuery>();
 builder.Services.AddSingleton<MealQuery>();
 builder.Services.AddSingleton<UserProfileQuery>();
 
 builder.Services.AddSingleton<RootMutations>();
 builder.Services.AddSingleton<FoodMutation>();
+builder.Services.AddSingleton<NutritionGoalMutations>();
 builder.Services.AddSingleton<AuthMutation>();
 builder.Services.AddSingleton<MealMutation>();
 builder.Services.AddSingleton<MealMutation>();
 builder.Services.AddSingleton<UserProfileMutation>();
+builder.Services.AddSingleton<DiaryDayMutations>();
 
-// GraphQL Types
+// Food Types
 builder.Services.AddSingleton<FoodType>();
 builder.Services.AddSingleton<FoodInputType>();
 builder.Services.AddSingleton<FoodApiInputType>();
-
+// Nutritional Goal Types
+builder.Services.AddSingleton<NutritionGoalType>();
+builder.Services.AddSingleton<NutrtionGoalSummaryType>();
+builder.Services.AddSingleton<GoalInputType>();
+// Diary Day Types
+builder.Services.AddSingleton<DiaryType>();
+builder.Services.AddSingleton<DiaryDetailsType>();
+// Auth Types
 builder.Services.AddSingleton<UserType>();
 builder.Services.AddSingleton<AuthResponseType>();
 builder.Services.AddSingleton<RegInputType>();

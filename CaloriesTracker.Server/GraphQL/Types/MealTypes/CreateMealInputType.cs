@@ -8,7 +8,7 @@ namespace CaloriesTracker.Server.GraphQL.Types.MealTypes
         {
             Name = "CreateMealInput";
 
-            Field<NonNullGraphType<GuidGraphType>>("diaryDayId");
+            //Field<NonNullGraphType<GuidGraphType>>("diaryDayId");
             Field<NonNullGraphType<MealTypeEnum>>("mealType");
             Field<DateTimeOffsetGraphType>("eatenAt");
             Field<ListGraphType<NonNullGraphType<MealItemInputType>>>("items");
