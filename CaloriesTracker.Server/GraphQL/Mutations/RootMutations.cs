@@ -11,6 +11,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
             var goalM = provider.GetRequiredService<NutritionGoalMutations>();
             var diaryM = provider.GetRequiredService<DiaryDayMutations>();
             var mealM = provider.GetRequiredService<MealMutation>();
+            var userProfileM = provider.GetRequiredService<UserProfileMutation>();
 
             foreach (var field in foodM.Fields)
             {
@@ -24,6 +25,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
             {
                 AddField(field);
             }
+            foreach (var field in userProfileM.Fields)
             foreach(var field in goalM.Fields)
             {
                 AddField(field);

@@ -13,6 +13,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
             var goalQuery = provider.GetRequiredService<NutritionGoalQuery>();
             var diaryQuery = provider.GetRequiredService<DiaryQuery>();
             var mealQuery = provider.GetRequiredService<MealQuery>();
+            var userProfileQuery = provider.GetRequiredService<UserProfileQuery>();
 
             foreach (var field in authQuery.Fields)
             {
@@ -32,6 +33,10 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 AddField(field);
             }
             foreach (var field in mealQuery.Fields)
+            {
+                AddField(field);
+            }
+            foreach (var field in userProfileQuery.Fields)
             {
                 AddField(field);
             }
