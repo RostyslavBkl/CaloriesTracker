@@ -7,12 +7,16 @@ import {
   setGoalRequest,
   setGoalSuccess,
   setGoalFailure,
-  deleteGoalRequest,
-  deleteGoalSuccess,
-  deleteGoalFailure,
+  updateGoalRequest,
+  updateGoalSuccess,
+  updateGoalFailure,
 } from './nutritionGoalSlice';
 
-import { SetGoalPayload, NutritionGoal } from './nutritionGoalTypes';
+import {
+  SetGoalPayload,
+  UpdateGoalPayload,
+  NutritionGoal,
+} from './nutritionGoalTypes';
 import { AnyAction } from '@reduxjs/toolkit';
 
 const GRAPHQL_URL = '/graphql';
@@ -97,10 +101,48 @@ const setGoalMutationCustom = `
   }
 `;
 
-const deleteGoalMutation = `
-  mutation {
-    deleteGoal {
+const updateGoalMutationBalanced = `
+  mutation($targetCalories: Int!) {
+    updateGoal(
+      goal: { targetCalories: $targetCalories }
+      plan: "Balanced"
+    ) {
       id
+      startDate
+      endDate
+      targetCalories
+      proteinG
+      fatG
+      carbG
+      isActive
+    }
+  }
+`;
+
+const updateGoalMutationCustom = `
+  mutation(
+    $targetCalories: Int!
+    $proteinG: Decimal
+    $fatG: Decimal
+    $carbG: Decimal
+  ) {
+    updateGoal(
+      goal: {
+        targetCalories: $targetCalories
+        proteinG: $proteinG
+        fatG: $fatG
+        carbG: $carbG
+      }
+      plan: "Custom"
+    ) {
+      id
+      startDate
+      endDate
+      targetCalories
+      proteinG
+      fatG
+      carbG
+      isActive
     }
   }
 `;
@@ -109,9 +151,9 @@ export const getActiveGoalEpic = (action$: any) =>
   action$.pipe(
     ofType(getActiveGoalRequest.type),
     mergeMap(() =>
-      fetchGraphQL<{ getActive: NutritionGoal | null }>(getActiveGoalQuery).then(
-        data => getActiveGoalSuccess(data.getActive)
-      ).catch((err: Error) => getActiveGoalFailure(err.message))
+      fetchGraphQL<{ getActive: NutritionGoal | null }>(getActiveGoalQuery)
+        .then(data => getActiveGoalSuccess(data.getActive))
+        .catch((err: Error) => getActiveGoalFailure(err.message))
     )
   );
 
@@ -123,6 +165,7 @@ export const setGoalEpic = (action$: any) =>
 
       if (payload.plan === 'Balanced') {
         const variables = { targetCalories: payload.targetCalories };
+
         return fetchGraphQL<{ setGoal: NutritionGoal }>(
           setGoalMutationBalanced,
           variables
@@ -146,14 +189,38 @@ export const setGoalEpic = (action$: any) =>
         .catch((err: Error) => setGoalFailure(err.message));
     })
   );
-export const deleteGoalEpic = (action$: any) =>
+
+export const updateGoalEpic = (action$: any) =>
   action$.pipe(
-    ofType(deleteGoalRequest.type),
-    mergeMap(() =>
-      fetchGraphQL<{ deleteGoal: NutritionGoal | null }>(deleteGoalMutation)
-        .then(() => deleteGoalSuccess())
-        .catch((err: Error) => deleteGoalFailure(err.message))
-    )
+    ofType(updateGoalRequest.type),
+    mergeMap((action: AnyAction) => {
+      const payload = action.payload as UpdateGoalPayload;
+
+      if (payload.plan === 'Balanced') {
+        const variables = { targetCalories: payload.targetCalories };
+
+        return fetchGraphQL<{ updateGoal: NutritionGoal }>(
+          updateGoalMutationBalanced,
+          variables
+        )
+          .then(data => updateGoalSuccess(data.updateGoal))
+          .catch((err: Error) => updateGoalFailure(err.message));
+      }
+
+      const variables = {
+        targetCalories: payload.targetCalories,
+        proteinG: payload.proteinG,
+        fatG: payload.fatG,
+        carbG: payload.carbG,
+      };
+
+      return fetchGraphQL<{ updateGoal: NutritionGoal }>(
+        updateGoalMutationCustom,
+        variables
+      )
+        .then(data => updateGoalSuccess(data.updateGoal))
+        .catch((err: Error) => updateGoalFailure(err.message));
+    })
   );
 
-export const nutritionGoalEpics = [getActiveGoalEpic, setGoalEpic, deleteGoalEpic];
+export const nutritionGoalEpics = [getActiveGoalEpic, setGoalEpic, updateGoalEpic];

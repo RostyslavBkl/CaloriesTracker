@@ -25,3 +25,5 @@ export interface SetGoalPayloadCustom {
 }
 
 export type SetGoalPayload = SetGoalPayloadBalanced | SetGoalPayloadCustom;
+
+export type UpdateGoalPayload = SetGoalPayload;

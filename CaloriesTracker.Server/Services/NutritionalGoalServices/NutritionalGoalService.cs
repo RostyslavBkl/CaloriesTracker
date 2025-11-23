@@ -173,20 +173,5 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
                     throw new ArgumentException("The difference between EndDate and StartDate must be at least one day");
             }
         }
-        public async Task<NutritionGoal?> DeleteActiveGoal()
-        {
-            var userId = await GetUserId();
-            if (userId == Guid.Empty)
-                throw new UnauthorizedAccessException("User not authenticated");
-
-            var active = await _goalRepo.GetActiveGoal(userId);
-            if (active == null)
-                return null;
-
-            // тут якраз використовуємо DeactivateGoal з репозиторію
-            var deactivated = await _goalRepo.DeactivateGoal(active.Id, userId);
-            return deactivated;
-        }
-
     }
 }

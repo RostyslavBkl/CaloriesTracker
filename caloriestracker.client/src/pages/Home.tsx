@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { FiCalendar, FiPlus } from 'react-icons/fi';
+import { FiCalendar, FiPlus, FiEdit } from 'react-icons/fi';
 import { useAppDispatch } from '../store/hooks';
 import { useSelector } from 'react-redux';
 import AuthorizeView from '../authorization/AuthorizeView';
-import { logoutStart } from '../auth';
 import MainMenu from '../navigation/MainMenu';
-import { openGoalModal, getActiveGoalRequest, deleteGoalRequest } from '../nutrition/nutritionGoalSlice';
+import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionGoalSlice';
 import { NutritionGoalModal } from '../nutrition/nutritionGoalModal';
 import { RootState } from '../store';
 import './Home.css';
@@ -25,9 +24,7 @@ const Home: React.FC = () => {
     return today.toISOString().slice(0, 10);
   });
 
-  const { activeGoal, loading } = useSelector(
-    (state: RootState) => state.nutritionGoal
-  );
+  const { activeGoal, loading } = useSelector((s: RootState) => s.nutritionGoal);
 
   const isAddDisabled = !!activeGoal || loading;
 
@@ -65,27 +62,9 @@ const Home: React.FC = () => {
     { id: 'lunch', name: 'Lunch', currentKcal: 0, targetKcal: 768 }
   ];
 
-  const handleLogout = () => {
-    const theme = localStorage.getItem('ct_theme');
-    localStorage.clear();
-    if (theme) localStorage.setItem('ct_theme', theme);
-
-    try {
-      dispatch(logoutStart());
-    } catch {
-    }
-
-    window.location.href = '/login';
-  };
-
   const handleAddGoal = () => {
     dispatch(openGoalModal());
   };
-
-  const [goalsMenuOpen, setGoalsMenuOpen] = useState(false);
-
-  const toggleGoalsMenu = () => setGoalsMenuOpen((prev) => !prev);
-  const closeGoalsMenu = () => setGoalsMenuOpen(false);
 
   const handleAddMealClick = (meal: Meal) => {
     console.log('Add to meal:', meal.id);
@@ -124,7 +103,8 @@ const Home: React.FC = () => {
                     type="button"
                     className={`goals-add-btn ${isAddDisabled ? 'goals-add-btn--disabled' : ''}`}
                     onClick={handleAddGoal}
-                    aria-label="Add daily goal">
+                    aria-label="Add daily goal"
+                  >
                     <FiPlus size={18} />
                   </button>
 
@@ -132,39 +112,11 @@ const Home: React.FC = () => {
                     <button
                       type="button"
                       className="goals-menu__trigger"
-                      aria-label="Open goals menu"
-                      onClick={toggleGoalsMenu}
+                      aria-label="Edit daily goal"
+                      onClick={() => dispatch(openGoalModal())}
                     >
-                      <span className="goals-menu__dot" />
-                      <span className="goals-menu__dot" />
-                      <span className="goals-menu__dot" />
+                      <FiEdit size={16} />
                     </button>
-
-                    {goalsMenuOpen && (
-                      <div className="goals-menu__dropdown">
-                        <button
-                          type="button"
-                          className="goals-menu__item"
-                          onClick={() => {
-                            closeGoalsMenu();
-                            dispatch(openGoalModal());
-                          }}
-                        >
-                          Edit
-                        </button>
-                        <button
-                          type="button"
-                          className="goals-menu__item goals-menu__item--danger"
-                          onClick={() => {
-                            closeGoalsMenu();
-                            dispatch(deleteGoalRequest());
-                          }}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    )}
-
                   </div>
                 </div>
               </div>
@@ -205,7 +157,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--carbs">
                     <div className="macro-card__label">carbs</div>
                     <div className="macro-card__values">
-                      {carbsCurrent} / {carbsTarget} g
+                      {carbsCurrent} / {carbsTarget.toFixed(0)} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -218,7 +170,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--protein">
                     <div className="macro-card__label">proteins</div>
                     <div className="macro-card__values">
-                      {proteinsCurrent} / {proteinsTarget} g
+                      {proteinsCurrent} / {proteinsTarget.toFixed(0)} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -231,7 +183,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--fats">
                     <div className="macro-card__label">fats</div>
                     <div className="macro-card__values">
-                      {fatsCurrent} / {fatsTarget} g
+                      {fatsCurrent} / {fatsTarget.toFixed(0)} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -252,9 +204,12 @@ const Home: React.FC = () => {
               <div className="meals-list">
                 {meals.map((meal) => {
                   const mealPercent =
-                    meal.targetKcal === 0 ? 0 : Math.min(
-                      (meal.currentKcal / meal.targetKcal) * 100, 100
-                    );
+                    meal.targetKcal === 0
+                      ? 0
+                      : Math.min(
+                        (meal.currentKcal / meal.targetKcal) * 100,
+                        100
+                      );
 
                   return (
                     <div key={meal.id} className="meal-row">
@@ -291,13 +246,6 @@ const Home: React.FC = () => {
                 })}
               </div>
             </section>
-
-            <button
-              className="btn secondary home-logout-btn"
-              onClick={handleLogout}
-            >
-              Logout
-            </button>
             <MainMenu />
           </div>
         </div>

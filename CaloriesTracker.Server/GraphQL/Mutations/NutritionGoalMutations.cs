@@ -46,12 +46,6 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
 
                     return await service.UpdateGoal(goal, plan);
                 });
-            Field<NutritionGoalType>("deleteGoal")
-                .ResolveAsync(async context =>
-                {
-                    var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
-                    return await service.DeleteActiveGoal();
-                });
         }
     }
 }

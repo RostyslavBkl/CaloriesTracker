@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NutritionGoal, SetGoalPayload } from './nutritionGoalTypes';
+import {
+  NutritionGoal,
+  SetGoalPayload,
+  UpdateGoalPayload,
+} from './nutritionGoalTypes';
 
 interface NutritionGoalState {
   activeGoal: NutritionGoal | null;
@@ -54,19 +58,20 @@ const nutritionGoalSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    deleteGoalRequest(state) {
+
+    updateGoalRequest(state, _action: PayloadAction<UpdateGoalPayload>) {
       state.loading = true;
       state.error = null;
     },
-    deleteGoalSuccess(state) {
+    updateGoalSuccess(state, action: PayloadAction<NutritionGoal>) {
       state.loading = false;
-      state.activeGoal = null;
+      state.activeGoal = action.payload;
+      state.isModalOpen = false;
     },
-    deleteGoalFailure(state, action: PayloadAction<string>) {
+    updateGoalFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
     },
-
   },
 });
 
@@ -79,9 +84,9 @@ export const {
   setGoalRequest,
   setGoalSuccess,
   setGoalFailure,
-  deleteGoalRequest,
-  deleteGoalSuccess,
-  deleteGoalFailure,
+  updateGoalRequest,
+  updateGoalSuccess,
+  updateGoalFailure,
 } = nutritionGoalSlice.actions;
 
 export default nutritionGoalSlice.reducer;
