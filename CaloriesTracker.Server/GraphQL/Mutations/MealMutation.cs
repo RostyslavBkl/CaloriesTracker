@@ -1,7 +1,10 @@
-﻿using CaloriesTracker.Server.GraphQL.Types.MealTypes;
+﻿using CaloriesTracker.Server.GraphQL.Types.DiaryDay;
+using CaloriesTracker.Server.GraphQL.Types.MealTypes;
 using CaloriesTracker.Server.Models;
+using CaloriesTracker.Server.Models.Diary;
 using CaloriesTracker.Server.Models.Meal;
 using CaloriesTracker.Server.Services;
+using CaloriesTracker.Server.Services.DiaryDayServices;
 using GraphQL;
 using GraphQL.Types;
 
@@ -19,10 +22,10 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
                         var input = ctx.GetArgument<CreateMealDto>("input");
-
+                        
                         var meal = new Meal
                         {
-                            DiaryDayId = input.DiaryDayId,
+                            //DiaryDayId = input.DiaryDayId,
                             MealType = input.MealType,
                             EatenAt = input.EatenAt
                         };
@@ -41,7 +44,9 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                     }
                     catch (Exception ex)
                     {
-                        throw new ExecutionError("Failed to create meal", ex);
+                        Console.WriteLine(ex);
+                        throw;
+                        //throw new ExecutionError("Failed to create meal", ex);
                     }
                 });
 
@@ -90,7 +95,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
         }
 
         private record CreateMealDto(
-            Guid DiaryDayId,
+            //Guid DiaryDayId,
             MealType MealType,
             DateTimeOffset? EatenAt,
             List<MealItemDto>? Items);

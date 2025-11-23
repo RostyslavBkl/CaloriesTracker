@@ -32,13 +32,13 @@
                 throw new ArgumentNullException(nameof(food),"Food can't be null");
             if (string.IsNullOrWhiteSpace(food.Name)) 
                 throw new ArgumentException("Food name is required", nameof(food.Name));
-            if (food.WeightG.HasValue && food.WeightG.Value <= 0)
+            if (food.WeightG.HasValue && food.WeightG.Value < 0)
                 throw new ArgumentException("Weight must be positive", nameof(food.WeightG));
-            if (food.ProteinG.HasValue && food.ProteinG.Value <= 0)
+            if (food.ProteinG.HasValue && food.ProteinG.Value < 0)
                 throw new ArgumentException("Protein must be positive", nameof(food.ProteinG));
-            if (food.FatG.HasValue && food.FatG.Value <= 0)
+            if (food.FatG.HasValue && food.FatG.Value < 0)
                 throw new ArgumentException("Fat must be positive", nameof(food.FatG));
-            if (food.FatG.HasValue && food.FatG.Value <= 0)
+            if (food.FatG.HasValue && food.FatG.Value < 0)
                 throw new ArgumentException("Weight must be positive", nameof(food.FatG));
         }
 
