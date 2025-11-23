@@ -8,6 +8,9 @@ import { authEpics } from "../auth/Epics";
 import mealReducer from "../features/meal/mealSlice";
 import { mealEpics } from "../features/meal/mealEpic";
 
+import foodReducer from "../features/food/foodSlice";
+import { foodEpics } from "../features/food/foodEpics";
+
 export type AppEpic = Epic<AnyAction, AnyAction, any>;
 
 const epicMiddleware = createEpicMiddleware();
@@ -16,6 +19,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     meal: mealReducer,
+    food: foodReducer,
   },
   middleware: (getDefault) =>
     getDefault({ serializableCheck: false }).concat(epicMiddleware),
@@ -24,6 +28,10 @@ export const store = configureStore({
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-const rootEpic: AppEpic = combineEpics(...authEpics, ...mealEpics);
+const rootEpic: AppEpic = combineEpics(
+  ...authEpics,
+  ...mealEpics,
+  ...foodEpics
+);
 
 epicMiddleware.run(rootEpic);

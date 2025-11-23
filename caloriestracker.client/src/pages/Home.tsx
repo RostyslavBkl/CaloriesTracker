@@ -83,7 +83,6 @@ const Home: React.FC = () => {
               }}
             >
               <DayliMeals />
-              <span>Welcome — content will appear here.</span>
             </div>
           </div>
         </div>

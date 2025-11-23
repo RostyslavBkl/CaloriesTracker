@@ -17,7 +17,7 @@ const mealSlice = createSlice({
       state.error = null;
       state.currDayId = action.payload;
     },
-    getMealsByDaySucces: (
+    getMealsByDaySuccess: (
       state,
       action: PayloadAction<{ diaryDayId: string; meals: Meal[] }>
     ) => {
@@ -32,7 +32,7 @@ const mealSlice = createSlice({
   },
 });
 
-export const { getMealsByDay, getMealsByDaySucces, getMealsByDayFailure } =
+export const { getMealsByDay, getMealsByDaySuccess, getMealsByDayFailure } =
   mealSlice.actions;
 
 export default mealSlice.reducer;

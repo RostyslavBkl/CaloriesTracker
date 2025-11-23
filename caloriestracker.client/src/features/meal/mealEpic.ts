@@ -6,7 +6,7 @@ import { mealsApi } from "./mealApi";
 import {
   getMealsByDay,
   getMealsByDayFailure,
-  getMealsByDaySucces,
+  getMealsByDaySuccess,
 } from "./mealSlice";
 
 export const getMealsByDayEpic = (action$: Observable<Action>) => {
@@ -18,7 +18,7 @@ export const getMealsByDayEpic = (action$: Observable<Action>) => {
 
       return mealsApi.getMealsByDay(diaryDayId).pipe(
         map((res) => {
-          return getMealsByDaySucces({
+          return getMealsByDaySuccess({
             diaryDayId,
             meals: res.mealsByDiaryDayId,
           });
