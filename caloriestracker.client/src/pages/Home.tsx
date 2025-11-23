@@ -13,7 +13,6 @@ type Meal = {
   id: string;
   name: string;
   currentKcal: number;
-  targetKcal: number;
 };
 
 const Home: React.FC = () => {
@@ -30,7 +29,7 @@ const Home: React.FC = () => {
 
   useEffect(() => {
     dispatch(getActiveGoalRequest());
-  }, [dispatch]);
+  }, []);
 
   const consumedKcal = 550;
 
@@ -51,15 +50,13 @@ const Home: React.FC = () => {
   const carbsPercent =
     carbsTarget === 0 ? 0 : Math.min((carbsCurrent / carbsTarget) * 100, 100);
   const proteinsPercent =
-    proteinsTarget === 0
-      ? 0
-      : Math.min((proteinsCurrent / proteinsTarget) * 100, 100);
+    proteinsTarget === 0 ? 0 : Math.min((proteinsCurrent / proteinsTarget) * 100, 100);
   const fatsPercent =
     fatsTarget === 0 ? 0 : Math.min((fatsCurrent / fatsTarget) * 100, 100);
 
   const meals: Meal[] = [
-    { id: 'breakfast', name: 'Breakfast', currentKcal: 0, targetKcal: 768 },
-    { id: 'lunch', name: 'Lunch', currentKcal: 0, targetKcal: 768 }
+    { id: 'breakfast', name: 'Breakfast', currentKcal: 0 },
+    { id: 'lunch', name: 'Lunch', currentKcal: 0 }
   ];
 
   const handleAddGoal = () => {
@@ -203,13 +200,6 @@ const Home: React.FC = () => {
 
               <div className="meals-list">
                 {meals.map((meal) => {
-                  const mealPercent =
-                    meal.targetKcal === 0
-                      ? 0
-                      : Math.min(
-                        (meal.currentKcal / meal.targetKcal) * 100,
-                        100
-                      );
 
                   return (
                     <div key={meal.id} className="meal-row">
@@ -220,16 +210,10 @@ const Home: React.FC = () => {
                           <div className="meal-title">{meal.name}</div>
 
                           <div className="meal-kcal-row">
-                            <div className="meal-progress-bar">
-                              <div
-                                className="meal-progress-bar__fill"
-                                style={{ width: `${mealPercent}%` }}
-                              />
-                            </div>
-                            <span className="meal-kcal-text">
-                              {meal.currentKcal} / {meal.targetKcal} kcal
-                            </span>
                           </div>
+                          <span className="meal-kcal-text">
+                            {meal.currentKcal} kcal
+                          </span>
                         </div>
                       </div>
 
@@ -237,8 +221,7 @@ const Home: React.FC = () => {
                         type="button"
                         className="meal-add-btn"
                         onClick={() => handleAddMealClick(meal)}
-                        aria-label={`Add food to ${meal.name}`}
-                      >
+                        aria-label={`Add food to ${meal.name}`}>
                         <FiPlus size={18} />
                       </button>
                     </div>
@@ -250,7 +233,6 @@ const Home: React.FC = () => {
           </div>
         </div>
       </div>
-
       <NutritionGoalModal />
     </AuthorizeView>
   );

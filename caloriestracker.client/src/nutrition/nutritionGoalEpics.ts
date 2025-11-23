@@ -12,11 +12,7 @@ import {
   updateGoalFailure,
 } from './nutritionGoalSlice';
 
-import {
-  SetGoalPayload,
-  UpdateGoalPayload,
-  NutritionGoal,
-} from './nutritionGoalTypes';
+import { SetGoalPayload, UpdateGoalPayload, NutritionGoal } from './nutritionGoalTypes';
 import { AnyAction } from '@reduxjs/toolkit';
 
 const GRAPHQL_URL = '/graphql';
