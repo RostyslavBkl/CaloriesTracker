@@ -1,25 +1,11 @@
 import React from 'react';
 import { useAppDispatch } from '../store/hooks';
 import AuthorizeView from '../authorization/AuthorizeView';
-import { logoutStart } from '../auth';
 import MainMenu from '../navigation/MainMenu';
 import ThemeToggle from '../ThemeTongle';
 
 const Foods: React.FC = () => {
   const dispatch = useAppDispatch();
-
-  const handleLogout = () => {
-    const theme = localStorage.getItem('ct_theme');
-    localStorage.clear();
-    if (theme) localStorage.setItem('ct_theme', theme);
-
-    try {
-      dispatch(logoutStart());
-    } catch {
-    }
-
-    window.location.href = '/login';
-  };
 
   return (
     <AuthorizeView>
@@ -32,16 +18,8 @@ const Foods: React.FC = () => {
               </div>
               <div
                 className="header-right"
-                style={{ display: 'flex', gap: 8, alignItems: 'center' }}
-              >
+                style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
                 <ThemeToggle />
-                <button
-                  className="btn secondary"
-                  onClick={handleLogout}
-                  style={{ padding: '6px 12px', fontSize: '14px' }}
-                >
-                  Logout
-                </button>
               </div>
             </div>
 
@@ -54,8 +32,7 @@ const Foods: React.FC = () => {
                 color: 'var(--muted)',
                 padding: '20px',
                 textAlign: 'center',
-              }}
-            >
+              }}>
               <span>Foods page — content will appear here.</span>
             </div>
 
