@@ -1,5 +1,4 @@
-﻿using CaloriesTracker.Server.Models;
-using CaloriesTracker.Server.Models.AuthModels;
+﻿using CaloriesTracker.Server.Models.AuthModels;
 using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Type

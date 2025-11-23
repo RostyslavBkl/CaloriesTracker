@@ -7,6 +7,7 @@ using CaloriesTracker.Server.GraphQL.Types;
 using CaloriesTracker.Server.GraphQL.Types.DiaryDay;
 using CaloriesTracker.Server.GraphQL.Types.NutritionGoal;
 using CaloriesTracker.Server.GraphQL.Types.MealTypes;
+using CaloriesTracker.Server.GraphQL.Types.UserProfileTypes;
 using CaloriesTracker.Server.Models;
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Implementations;
@@ -91,12 +92,14 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFoodRepository, FoodRepository>();
 builder.Services.AddScoped<IFoodApiRepository, FoodApiRepository>();
 builder.Services.AddScoped<IMealRepository, MealRepository>();
+builder.Services.AddScoped<IUserProfileRepository, UserProfileRepository>();
 
 builder.Services.AddScoped<INutritionGoalRepository, NutritionGoalRepository>();
 
 builder.Services.AddScoped<IDiaryDay, DiaryDayRepository>();
 
 // Services
+builder.Services.AddScoped<UserProfileService>();
 builder.Services.AddScoped<MealService>();
 builder.Services.AddScoped<FoodService>();
 builder.Services.AddScoped<FoodValidator>();
@@ -117,12 +120,15 @@ builder.Services.AddSingleton<NutritionGoalQuery>();
 builder.Services.AddSingleton<DiaryQuery>();
 builder.Services.AddSingleton<AuthQuery>();
 builder.Services.AddSingleton<MealQuery>();
+builder.Services.AddSingleton<UserProfileQuery>();
 
 builder.Services.AddSingleton<RootMutations>();
 builder.Services.AddSingleton<FoodMutation>();
 builder.Services.AddSingleton<NutritionGoalMutations>();
 builder.Services.AddSingleton<AuthMutation>();
 builder.Services.AddSingleton<MealMutation>();
+builder.Services.AddSingleton<MealMutation>();
+builder.Services.AddSingleton<UserProfileMutation>();
 builder.Services.AddSingleton<DiaryDayMutations>();
 
 // Food Types
@@ -149,6 +155,13 @@ builder.Services.AddSingleton<SummaryNutritionType>();
 builder.Services.AddSingleton<CreateMealInputType>();
 builder.Services.AddSingleton<MealItemInputType>();
 builder.Services.AddSingleton<UpdateMealItemInput>();
+
+builder.Services.AddSingleton<UserHeight>();
+builder.Services.AddSingleton<UserWeight>();
+builder.Services.AddSingleton<UserProfileInputType>();
+builder.Services.AddSingleton<UserProfileType>();
+builder.Services.AddSingleton<UserSex>();
+builder.Services.AddSingleton<UserType>();
 
 builder.Services.AddSingleton<GuidGraphType>();
 
