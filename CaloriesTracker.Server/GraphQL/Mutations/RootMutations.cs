@@ -26,11 +26,14 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                 AddField(field);
             }
             foreach (var field in userProfileM.Fields)
-            foreach(var field in goalM.Fields)
             {
                 AddField(field);
             }
-            foreach(var field in diaryM.Fields)
+            foreach (var field in goalM.Fields)
+            {
+                AddField(field);
+            }
+            foreach (var field in diaryM.Fields)
             {
                 AddField(field);
             }
