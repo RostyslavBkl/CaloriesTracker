@@ -8,6 +8,8 @@ import { authEpics } from "../auth/Epics";
 import mealReducer from "../features/meal/mealSlice";
 import { mealEpics } from "../features/meal/mealEpic";
 
+import updMealItemReducer from "../features/meal/mealItemUpdSlice";
+
 import foodReducer from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";
 
@@ -20,6 +22,7 @@ export const store = configureStore({
     auth: authReducer,
     meal: mealReducer,
     food: foodReducer,
+    updateMealItem: updMealItemReducer,
   },
   middleware: (getDefault) =>
     getDefault({ serializableCheck: false }).concat(epicMiddleware),

@@ -1,23 +1,29 @@
-import { useEffect, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   selectMealsError,
   selectMealsLoading,
   selectTodayMeals,
+  selectUpdatedMealItem,
+  selectTodayMealsWithSummary,
+  selectMealByIdWithSummary,
 } from "../mealSelectors";
 import { getMealsByDay } from "../mealSlice";
 import { Meal, MealItem } from "../mealTypes";
 import "./meals.css";
 import { selectFoodById } from "../../food/foodSelectors";
 import { getFoodById } from "../../food/foodSlice";
+import { updateMealItem } from "../mealItemUpdSlice";
 
 const mealTypes = ["BREAKFAST", "LUNCH", "DINNER", "SNACK", "OTHER"];
 
 function DayliMeals() {
   const dispatch = useAppDispatch();
+  const mealsWithSummary = useAppSelector(selectTodayMealsWithSummary);
   const meals = useAppSelector(selectTodayMeals);
   const loading = useAppSelector(selectMealsLoading);
   const error = useAppSelector(selectMealsError);
+  // const foods = useAppSelector((state) => state.food.foods);
 
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
 
@@ -26,6 +32,14 @@ function DayliMeals() {
   useEffect(() => {
     dispatch(getMealsByDay(DIARY_DAY_ID));
   }, [dispatch]);
+
+  useEffect(() => {
+    meals.forEach((meal) => {
+      meal.items.forEach((item) => {
+        dispatch(getFoodById(item.foodId!));
+      });
+    });
+  }, [dispatch, meals]);
 
   const openModal = (meal: Meal) => setSelectedMeal(meal);
   const closeModal = () => setSelectedMeal(null);
@@ -51,7 +65,8 @@ function DayliMeals() {
       {selectedMeal ? (
         <section className="home-block modal">
           <MealModal
-            meal={selectedMeal}
+            // meal={selectedMeal}
+            mealId={selectedMeal.id}
             onClose={closeModal}
             key={selectedMeal.id}
           />
@@ -61,7 +76,7 @@ function DayliMeals() {
           <div className="meals-header">
             <span className="home-block__title">Today&apos;s meals</span>
             <div className="meals-list">
-              {meals.length === 0 ? (
+              {mealsWithSummary.length === 0 ? (
                 <div className="meals-list">
                   {mealTypes.map((type) => (
                     <MealTemplate key={type} mealType={type} />
@@ -69,7 +84,7 @@ function DayliMeals() {
                 </div>
               ) : (
                 <div className="meals-list">
-                  {meals.map((meal) => (
+                  {mealsWithSummary.map((meal) => (
                     <MealCard
                       key={meal.id}
                       meal={meal}
@@ -125,18 +140,27 @@ function MealCard({
   );
 }
 
-function MealModal({ meal, onClose }: { meal: Meal; onClose: () => void }) {
+function MealModal({
+  mealId,
+  onClose,
+}: {
+  mealId: string;
+  onClose: () => void;
+}) {
   const dispatch = useAppDispatch();
+  const meal = useAppSelector((state) =>
+    selectMealByIdWithSummary(state, mealId)
+  );
 
   const [selectedItem, setSelectedItem] = useState<MealItem | null>(null);
   const openItemModal = (item: MealItem) => setSelectedItem(item);
   const closeItemModal = () => setSelectedItem(null);
 
-  useEffect(() => {
-    meal.items.forEach((item) => {
-      dispatch(getFoodById(item.foodId));
-    });
-  }, [dispatch, meal.items]);
+  // useEffect(() => {
+  //   meal?.items.forEach((item) => {
+  //     dispatch(getFoodById(item.foodId!));
+  //   });
+  // }, [dispatch, meal?.items]);
 
   return (
     <div className="modal-fullscreen ">
@@ -158,7 +182,7 @@ function MealModal({ meal, onClose }: { meal: Meal; onClose: () => void }) {
                 />
               </svg>
             </button>
-            <h2>{meal.mealType}</h2>
+            <h2>{meal?.mealType}</h2>
             <div style={{ width: "24px" }}></div>
           </div>
 
@@ -166,11 +190,11 @@ function MealModal({ meal, onClose }: { meal: Meal; onClose: () => void }) {
             <div className="modal-summary">
               <span className="summary-label">Total</span>
               <span className="summary-value">
-                {meal.summary.kcal.toFixed(0)} kcal
+                {meal?.summary.kcal.toFixed(0)} kcal
               </span>
             </div>
             <div className="modal-items-list">
-              {meal.items.map((item) => (
+              {meal?.items.map((item) => (
                 <MealItemCard
                   key={item.foodId}
                   item={item}
@@ -192,6 +216,21 @@ function MealItemModal({
   item: MealItem;
   onCloseItem: () => void;
 }) {
+  const dispatch = useAppDispatch();
+
+  const updatedItem = useAppSelector((state) =>
+    selectUpdatedMealItem(state, item.id!)
+  );
+  const currentItem = updatedItem ?? item;
+
+  const [isEditing, setIsEditing] = useState(false);
+  const [weight, setWeight] = useState<number>(currentItem.weightG);
+
+  useEffect(() => {
+    setWeight(currentItem.weightG);
+    setIsEditing(false);
+  }, [currentItem.weightG]);
+
   const {
     food,
     actualWeightG,
@@ -202,7 +241,28 @@ function MealItemModal({
     fatKcal,
     carbsKcal,
     totalKcal,
-  } = useMealItemCalculations(item);
+  } = useMealItemCalculations(currentItem);
+
+  const handleBlur = () => {
+    const parsed = Number(weight);
+
+    if (!parsed || parsed <= 0) {
+      setIsEditing(false);
+      setWeight(currentItem.weightG);
+      return;
+    }
+
+    console.log("Dispatching with itemId:", item.id);
+    dispatch(
+      updateMealItem({
+        itemId: item.id!,
+        dishId: currentItem.dishId ?? null,
+        foodId: currentItem.foodId ?? null,
+        weightG: parsed,
+      })
+    );
+    setIsEditing(false);
+  };
 
   return (
     <div className="modal-fullscreen ">
@@ -236,8 +296,19 @@ function MealItemModal({
       <div className="edit-weight-box">
         <span>Weight</span>
         <div className="edit-weight-btn">
-          <span>{actualWeightG} g</span>
-          <button className="edit-btn">
+          {isEditing ? (
+            <input
+              autoFocus
+              type="text"
+              className="edit-weight-input"
+              value={weight}
+              onChange={(e) => setWeight(Number(e.target.value))}
+              onBlur={handleBlur}
+            />
+          ) : (
+            <span>{weight} g</span>
+          )}
+          <button className="edit-btn" onClick={() => setIsEditing(true)}>
             <svg
               width="24px"
               height="24"
@@ -323,20 +394,32 @@ function MealTemplate({ mealType }: { mealType: string }) {
 }
 
 function useMealItemCalculations(item: MealItem) {
-  const food = useAppSelector((state) => selectFoodById(state, item.foodId));
+  const food = useAppSelector((state) => selectFoodById(state, item.foodId!));
 
   const actualWeightG = item.weightG;
   const baseWeight = food?.weightG ?? 100;
   const weightCoeff = actualWeightG / baseWeight;
 
-  const actualProteinG = ((food?.proteinG ?? 0) * weightCoeff).toFixed(1);
-  const actualFatG = ((food?.fatG ?? 0) * weightCoeff).toFixed(1);
-  const actualCarbsG = ((food?.carbsG ?? 0) * weightCoeff).toFixed(1);
+  // const actualProteinG = ((food?.proteinG ?? 0) * weightCoeff).toFixed(1);
+  // const actualFatG = ((food?.fatG ?? 0) * weightCoeff).toFixed(1);
+  // const actualCarbsG = ((food?.carbsG ?? 0) * weightCoeff).toFixed(1);
 
-  const proteinKcal = (food?.proteinG ?? 0) * weightCoeff * 4;
-  const fatKcal = (food?.fatG ?? 0) * weightCoeff * 9;
-  const carbsKcal = (food?.carbsG ?? 0) * weightCoeff * 4;
-  const totalKcal = (proteinKcal + fatKcal + carbsKcal).toFixed(0);
+  // const proteinKcal = (food?.proteinG ?? 0) * weightCoeff * 4;
+  // const fatKcal = (food?.fatG ?? 0) * weightCoeff * 9;
+  // const carbsKcal = (food?.carbsG ?? 0) * weightCoeff * 4;
+  // const totalKcal = (proteinKcal + fatKcal + carbsKcal).toFixed(0);
+
+  const actualProteinG = Number(
+    ((food?.proteinG ?? 0) * weightCoeff).toFixed(1)
+  );
+  const actualFatG = Number(((food?.fatG ?? 0) * weightCoeff).toFixed(1));
+  const actualCarbsG = Number(((food?.carbsG ?? 0) * weightCoeff).toFixed(1));
+
+  const proteinKcal = actualProteinG * 4;
+  const fatKcal = actualFatG * 9;
+  const carbsKcal = actualCarbsG * 4;
+
+  const totalKcal = Math.round(proteinKcal + fatKcal + carbsKcal);
 
   return {
     food,

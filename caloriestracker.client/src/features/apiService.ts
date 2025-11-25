@@ -18,6 +18,7 @@ function gql<T>(query: string, variables?: Record<string, any>): Observable<T> {
           variables, // params
         }),
       });
+
       // check http status
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
