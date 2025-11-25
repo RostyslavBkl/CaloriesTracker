@@ -34,3 +34,23 @@ export interface MealsState {
 export interface MealsByDayResponse {
   mealsByDiaryDayId: Meal[];
 }
+
+// Update Interface
+
+export interface UpdateMealItemInput {
+  itemId: string;
+  dishId: string | null;
+  foodId: string | null;
+  weightG: number | null;
+}
+
+export interface UpdateMealItemState {
+  isUpdated: boolean;
+  updatedItem: { [itemId: string]: MealItem };
+  loading: boolean;
+  error: string | null;
+}
+
+export interface UpdateMealItemResponse {
+  updateMealItem: boolean;
+}

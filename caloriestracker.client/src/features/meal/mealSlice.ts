@@ -12,6 +12,7 @@ const mealSlice = createSlice({
   name: "meal",
   initialState,
   reducers: {
+    // GET
     getMealsByDay: (state, action: PayloadAction<string>) => {
       state.loading = true;
       state.error = null;

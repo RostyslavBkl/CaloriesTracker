@@ -1,6 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import gql from "../apiService";
-import { MealsByDayResponse } from "./mealTypes";
+import {
+  MealsByDayResponse,
+  UpdateMealItemInput,
+  UpdateMealItemResponse,
+} from "./mealTypes";
 
 const GET_MEALS_BY_DAY = `
 query getMealsByDay($id: Guid!) {
@@ -24,7 +28,15 @@ query getMealsByDay($id: Guid!) {
 }
 `;
 
+const UPDATE_MEAL_ITEM = `
+mutation updateMealsItems($input: UpdateMealItemInput!){
+  updateMealItem(input: $input)
+}
+`;
+
 export const mealsApi = {
   getMealsByDay: (diaryDayId: string) =>
     gql<MealsByDayResponse>(GET_MEALS_BY_DAY, { id: diaryDayId }),
+  updateMealItem: (input: UpdateMealItemInput) =>
+    gql<UpdateMealItemResponse>(UPDATE_MEAL_ITEM, input),
 };
