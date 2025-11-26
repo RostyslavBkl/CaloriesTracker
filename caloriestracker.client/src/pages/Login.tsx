@@ -4,6 +4,7 @@ import { useAppDispatch, useAppSelector } from '../store/hooks';
 import { loginStart, clearError } from '../auth/AuthSlices';
 import '../index.css';
 import { selectAuthLoading, selectUser } from '../auth/Selectors';
+import ThemeToggle from '../ThemeTongle';
 
 function Login() {
   const [email, setEmail] = useState<string>('');
@@ -79,19 +80,6 @@ function Login() {
     }
   }, [user, navigate]);
 
-  useEffect(() => {
-    const t = localStorage.getItem('ct_theme') ||
-      (window.matchMedia?.('(prefers-color-scheme:dark)').matches ? 'dark' : 'light');
-    document.documentElement.setAttribute('data-theme', t === 'light' ? 'light' : 'dark');
-  }, []);
-
-  const toggleTheme = () => {
-    const cur = document.documentElement.getAttribute('data-theme') === 'light' ? 'light' : 'dark';
-    const next = cur === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('ct_theme', next);
-  };
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
 
@@ -144,9 +132,7 @@ function Login() {
               <h3>Login</h3>
             </div>
             <div className="header-right">
-              <button className="theme-toggle theme-toggle--fixed" onClick={toggleTheme}>
-                Theme
-              </button>
+              <ThemeToggle />
             </div>
           </div>
 
