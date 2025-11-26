@@ -32,6 +32,15 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                    var query = context.GetArgument<String>("query");
                    return await service.SearchFoodInApiAsync(query);
                });
+            Field<ListGraphType<GuidGraphType>>("searchFood")
+               .Argument<NonNullGraphType<StringGraphType>>("query")
+               .ResolveAsync(async context =>
+               {
+                   var service = context.RequestServices!.GetRequiredService<FoodService>();
+
+                   var query = context.GetArgument<String>("query");
+                   return await service.SearchFoodAsync(query);
+               });
         }
     }
 }
