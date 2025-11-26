@@ -108,7 +108,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                         UserId = userId,
                         Date = date
                     },
-                    splitOn: "NutritionGoalId, MealId, MealItemId"
+                    splitOn: "NutritionGoalId, Id, Id"
                     );
                 return diaryDict.Values.FirstOrDefault();
             }

@@ -19,7 +19,7 @@ public class Food
 
     // Калорійність на 100гр
     [NotMapped]
-    public decimal ActualWeightG { get; set; } = 100;
+    public decimal ActualWeightG { get; set; }
 
     [NotMapped]
     public decimal TotalKcal
