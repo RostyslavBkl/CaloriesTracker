@@ -9,7 +9,6 @@ import { selectNutritionGoalModal } from './nutritionSelectors';
 
 export const NutritionGoalModal = () => {
   const dispatch = useAppDispatch();
-
   const { isModalOpen, loading, error, activeGoal, mode } = useSelector((state: RootState) => selectNutritionGoalModal(state));
 
   const [plan, setPlan] = useState<Plan>('Balanced');
@@ -19,9 +18,7 @@ export const NutritionGoalModal = () => {
   const [carbG, setCarbG] = useState(0);
 
   useEffect(() => {
-    if (!isModalOpen) {
-      return;
-    }
+    if (!isModalOpen) return;
 
     if (mode === 'edit' && activeGoal) {
       setTargetCalories(activeGoal.targetCalories);
@@ -47,33 +44,13 @@ export const NutritionGoalModal = () => {
     e.preventDefault();
 
     if (plan === 'Balanced') {
-      const payload = {
-        plan: 'Balanced' as const,
-        targetCalories,
-      };
-
-      if (isCreateMode) {
-        dispatch(setGoalRequest(payload));
-      } else {
-        dispatch(updateGoalRequest(payload));
-      }
-
+      const payload = { plan: 'Balanced' as const, targetCalories };
+      isCreateMode ? dispatch(setGoalRequest(payload)) : dispatch(updateGoalRequest(payload));
       return;
     }
 
-    const payload = {
-      plan: 'Custom' as const,
-      targetCalories,
-      proteinG,
-      fatG,
-      carbG,
-    };
-
-    if (isCreateMode) {
-      dispatch(setGoalRequest(payload));
-    } else {
-      dispatch(updateGoalRequest(payload));
-    }
+    const payload = { plan: 'Custom' as const, targetCalories, proteinG, fatG, carbG };
+    isCreateMode ? dispatch(setGoalRequest(payload)) : dispatch(updateGoalRequest(payload));
   };
 
   const handleClose = () => {
@@ -85,31 +62,17 @@ export const NutritionGoalModal = () => {
       <div className="goal-modal">
         <div className="goal-modal-header">
           <h2 className="goal-modal-title">Daily goal</h2>
-
-          <button
-            type="button"
-            className="goal-modal-close"
-            onClick={handleClose}
-            aria-label="Close daily goal modal"
-          >
+          <button type="button" className="goal-modal-close" onClick={handleClose} aria-label="Close daily goal modal">
             ×
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="goal-modal-body">
           <div className="plan-toggle">
-            <button
-              type="button"
-              className={plan === 'Balanced' ? 'active' : ''}
-              onClick={() => setPlan('Balanced')}
-            >
+            <button type="button" className={plan === 'Balanced' ? 'active' : ''} onClick={() => setPlan('Balanced')}>
               Balanced
             </button>
-            <button
-              type="button"
-              className={plan === 'Custom' ? 'active' : ''}
-              onClick={() => setPlan('Custom')}
-            >
+            <button type="button" className={plan === 'Custom' ? 'active' : ''} onClick={() => setPlan('Custom')}>
               Custom
             </button>
           </div>
@@ -130,30 +93,15 @@ export const NutritionGoalModal = () => {
             <>
               <div className="field">
                 <label>Protein (g)</label>
-                <input
-                  type="number"
-                  min={0}
-                  value={proteinG}
-                  onChange={e => setProteinG(Number(e.target.value))}
-                />
+                <input type="number" min={0} value={proteinG} onChange={e => setProteinG(Number(e.target.value))} />
               </div>
               <div className="field">
                 <label>Fat (g)</label>
-                <input
-                  type="number"
-                  min={0}
-                  value={fatG}
-                  onChange={e => setFatG(Number(e.target.value))}
-                />
+                <input type="number" min={0} value={fatG} onChange={e => setFatG(Number(e.target.value))} />
               </div>
               <div className="field">
                 <label>Carbs (g)</label>
-                <input
-                  type="number"
-                  min={0}
-                  value={carbG}
-                  onChange={e => setCarbG(Number(e.target.value))}
-                />
+                <input type="number" min={0} value={carbG} onChange={e => setCarbG(Number(e.target.value))} />
               </div>
             </>
           )}
@@ -161,18 +109,10 @@ export const NutritionGoalModal = () => {
           {error && <div className="error goal-modal-error">{error}</div>}
 
           <div className="goal-modal-footer">
-            <button
-              type="button"
-              onClick={handleClose}
-              className="goal-modal-btn goal-modal-btn--secondary"
-            >
+            <button type="button" onClick={handleClose} className="goal-modal-btn goal-modal-btn--secondary">
               Cancel
             </button>
-            <button
-              type="submit"
-              disabled={loading}
-              className="goal-modal-btn goal-modal-btn--primary"
-            >
+            <button type="submit" disabled={loading} className="goal-modal-btn goal-modal-btn--primary">
               {loading ? 'Saving…' : isCreateMode ? 'Save goal' : 'Update goal'}
             </button>
           </div>

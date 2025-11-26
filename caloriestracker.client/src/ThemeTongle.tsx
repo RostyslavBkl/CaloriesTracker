@@ -5,14 +5,9 @@ type Theme = 'light' | 'dark';
 
 const getInitialTheme = (): Theme => {
   const stored = localStorage.getItem('ct_theme');
-  if (stored === 'light' || stored === 'dark') {
-    return stored;
-  }
+  if (stored === 'light' || stored === 'dark') return stored;
 
-  if (
-    window.matchMedia &&
-    window.matchMedia('(prefers-color-scheme: dark)').matches
-  ) {
+  if (window.matchMedia?.('(prefers-color-scheme: dark)').matches) {
     return 'dark';
   }
 
@@ -26,12 +21,8 @@ const applyTheme = (theme: Theme) => {
 
 const ThemeToggle: React.FC = () => {
   const [theme, setTheme] = useState<Theme>(() => {
-    const fromDom = document.documentElement.getAttribute('data-theme');
-    if (fromDom === 'light' || fromDom === 'dark') {
-      return fromDom;
-    }
-
-    return getInitialTheme();
+    const dom = document.documentElement.getAttribute('data-theme');
+    return dom === 'light' || dom === 'dark' ? dom : getInitialTheme();
   });
 
   useEffect(() => {
@@ -39,7 +30,7 @@ const ThemeToggle: React.FC = () => {
   }, [theme]);
 
   const handleClick = () => {
-    setTheme((prev) => (prev === 'light' ? 'dark' : 'light'));
+    setTheme(prev => (prev === 'light' ? 'dark' : 'light'));
   };
 
   const isLight = theme === 'light';

@@ -24,24 +24,30 @@
   flex: 0 0 auto;
 }
 
-.date-icon-wrapper {
+.date-icon-wrapper,
+.calendar-icon-wrapper {
   position: relative;
   display: inline-block;
-}
-
-.date-icon-button {
-  background: transparent;
-  border: none;
   width: 32px;
   height: 32px;
-  display: inline-flex;
+}
+
+.date-icon-button,
+.calendar-icon-button {
+  background: transparent;
+  border: none;
+  width: 100%;
+  height: 100%;
+  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--text);
+  padding: 0;
 }
 
-.date-picker-input-hidden {
+.date-picker-input-hidden,
+.calendar-date-input-hidden {
   position: absolute;
   inset: 0;
   opacity: 0;
@@ -75,33 +81,6 @@
 .home-block__placeholder {
   font-size: 13px;
   color: var(--muted);
-}
-
-.calendar-icon-wrapper {
-  position: relative;
-  display: inline-block;
-  width: 32px;
-  height: 32px;
-}
-
-.calendar-icon-button {
-  background: transparent;
-  border: none;
-  width: 100%;
-  height: 100%;
-  cursor: pointer;
-  color: var(--text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0;
-}
-
-.calendar-date-input-hidden {
-  position: absolute;
-  inset: 0;
-  opacity: 0;
-  cursor: pointer;
 }
 
 .goals-menu {
@@ -141,19 +120,10 @@
   opacity: 0.8;
 }
 
-.goals-menu__trigger:hover {
-  background: rgba(148, 163, 184, 0.15);
-}
-
 .goals-add-btn--disabled {
   opacity: 0.35;
   cursor: default;
   pointer-events: none;
-}
-
-.goals-add-btn--disabled:hover {
-  transform: none;
-  box-shadow: none;
 }
 
 .goals-menu__trigger {
@@ -167,6 +137,10 @@
   padding: 4px;
   border-radius: 999px;
   cursor: pointer;
+}
+
+.goals-menu__trigger:hover {
+  background: rgba(148, 163, 184, 0.15);
 }
 
 .goals-menu__dot {
@@ -222,9 +196,7 @@
   justify-content: space-between;
   padding: 10px 12px;
   border-radius: 14px;
-  background: linear-gradient(135deg,
-      rgba(56, 189, 248, 0.25),
-      var(--card));
+  background: linear-gradient(135deg, rgba(56, 189, 248, 0.25), var(--card));
   border: 1px solid rgba(56, 189, 248, 0.55);
 }
 
@@ -245,13 +217,13 @@
   font-weight: 700;
 }
 
-.goals-summary-target {
+.goals-summary-target,
+.goals-summary-remaining {
   font-size: 12px;
   opacity: 0.85;
 }
 
 .goals-summary-remaining {
-  font-size: 12px;
   font-weight: 500;
 }
 
@@ -263,15 +235,11 @@
 
 .goals-summary-circle__outer {
   --goals-progress-deg: 0deg;
-
   width: 90px;
   height: 90px;
   border-radius: 999px;
   padding: 6px;
-
-  background: conic-gradient(var(--goals-accent) 0deg,
-      var(--goals-accent) var(--goals-progress-deg),
-      var(--card) var(--goals-progress-deg));
+  background: conic-gradient(var(--goals-accent) 0deg, var(--goals-accent) var(--goals-progress-deg), var(--card) var(--goals-progress-deg));
 }
 
 .goals-summary-circle__inner {
@@ -316,21 +284,15 @@
 }
 
 .macro-card--carbs {
-  background: linear-gradient(90deg,
-      rgba(190, 242, 100, 0.35),
-      var(--card));
+  background: linear-gradient(90deg, rgba(190, 242, 100, 0.35), var(--card));
 }
 
 .macro-card--protein {
-  background: linear-gradient(90deg,
-      rgba(253, 186, 116, 0.35),
-      var(--card));
+  background: linear-gradient(90deg, rgba(253, 186, 116, 0.35), var(--card));
 }
 
 .macro-card--fats {
-  background: linear-gradient(90deg,
-      rgba(125, 211, 252, 0.35),
-      var(--card));
+  background: linear-gradient(90deg, rgba(125, 211, 252, 0.35), var(--card));
 }
 
 .macro-card__label {
@@ -385,7 +347,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 10px;
+  padding: 10px;
   border-radius: 12px;
   background: var(--card);
   border: 1px solid var(--input-border);
@@ -458,7 +420,7 @@
   border-radius: 999px;
   border: none;
   background: var(--accent);
-  color: #ffffff;
+  color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;

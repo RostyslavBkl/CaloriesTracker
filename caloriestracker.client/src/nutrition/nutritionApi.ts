@@ -141,43 +141,39 @@ export const nutritionApi = {
 
   setGoal(payload: SetGoalPayload): Promise<NutritionGoal> {
     if (payload.plan === 'Balanced') {
-      const variables = { targetCalories: payload.targetCalories };
-      return fetchGraphQL<SetGoalResponse>(setGoalMutationBalanced, variables).then(
-        data => data.setGoal
-      );
+      return fetchGraphQL<SetGoalResponse>(
+        setGoalMutationBalanced,
+        { targetCalories: payload.targetCalories }
+      ).then(d => d.setGoal);
     }
 
-    const variables = {
-      targetCalories: payload.targetCalories,
-      proteinG: payload.proteinG,
-      fatG: payload.fatG,
-      carbG: payload.carbG,
-    };
-
-    return fetchGraphQL<SetGoalResponse>(setGoalMutationCustom, variables).then(
-      data => data.setGoal
-    );
+    return fetchGraphQL<SetGoalResponse>(
+      setGoalMutationCustom,
+      {
+        targetCalories: payload.targetCalories,
+        proteinG: payload.proteinG,
+        fatG: payload.fatG,
+        carbG: payload.carbG,
+      }
+    ).then(d => d.setGoal);
   },
 
   updateGoal(payload: UpdateGoalPayload): Promise<NutritionGoal> {
     if (payload.plan === 'Balanced') {
-      const variables = { targetCalories: payload.targetCalories };
       return fetchGraphQL<UpdateGoalResponse>(
         updateGoalMutationBalanced,
-        variables
-      ).then(data => data.updateGoal);
+        { targetCalories: payload.targetCalories }
+      ).then(d => d.updateGoal);
     }
-
-    const variables = {
-      targetCalories: payload.targetCalories,
-      proteinG: payload.proteinG,
-      fatG: payload.fatG,
-      carbG: payload.carbG,
-    };
 
     return fetchGraphQL<UpdateGoalResponse>(
       updateGoalMutationCustom,
-      variables
-    ).then(data => data.updateGoal);
+      {
+        targetCalories: payload.targetCalories,
+        proteinG: payload.proteinG,
+        fatG: payload.fatG,
+        carbG: payload.carbG,
+      }
+    ).then(d => d.updateGoal);
   },
 };

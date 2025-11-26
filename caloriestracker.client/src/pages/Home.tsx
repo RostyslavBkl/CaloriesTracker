@@ -1,15 +1,10 @@
-// src/pages/Home.tsx (або де у тебе лежить цей компонент)
-
 import React, { useEffect, useState } from 'react';
 import { FiCalendar, FiPlus, FiEdit } from 'react-icons/fi';
 import { useAppDispatch } from '../store/hooks';
 import { useSelector } from 'react-redux';
 import AuthorizeView from '../authorization/AuthorizeView';
 import MainMenu from '../navigation/MainMenu';
-import {
-  openGoalModal,
-  getActiveGoalRequest,
-} from '../nutrition/nutritionSlice';
+import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionSlice';
 import { NutritionGoalModal } from '../nutrition/nutritionModal';
 import { RootState } from '../store';
 import './Home.css';
@@ -17,59 +12,38 @@ import '../index.css';
 import '../features/meal/components/meals.css';
 import ThemeToggle from '../ThemeTongle';
 import { selectNutritionGoalState } from '../nutrition/nutritionSelectors';
-
 import DailyMeals from '../features/meal/components/DailyMeals';
 import { selectTodaySummary } from '../features/meal/mealSelectors';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [selectedDate, setSelectedDate] = useState(() => new Date().toISOString().slice(0, 10));
 
-  const [selectedDate, setSelectedDate] = useState<string>(() => {
-    const today = new Date();
-    return today.toISOString().slice(0, 10);
-  });
-
-  const { activeGoal, loading } = useSelector((state: RootState) =>
-    selectNutritionGoalState(state)
-  );
-
-  // 🔥 Тягнемо сумарні нутрієнти за день з mealів
+  const { activeGoal, loading } = useSelector((state: RootState) => selectNutritionGoalState(state));
   const daySummary = useSelector(selectTodaySummary);
 
-  // Фактично спожиті калорії з meals
   const consumedKcal = daySummary.kcal;
-
   const targetKcal = activeGoal?.targetCalories ?? 0;
   const remainingKcal = Math.max(targetKcal - consumedKcal, 0);
-  const percent =
-    targetKcal === 0 ? 0 : Math.min((consumedKcal / targetKcal) * 100, 100);
+
+  const percent = targetKcal === 0 ? 0 : Math.min((consumedKcal / targetKcal) * 100, 100);
   const progressDeg = percent * 3.6;
 
   const carbsTarget = activeGoal?.carbG ?? 0;
   const proteinsTarget = activeGoal?.proteinG ?? 0;
   const fatsTarget = activeGoal?.fatG ?? 0;
 
-  // Поточні макроси з mealів
-  const carbsCurrent = daySummary.carbsG;
-  const proteinsCurrent = daySummary.proteinG;
-  const fatsCurrent = daySummary.fatG;
-
-  const carbsPercent =
-    carbsTarget === 0 ? 0 : Math.min((carbsCurrent / carbsTarget) * 100, 100);
+  const carbsPercent = carbsTarget === 0 ? 0 : Math.min((daySummary.carbsG / carbsTarget) * 100, 100);
   const proteinsPercent =
-    proteinsTarget === 0
-      ? 0
-      : Math.min((proteinsCurrent / proteinsTarget) * 100, 100);
+    proteinsTarget === 0 ? 0 : Math.min((daySummary.proteinG / proteinsTarget) * 100, 100);
   const fatsPercent =
-    fatsTarget === 0 ? 0 : Math.min((fatsCurrent / fatsTarget) * 100, 100);
+    fatsTarget === 0 ? 0 : Math.min((daySummary.fatG / fatsTarget) * 100, 100);
 
   useEffect(() => {
     dispatch(getActiveGoalRequest());
   }, [dispatch]);
 
-  const handleAddGoal = () => {
-    dispatch(openGoalModal('create'));
-  };
+  const handleAddGoal = () => dispatch(openGoalModal('create'));
 
   return (
     <AuthorizeView>
@@ -78,127 +52,111 @@ const Home: React.FC = () => {
           <div className="containerbox containerbox--with-nav home-layout">
             <div className="home-top-row page-header">
               <div className="calendar-icon-wrapper">
-                <button
-                  type="button"
-                  className="calendar-icon-button"
-                  aria-label="Choose date"
-                >
+                <button type="button" className="calendar-icon-button" aria-label="Choose date">
                   <FiCalendar size={20} />
                 </button>
-
                 <input
                   className="calendar-date-input-hidden"
                   type="date"
                   value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  onChange={e => setSelectedDate(e.target.value)}
                 />
               </div>
               <ThemeToggle />
             </div>
 
-            <section className="home-block home-block--goals">
-              <div className="goals-header">
-                <span className="home-block__title">Daily intake</span>
+            <div className="containerbox__content">
+              <section className="home-block home-block--goals">
+                <div className="goals-header">
+                  <span className="home-block__title">Daily intake</span>
 
-                <div className="goals-actions">
-                  <button
-                    type="button"
-                    className="goals-add-btn"
-                    onClick={handleAddGoal}
-                    aria-label="Add daily goal"
-                  >
-                    <FiPlus size={18} />
-                  </button>
-
-                  <div className="goals-menu">
+                  <div className="goals-actions">
                     <button
                       type="button"
-                      className="goals-menu__trigger"
-                      aria-label="Edit daily goal"
-                      onClick={() => dispatch(openGoalModal('edit'))}
+                      className="goals-add-btn"
+                      onClick={handleAddGoal}
+                      aria-label="Add daily goal"
                     >
-                      <FiEdit size={16} />
+                      <FiPlus size={18} />
                     </button>
+
+                    <div className="goals-menu">
+                      <button
+                        type="button"
+                        className="goals-menu__trigger"
+                        aria-label="Edit daily goal"
+                        onClick={() => dispatch(openGoalModal('edit'))}
+                      >
+                        <FiEdit size={16} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              <div className="goals-content">
-                <div className="goals-summary-card">
-                  <div className="goals-summary-left">
-                    <span className="goals-summary-label">Daily intake</span>
-                    <span className="goals-summary-percent">
-                      {loading ? '...' : `${percent.toFixed(1)}%`}
-                    </span>
-                    <span className="goals-summary-target">
-                      Target: {targetKcal} kcal
-                    </span>
-                    <span className="goals-summary-remaining">
-                      Remaining: {remainingKcal.toFixed(0)} kcal
-                    </span>
+                <div className="goals-content">
+                  <div className="goals-summary-card">
+                    <div className="goals-summary-left">
+                      <span className="goals-summary-label">Daily intake</span>
+                      <span className="goals-summary-percent">
+                        {loading ? '...' : `${percent.toFixed(1)}%`}
+                      </span>
+                      <span className="goals-summary-target">Target: {targetKcal} kcal</span>
+                      <span className="goals-summary-remaining">
+                        Remaining: {remainingKcal.toFixed(0)} kcal
+                      </span>
+                    </div>
+
+                    <div className="goals-summary-circle">
+                      <div
+                        className="goals-summary-circle__outer"
+                        style={{ ['--goals-progress-deg' as any]: `${progressDeg}deg` }}
+                      >
+                        <div className="goals-summary-circle__inner">
+                          <span className="goals-circle-value">{remainingKcal.toFixed(0)}</span>
+                          <span className="goals-circle-unit">kcal</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="goals-summary-circle">
-                    <div
-                      className="goals-summary-circle__outer"
-                      style={{
-                        ['--goals-progress-deg' as any]: `${progressDeg}deg`,
-                      }}
-                    >
-                      <div className="goals-summary-circle__inner">
-                        <span className="goals-circle-value">
-                          {remainingKcal.toFixed(0)}
-                        </span>
-                        <span className="goals-circle-unit">kcal</span>
+                  <div className="goals-macros-row">
+                    <div className="macro-card macro-card--carbs">
+                      <div className="macro-card__label">carbs</div>
+                      <div className="macro-card__values">
+                        {daySummary.carbsG.toFixed(1)} / {carbsTarget.toFixed(0)} g
+                      </div>
+                      <div className="macro-card__bar">
+                        <div className="macro-card__bar-fill" style={{ width: `${carbsPercent}%` }} />
+                      </div>
+                    </div>
+
+                    <div className="macro-card macro-card--protein">
+                      <div className="macro-card__label">proteins</div>
+                      <div className="macro-card__values">
+                        {daySummary.proteinG.toFixed(1)} / {proteinsTarget.toFixed(0)} g
+                      </div>
+                      <div className="macro-card__bar">
+                        <div
+                          className="macro-card__bar-fill"
+                          style={{ width: `${proteinsPercent}%` }}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="macro-card macro-card--fats">
+                      <div className="macro-card__label">fats</div>
+                      <div className="macro-card__values">
+                        {daySummary.fatG.toFixed(1)} / {fatsTarget.toFixed(0)} g
+                      </div>
+                      <div className="macro-card__bar">
+                        <div className="macro-card__bar-fill" style={{ width: `${fatsPercent}%` }} />
                       </div>
                     </div>
                   </div>
                 </div>
-
-                <div className="goals-macros-row">
-                  <div className="macro-card macro-card--carbs">
-                    <div className="macro-card__label">carbs</div>
-                    <div className="macro-card__values">
-                      {carbsCurrent.toFixed(1)} / {carbsTarget.toFixed(0)} g
-                    </div>
-                    <div className="macro-card__bar">
-                      <div
-                        className="macro-card__bar-fill"
-                        style={{ width: `${carbsPercent}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="macro-card macro-card--protein">
-                    <div className="macro-card__label">proteins</div>
-                    <div className="macro-card__values">
-                      {proteinsCurrent.toFixed(1)} / {proteinsTarget.toFixed(0)} g
-                    </div>
-                    <div className="macro-card__bar">
-                      <div
-                        className="macro-card__bar-fill"
-                        style={{ width: `${proteinsPercent}%` }}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="macro-card macro-card--fats">
-                    <div className="macro-card__label">fats</div>
-                    <div className="macro-card__values">
-                      {fatsCurrent.toFixed(1)} / {fatsTarget.toFixed(0)} g
-                    </div>
-                    <div className="macro-card__bar">
-                      <div
-                        className="macro-card__bar-fill"
-                        style={{ width: `${fatsPercent}%` }}
-                      />
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            <DailyMeals />
+              </section>
+              <DailyMeals />
+            </div>
             <MainMenu />
           </div>
         </div>

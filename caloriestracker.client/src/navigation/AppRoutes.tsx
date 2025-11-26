@@ -9,17 +9,17 @@ import Stats from '../pages/Stats';
 import Profile from '../pages/Profile';
 
 const AppRoutes = () => (
-    <Routes>
-        <Route path="/" element={<Navigate to={NavigationPathes.Home} replace />} />
+  <Routes>
+    <Route path="/" element={<Navigate to={NavigationPathes.Home} replace />} />
 
-        <Route path={NavigationPathes.Login} element={<Login />} />
-        <Route path={NavigationPathes.Register} element={<Register />} />
+    <Route path={NavigationPathes.Login} element={<Login />} />
+    <Route path={NavigationPathes.Register} element={<Register />} />
 
-        <Route path={NavigationPathes.Home} element={<Home />} />
-        <Route path={NavigationPathes.Foods} element={<Foods />} />
-        <Route path={NavigationPathes.Stats} element={<Stats />} />
-        <Route path={NavigationPathes.Profile} element={<Profile />} />
-    </Routes>
+    <Route path={NavigationPathes.Home} element={<Home />} />
+    <Route path={NavigationPathes.Foods} element={<Foods />} />
+    <Route path={NavigationPathes.Stats} element={<Stats />} />
+    <Route path={NavigationPathes.Profile} element={<Profile />} />
+  </Routes>
 );
 
 export default AppRoutes;

@@ -1,7 +1,6 @@
 import { AnyAction } from '@reduxjs/toolkit';
 import { ofType } from 'redux-observable';
 import { mergeMap } from 'rxjs';
-
 import {
   getActiveGoalRequest,
   getActiveGoalSuccess,
@@ -13,7 +12,6 @@ import {
   updateGoalSuccess,
   updateGoalFailure,
 } from './nutritionSlice';
-
 import { SetGoalPayload, UpdateGoalPayload } from './nutritionTypes';
 import { nutritionApi } from './nutritionApi';
 
@@ -33,7 +31,6 @@ export const setGoalEpic = (action$: any) =>
     ofType(setGoalRequest.type),
     mergeMap((action: AnyAction) => {
       const payload = action.payload as SetGoalPayload;
-
       return nutritionApi
         .setGoal(payload)
         .then(goal => setGoalSuccess(goal))
@@ -46,7 +43,6 @@ export const updateGoalEpic = (action$: any) =>
     ofType(updateGoalRequest.type),
     mergeMap((action: AnyAction) => {
       const payload = action.payload as UpdateGoalPayload;
-
       return nutritionApi
         .updateGoal(payload)
         .then(goal => updateGoalSuccess(goal))

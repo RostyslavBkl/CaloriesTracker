@@ -35,9 +35,9 @@
   cursor: pointer;
   padding: 10px 10px;
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(15, 23, 42, 0.8);
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.7);
+  background: var(--meal-row-bg);
+  border: 1px solid var(--meal-row-border);
+  box-shadow: var(--shadow);
   width: 100%;
   box-sizing: border-box;
 }
