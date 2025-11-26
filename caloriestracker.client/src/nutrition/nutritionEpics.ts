@@ -54,4 +54,4 @@ export const updateGoalEpic = (action$: any) =>
     })
   );
 
-export const nutritionGoalEpics = [getActiveGoalEpic, setGoalEpic, updateGoalEpic];
+export const nutritionEpics = [getActiveGoalEpic, setGoalEpic, updateGoalEpic];
