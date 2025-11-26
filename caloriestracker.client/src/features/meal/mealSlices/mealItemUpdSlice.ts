@@ -3,7 +3,7 @@ import {
   MealItem,
   UpdateMealItemInput,
   UpdateMealItemState,
-} from "./mealTypes";
+} from "../mealTypes";
 
 const initialState: UpdateMealItemState = {
   isUpdated: false,

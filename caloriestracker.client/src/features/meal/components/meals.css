@@ -62,6 +62,18 @@
   background: linear-gradient(135deg, #ef4444, #fecaca);
 }
 
+.meal-icon--DINNER {
+  background: linear-gradient(135deg, #8b5cf6, #ddd6fe);
+}
+
+.meal-icon--SNACK {
+  background: linear-gradient(135deg, #06b6d4, #cffafe);
+}
+
+.meal-icon--OTHER {
+  background: linear-gradient(135deg, #10b981, #d1fae5);
+}
+
 .meal-info {
   display: flex;
   flex-direction: column;

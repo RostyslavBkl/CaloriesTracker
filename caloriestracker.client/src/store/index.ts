@@ -5,10 +5,10 @@ import { AnyAction } from "redux";
 import authReducer from "../auth/AuthSlices";
 import { authEpics } from "../auth/Epics";
 
-import mealReducer from "../features/meal/mealSlice";
+import mealReducer from "../features/meal/mealSlices/mealSlice";
 import { mealEpics } from "../features/meal/mealEpic";
 
-import updMealItemReducer from "../features/meal/mealItemUpdSlice";
+import updMealItemReducer from "../features/meal/mealSlices/mealItemUpdSlice";
 
 import foodReducer from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";

@@ -1,7 +1,6 @@
 import { RootState } from "../../store/index";
 import { createSelector } from "@reduxjs/toolkit";
 import { Meal } from "./mealTypes";
-import { Food } from "../food/foodType";
 import { selectFoods } from "../food/foodSelectors";
 
 // конкретний день

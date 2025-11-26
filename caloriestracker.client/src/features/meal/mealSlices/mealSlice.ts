@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MealsState, Meal, MealItem } from "./mealTypes";
+import { MealsState, Meal, MealItem } from "../mealTypes";
 import { updateMealItemSuccess } from "./mealItemUpdSlice";
 
 const initialState: MealsState = {

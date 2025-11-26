@@ -7,12 +7,12 @@ import {
   getMealsByDay,
   getMealsByDayFailure,
   getMealsByDaySuccess,
-} from "./mealSlice";
+} from "./mealSlices/mealSlice";
 import {
   updateMealItem,
   updateMealItemFailure,
   updateMealItemSuccess,
-} from "./mealItemUpdSlice";
+} from "./mealSlices/mealItemUpdSlice";
 import {
   Meal,
   MealItem,
