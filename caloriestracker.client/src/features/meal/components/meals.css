@@ -16,7 +16,7 @@
 .meals-header {
   display: flex;
   align-items: right;
-  width: 300px;
+  /* width: 300px; */
   margin-top: 6px;
   flex-direction: column;
 }

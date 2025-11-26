@@ -71,19 +71,7 @@ const Home: React.FC = () => {
               </div>
             </div>
 
-            <div
-              style={{
-                minHeight: 240,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "var(--muted)",
-                padding: "20px",
-                textAlign: "center",
-              }}
-            >
-              <DayliMeals />
-            </div>
+            <DayliMeals />
           </div>
         </div>
       </div>
