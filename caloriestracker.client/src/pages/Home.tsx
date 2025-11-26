@@ -25,7 +25,7 @@ const Home: React.FC = () => {
 
   const { activeGoal, loading } = useSelector((s: RootState) => s.nutritionGoal);
 
-  const isAddDisabled = !!activeGoal || loading;
+  //const isAddDisabled = !!activeGoal || loading;
 
   useEffect(() => {
     dispatch(getActiveGoalRequest());
@@ -98,7 +98,7 @@ const Home: React.FC = () => {
                 <div className="goals-actions">
                   <button
                     type="button"
-                    className={`goals-add-btn ${isAddDisabled ? 'goals-add-btn--disabled' : ''}`}
+                    className={`goals-add-btn }`}
                     onClick={handleAddGoal}
                     aria-label="Add daily goal"
                   >

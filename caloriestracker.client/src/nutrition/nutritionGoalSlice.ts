@@ -1,9 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import {
-  NutritionGoal,
-  SetGoalPayload,
-  UpdateGoalPayload,
-} from './nutritionGoalTypes';
+import { NutritionGoal, SetGoalPayload, UpdateGoalPayload } from './nutritionGoalTypes';
 
 interface NutritionGoalState {
   activeGoal: NutritionGoal | null;
