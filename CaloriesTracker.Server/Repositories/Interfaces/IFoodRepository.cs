@@ -5,7 +5,7 @@ namespace CaloriesTracker.Server.Repositories.Interfaces
     public interface IFoodRepository
     {
         Task<Food> GetFoodByIdAsync(Guid Id);
-        Task<List<Food>> SearchFoodAsync(string query, Guid UserId);
+        Task<List<Guid>> SearchFoodAsync(string query, Guid userId);
 
         // CRUD Custom foods
         Task<List<Food>> GetCustomFoodsAsync(Guid UserId);

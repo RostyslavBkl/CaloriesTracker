@@ -59,13 +59,6 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 using var conn = _connectionFactory.Create();
                 await conn.OpenAsync();
 
-                //var sql = @"SELECT DiaryDays.Id AS DiaryDayId, DiaryDays.UserId, DiaryDays.Date, " +
-                //    "NutritionGoals.Id AS NutritionGoalId, " +
-                //    "NutritionGoals.TargetCalories, NutritionGoals.ProteinG, NutritionGoals.FatG, NutritionGoals.CarbG " +
-                //    "FROM DiaryDays " +
-                //    "INNER JOIN NutritionGoals ON DiaryDays.NutritionGoalId = NutritionGoals.Id " +
-                //    "WHERE Date = @Date AND DiaryDays.UserId = @UserId";
-
                 var sql = @"
                 SELECT 
                     d.Id AS DiaryDayId, d.UserId, d.Date, 

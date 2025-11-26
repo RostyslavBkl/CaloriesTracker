@@ -25,8 +25,8 @@ function DayliMeals() {
 
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
 
-  // const DIARY_DAY_ID = "5c6dd95e-fe64-40c2-8a81-bc89eedc1f9c";
-  const DIARY_DAY_ID = "58b62db9-53d9-4923-80f5-69768f5b8a61";
+  const DIARY_DAY_ID = "5c6dd95e-fe64-40c2-8a81-bc89eedc1f9c";
+  // const DIARY_DAY_ID = "58b62db9-53d9-4923-80f5-69768f5b8a61";
 
   useEffect(() => {
     dispatch(getMealsByDay(DIARY_DAY_ID));

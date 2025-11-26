@@ -27,7 +27,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 var sql = "SELECT * FROM Foods WHERE id = @Id";
                 var food = await connection.QuerySingleOrDefaultAsync<Food>(sql, new { Id = id });
 
-                return food;
+                return food!;
             }
             catch (SqlException ex)
             {
@@ -153,9 +153,30 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             }
         }
 
-        public Task<List<Food>> SearchFoodAsync(string query, Guid UserId)
+        public async Task<List<Guid>> SearchFoodAsync(string query, Guid userId)
         {
-            throw new NotImplementedException();
+            try {
+                Console.WriteLine($"Query: {query}, UserId: {userId}");
+                using var conn = _connectionFactory.Create();
+                await conn.OpenAsync();
+
+                var sql = @"SELECT Id FROM Foods WHERE Name LIKE @Name AND (userId = @UserId or userId is NULL)";
+                Console.WriteLine($"SQL: {sql}");
+                var result = (await conn.QueryAsync<Guid>(sql, new { Name = $"%{query}%", UserId = userId })).ToList();
+
+                Console.WriteLine($"Result count: {result.Count}");
+                foreach (var id in result)
+                {
+                    Console.WriteLine($"Found ID: {id}");
+                }
+
+                return result;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while getting food: {query} for user {userId}", query, userId);
+                throw;
+            }
         }
 
 
