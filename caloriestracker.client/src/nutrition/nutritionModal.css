@@ -1,0 +1,133 @@
+.goal-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.goal-modal {
+  width: 100%;
+  max-width: 340px;
+  background: var(--card);
+  border-radius: 14px;
+  padding: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  animation: modalFade 0.18s ease-out;
+  position: relative;
+}
+
+.goal-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-right: 40px;
+}
+
+.goal-modal-header h2 {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.goal-modal-header button {
+  position: absolute;
+  top: 10px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(148, 163, 184, 0.15);
+  border: none;
+  border-radius: 10px;
+  color: var(--muted);
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.goal-modal-header button:hover {
+  background: rgba(148, 163, 184, 0.25);
+  color: var(--text);
+}
+
+.goal-modal-body {
+  margin-top: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.plan-toggle {
+  display: flex;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: var(--radius);
+  padding: 3px;
+  border: 1px solid rgba(148, 163, 184, 0.3);
+}
+
+.plan-toggle button {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  padding: 6px 0;
+  border-radius: var(--radius);
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.plan-toggle button.active {
+  background: linear-gradient(135deg, #38bdf8, #22c55e);
+  color: #0f1724;
+  font-weight: 600;
+}
+
+.goal-modal .field label {
+  font-size: 14px;
+  color: var(--muted);
+}
+
+.goal-modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.goal-modal-footer button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  font-size: .9rem;
+}
+
+.goal-modal-footer button[type="button"] {
+  background: transparent;
+  color: var(--accent);
+  border: 1px solid rgba(148, 163, 184, 0.25);
+}
+
+.goal-modal-footer button[type="submit"] {
+  background: var(--btn-bg);
+  color: var(--btn-text);
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.2);
+}
+
+@keyframes modalFade {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

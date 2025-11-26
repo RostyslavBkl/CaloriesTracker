@@ -1,5 +1,4 @@
 ﻿using CaloriesTracker.Server.GraphQL.Type;
-using CaloriesTracker.Server.GraphQL.Types.DiaryDay;
 using CaloriesTracker.Server.Services.FoodService;
 using GraphQL;
 using GraphQL.Types;

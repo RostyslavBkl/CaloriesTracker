@@ -8,6 +8,8 @@ import {
 } from "../mealSelectors";
 import { getMealsByDay } from "../mealSlices/mealSlice";
 import { Meal } from "../mealTypes";
+import "../../../index.css";
+import "../../../pages/Home.css";
 import "./meals.css";
 import { getFoodById } from "../../food/foodSlice";
 
@@ -16,7 +18,7 @@ import MealCard from "./Meal/MealCard";
 
 const mealTypes = ["BREAKFAST", "LUNCH", "DINNER", "SNACK", "OTHER"];
 
-function DayliMeals() {
+function DailyMeals() {
   const dispatch = useAppDispatch();
   const mealsWithSummary = useAppSelector(selectTodayMealsWithSummary);
   const meals = useAppSelector(selectTodayMeals);
@@ -25,7 +27,8 @@ function DayliMeals() {
 
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
 
-  const DIARY_DAY_ID = "5c6dd95e-fe64-40c2-8a81-bc89eedc1f9c";
+
+  const DIARY_DAY_ID = "a181502d-7d50-407c-a1ea-3e554c613741";
   // const DIARY_DAY_ID = "58b62db9-53d9-4923-80f5-69768f5b8a61";
 
   useEffect(() => {
@@ -73,25 +76,16 @@ function DayliMeals() {
         <section className="home-block home-block--meals">
           <div className="meals-header">
             <span className="home-block__title">Today&apos;s meals</span>
-            <div className="meals-list">
-              {mealsWithSummary.length === 0 ? (
-                <div className="meals-list">
-                  {mealTypes.map((type) => (
-                    <MealTemplate key={type} mealType={type} />
-                  ))}
-                </div>
-              ) : (
-                <div className="meals-list">
-                  {mealsWithSummary.map((meal) => (
-                    <MealCard
-                      key={meal.id}
-                      meal={meal}
-                      onOpenModal={openModal}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
+          </div>
+
+          <div className="meals-list">
+            {mealsWithSummary.length === 0 ? (
+              mealTypes.map((type) => <MealTemplate key={type} mealType={type} />)
+            ) : (
+              mealsWithSummary.map((meal) => (
+                <MealCard key={meal.id} meal={meal} onOpenModal={openModal} />
+              ))
+            )}
           </div>
         </section>
       )}
@@ -122,4 +116,4 @@ function MealTemplate({ mealType }: { mealType: string }) {
   );
 }
 
-export default DayliMeals;
+export default DailyMeals;

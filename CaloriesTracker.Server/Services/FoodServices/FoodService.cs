@@ -54,7 +54,7 @@ namespace CaloriesTracker.Server.Services.FoodService
             _foodValidator.ValidateCommonArgs(food);
             if (food.UserId != userId && food.Type == Models.Type.custom)
                 throw new Exception($"Can't get food: {food.Id} that belongs to other user");
-          
+
             return food;
         }
 
@@ -62,7 +62,7 @@ namespace CaloriesTracker.Server.Services.FoodService
         {
             // Validate user 
             var userId = await GetUserId();
-            if(userId == Guid.Empty)
+            if (userId == Guid.Empty)
                 throw new UnauthorizedAccessException("User not authenticated");
             return await _foodRepository.GetCustomFoodsAsync(userId);
         }
@@ -85,9 +85,6 @@ namespace CaloriesTracker.Server.Services.FoodService
             food.Name = food.Name.Trim();
 
             SetDefaultNutrients(food);
-
-            var gen64 = Convert.ToInt64(food.Name);
-            Console.WriteLine(gen64);
 
             return await _foodRepository.CreateCustomFoodAsync(food, userId);
         }

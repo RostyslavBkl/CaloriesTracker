@@ -1,7 +1,6 @@
 import { useEffect } from 'react';
 import { useAppDispatch } from './store/hooks';
 import { checkAuthStart } from './auth/AuthSlices';
-import MainMenu from './navigation/MainMenu';
 import AppRoutes from './navigation/AppRoutes';
 import './App.css'
 import './index.css'
@@ -12,7 +11,6 @@ const App = () => {
 
     return (
         <div>
-            <MainMenu />
             <AppRoutes />
         </div>
     );

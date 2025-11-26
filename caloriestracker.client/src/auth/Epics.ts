@@ -1,4 +1,4 @@
-import { Epic, ofType } from "redux-observable";
+import { ofType } from "redux-observable";
 import { from, of } from "rxjs";
 import { catchError, map, switchMap } from "rxjs/operators";
 import {
@@ -116,7 +116,7 @@ const validateAuthPayload = (
   return null;
 };
 
-export const loginEpic: Epic = (action$) =>
+export const loginEpic = (action$: any) =>
   action$.pipe(
     ofType(loginStart.type),
     switchMap((action: ReturnType<typeof loginStart>) => {
@@ -146,7 +146,7 @@ export const loginEpic: Epic = (action$) =>
     })
   );
 
-export const registerEpic: Epic = (action$) =>
+export const registerEpic = (action$: any) =>
   action$.pipe(
     ofType(registerStart.type),
     switchMap((action: ReturnType<typeof registerStart>) =>
@@ -178,7 +178,7 @@ export const registerEpic: Epic = (action$) =>
     )
   );
 
-export const checkAuthEpic: Epic = (action$) =>
+export const checkAuthEpic = (action$: any) =>
   action$.pipe(
     ofType(checkAuthStart.type),
     switchMap(() =>
@@ -192,7 +192,7 @@ export const checkAuthEpic: Epic = (action$) =>
     )
   );
 
-export const logoutEpic: Epic = (action$) =>
+export const logoutEpic = (action$: any) =>
   action$.pipe(
     ofType(logoutStart.type),
     switchMap(() =>
