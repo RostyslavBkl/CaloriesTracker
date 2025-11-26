@@ -124,6 +124,16 @@ namespace CaloriesTracker.Server.Services.FoodService
             return await _foodRepository.DeleteCustomFoodAsync(id, userId);
         }
 
+        public async Task<List<Guid>> SearchFoodAsync(string query)
+        {
+            var userId = await GetUserId();
+            if (userId == Guid.Empty)
+                throw new UnauthorizedAccessException("User not authenticated");
+            if (query == null && query == "")
+                throw new ArgumentException("Query is required");
+            return await _foodRepository.SearchFoodAsync(query!, userId);
+        }
+
         public void SetDefaultNutrients(Food food)
         {
             food.WeightG ??= 100.00m;
