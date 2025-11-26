@@ -1,0 +1,183 @@
+import { NutritionGoal, SetGoalPayload, UpdateGoalPayload } from './nutritionTypes';
+
+const GRAPHQL_URL = '/graphql';
+
+function fetchGraphQL<TResponse>(
+  query: string,
+  variables?: Record<string, unknown>
+): Promise<TResponse> {
+  return fetch(GRAPHQL_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query, variables }),
+    credentials: 'include',
+  }).then(async res => {
+    const json = await res.json();
+    if (json.errors?.length) {
+      const message = json.errors[0].message ?? 'GraphQL error';
+      throw new Error(message);
+    }
+    return json.data as TResponse;
+  });
+}
+
+const getActiveGoalQuery = `
+  query {
+    getActive {
+      id
+      startDate
+      endDate
+      targetCalories
+      proteinG
+      fatG
+      carbG
+      isActive
+    }
+  }
+`;
+
+const setGoalMutationBalanced = `
+  mutation($targetCalories: Int!) {
+    setGoal(
+      goal: { targetCalories: $targetCalories }
+      plan: "Balanced"
+    ) {
+      id
+      startDate
+      endDate
+      targetCalories
+      proteinG
+      fatG
+      carbG
+      isActive
+    }
+  }
+`;
+
+const setGoalMutationCustom = `
+  mutation(
+    $targetCalories: Int!
+    $proteinG: Decimal
+    $fatG: Decimal
+    $carbG: Decimal
+  ) {
+    setGoal(
+      goal: {
+        targetCalories: $targetCalories
+        proteinG: $proteinG
+        fatG: $fatG
+        carbG: $carbG
+      }
+      plan: "Custom"
+    ) {
+      id
+      startDate
+      endDate
+      targetCalories
+      proteinG
+      fatG
+      carbG
+      isActive
+    }
+  }
+`;
+
+const updateGoalMutationBalanced = `
+  mutation($targetCalories: Int!) {
+    updateGoal(
+      goal: { targetCalories: $targetCalories }
+      plan: "Balanced"
+    ) {
+      id
+      startDate
+      endDate
+      targetCalories
+      proteinG
+      fatG
+      carbG
+      isActive
+    }
+  }
+`;
+
+const updateGoalMutationCustom = `
+  mutation(
+    $targetCalories: Int!
+    $proteinG: Decimal
+    $fatG: Decimal
+    $carbG: Decimal
+  ) {
+    updateGoal(
+      goal: {
+        targetCalories: $targetCalories
+        proteinG: $proteinG
+        fatG: $fatG
+        carbG: $carbG
+      }
+      plan: "Custom"
+    ) {
+      id
+      startDate
+      endDate
+      targetCalories
+      proteinG
+      fatG
+      carbG
+      isActive
+    }
+  }
+`;
+
+type GetActiveGoalResponse = { getActive: NutritionGoal | null };
+type SetGoalResponse = { setGoal: NutritionGoal };
+type UpdateGoalResponse = { updateGoal: NutritionGoal };
+
+export const nutritionApi = {
+  getActiveGoal(): Promise<NutritionGoal | null> {
+    return fetchGraphQL<GetActiveGoalResponse>(getActiveGoalQuery).then(
+      data => data.getActive
+    );
+  },
+
+  setGoal(payload: SetGoalPayload): Promise<NutritionGoal> {
+    if (payload.plan === 'Balanced') {
+      const variables = { targetCalories: payload.targetCalories };
+      return fetchGraphQL<SetGoalResponse>(setGoalMutationBalanced, variables).then(
+        data => data.setGoal
+      );
+    }
+
+    const variables = {
+      targetCalories: payload.targetCalories,
+      proteinG: payload.proteinG,
+      fatG: payload.fatG,
+      carbG: payload.carbG,
+    };
+
+    return fetchGraphQL<SetGoalResponse>(setGoalMutationCustom, variables).then(
+      data => data.setGoal
+    );
+  },
+
+  updateGoal(payload: UpdateGoalPayload): Promise<NutritionGoal> {
+    if (payload.plan === 'Balanced') {
+      const variables = { targetCalories: payload.targetCalories };
+      return fetchGraphQL<UpdateGoalResponse>(
+        updateGoalMutationBalanced,
+        variables
+      ).then(data => data.updateGoal);
+    }
+
+    const variables = {
+      targetCalories: payload.targetCalories,
+      proteinG: payload.proteinG,
+      fatG: payload.fatG,
+      carbG: payload.carbG,
+    };
+
+    return fetchGraphQL<UpdateGoalResponse>(
+      updateGoalMutationCustom,
+      variables
+    ).then(data => data.updateGoal);
+  },
+};

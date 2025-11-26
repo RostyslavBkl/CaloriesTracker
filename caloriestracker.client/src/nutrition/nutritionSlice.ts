@@ -1,11 +1,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NutritionGoal, SetGoalPayload, UpdateGoalPayload } from './nutritionGoalTypes';
+import { NutritionGoal, SetGoalPayload, UpdateGoalPayload } from './nutritionTypes';
 
-interface NutritionGoalState {
+export type GoalModalMode = 'create' | 'edit';
+
+export interface NutritionGoalState {
   activeGoal: NutritionGoal | null;
   loading: boolean;
   error: string | null;
   isModalOpen: boolean;
+  mode: GoalModalMode;
 }
 
 const initialState: NutritionGoalState = {
@@ -13,15 +16,17 @@ const initialState: NutritionGoalState = {
   loading: false,
   error: null,
   isModalOpen: false,
+  mode: 'create',
 };
 
 const nutritionGoalSlice = createSlice({
   name: 'nutritionGoal',
   initialState,
   reducers: {
-    openGoalModal(state) {
+    openGoalModal(state, action: PayloadAction<GoalModalMode>) {
       state.isModalOpen = true;
       state.error = null;
+      state.mode = action.payload;
     },
     closeGoalModal(state) {
       state.isModalOpen = false;
@@ -49,6 +54,7 @@ const nutritionGoalSlice = createSlice({
       state.loading = false;
       state.activeGoal = action.payload;
       state.isModalOpen = false;
+      state.mode = 'edit';
     },
     setGoalFailure(state, action: PayloadAction<string>) {
       state.loading = false;
@@ -63,6 +69,7 @@ const nutritionGoalSlice = createSlice({
       state.loading = false;
       state.activeGoal = action.payload;
       state.isModalOpen = false;
+      state.mode = 'edit';
     },
     updateGoalFailure(state, action: PayloadAction<string>) {
       state.loading = false;

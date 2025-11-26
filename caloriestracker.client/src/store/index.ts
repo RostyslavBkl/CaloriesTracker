@@ -3,8 +3,8 @@ import { createEpicMiddleware, combineEpics } from 'redux-observable';
 
 import authReducer from '../auth/AuthSlices';
 import { authEpics } from '../auth/Epics';
-import nutritionGoalReducer from '../nutrition/nutritionGoalSlice';
-import { nutritionGoalEpics } from '../nutrition/nutritionGoalEpics';
+import nutritionGoalReducer from '../nutrition/nutritionSlice';
+import { nutritionGoalEpics } from '../nutrition/nutritionEpics';
 
 const epicMiddleware = createEpicMiddleware();
 

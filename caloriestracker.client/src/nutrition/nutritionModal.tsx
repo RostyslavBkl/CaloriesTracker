@@ -1,21 +1,16 @@
 import { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
-import {
-  closeGoalModal,
-  setGoalRequest,
-  updateGoalRequest,
-} from './nutritionGoalSlice';
-import { Plan } from './nutritionGoalTypes';
+import { closeGoalModal, setGoalRequest, updateGoalRequest } from './nutritionSlice';
+import { Plan } from './nutritionTypes';
 import { useAppDispatch } from '../store/hooks';
-import './NutritionGoalModal.css';
+import './nutritionModal.css';
+import { selectNutritionGoalModal } from './nutritionSelectors';
 
 export const NutritionGoalModal = () => {
   const dispatch = useAppDispatch();
 
-  const { isModalOpen, loading, error, activeGoal } = useSelector(
-    (s: RootState) => s.nutritionGoal
-  );
+  const { isModalOpen, loading, error, activeGoal, mode } = useSelector((state: RootState) => selectNutritionGoalModal(state));
 
   const [plan, setPlan] = useState<Plan>('Balanced');
   const [targetCalories, setTargetCalories] = useState(2000);
@@ -28,68 +23,56 @@ export const NutritionGoalModal = () => {
       return;
     }
 
-    if (activeGoal) {
+    if (mode === 'edit' && activeGoal) {
       setTargetCalories(activeGoal.targetCalories);
       setProteinG(activeGoal.proteinG ?? 0);
       setFatG(activeGoal.fatG ?? 0);
       setCarbG(activeGoal.carbG ?? 0);
       setPlan('Balanced');
-    } else {
-      setTargetCalories(2000);
-      setProteinG(0);
-      setFatG(0);
-      setCarbG(0);
-      setPlan('Balanced');
+      return;
     }
-  }, [activeGoal, isModalOpen]);
+
+    setTargetCalories(2000);
+    setProteinG(0);
+    setFatG(0);
+    setCarbG(0);
+    setPlan('Balanced');
+  }, [activeGoal, isModalOpen, mode]);
 
   if (!isModalOpen) return null;
 
-  const isEditing = !!activeGoal;
+  const isCreateMode = mode === 'create';
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (plan === 'Balanced') {
-      if (isEditing) {
-        dispatch(
-          updateGoalRequest({
-            plan: 'Balanced',
-            targetCalories,
-          })
-        );
+      const payload = {
+        plan: 'Balanced' as const,
+        targetCalories,
+      };
+
+      if (isCreateMode) {
+        dispatch(setGoalRequest(payload));
       } else {
-        dispatch(
-          setGoalRequest({
-            plan: 'Balanced',
-            targetCalories,
-          })
-        );
+        dispatch(updateGoalRequest(payload));
       }
 
       return;
     }
 
-    if (isEditing) {
-      dispatch(
-        updateGoalRequest({
-          plan: 'Custom',
-          targetCalories,
-          proteinG,
-          fatG,
-          carbG,
-        })
-      );
+    const payload = {
+      plan: 'Custom' as const,
+      targetCalories,
+      proteinG,
+      fatG,
+      carbG,
+    };
+
+    if (isCreateMode) {
+      dispatch(setGoalRequest(payload));
     } else {
-      dispatch(
-        setGoalRequest({
-          plan: 'Custom',
-          targetCalories,
-          proteinG,
-          fatG,
-          carbG,
-        })
-      );
+      dispatch(updateGoalRequest(payload));
     }
   };
 
@@ -190,7 +173,7 @@ export const NutritionGoalModal = () => {
               disabled={loading}
               className="goal-modal-btn goal-modal-btn--primary"
             >
-              {loading ? 'Saving…' : isEditing ? 'Update goal' : 'Save goal'}
+              {loading ? 'Saving…' : isCreateMode ? 'Save goal' : 'Update goal'}
             </button>
           </div>
         </form>

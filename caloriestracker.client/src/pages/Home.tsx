@@ -4,12 +4,13 @@ import { useAppDispatch } from '../store/hooks';
 import { useSelector } from 'react-redux';
 import AuthorizeView from '../authorization/AuthorizeView';
 import MainMenu from '../navigation/MainMenu';
-import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionGoalSlice';
-import { NutritionGoalModal } from '../nutrition/nutritionGoalModal';
+import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionSlice';
+import { NutritionGoalModal } from '../nutrition/nutritionModal';
 import { RootState } from '../store';
 import './Home.css';
 import '../index.css';
 import ThemeToggle from '../ThemeTongle';
+import { selectNutritionGoalState } from '../nutrition/nutritionSelectors';
 
 type Meal = {
   id: string;
@@ -25,11 +26,13 @@ const Home: React.FC = () => {
     return today.toISOString().slice(0, 10);
   });
 
-  const { activeGoal, loading } = useSelector((s: RootState) => s.nutritionGoal);
+  const { activeGoal, loading } = useSelector((state: RootState) =>
+    selectNutritionGoalState(state)
+  );
 
   useEffect(() => {
     dispatch(getActiveGoalRequest());
-  }, []);
+  }, [dispatch]);
 
   const consumedKcal = 550;
 
@@ -56,11 +59,11 @@ const Home: React.FC = () => {
 
   const meals: Meal[] = [
     { id: 'breakfast', name: 'Breakfast', currentKcal: 0 },
-    { id: 'lunch', name: 'Lunch', currentKcal: 0 }
+    { id: 'lunch', name: 'Lunch', currentKcal: 0 },
   ];
 
   const handleAddGoal = () => {
-    dispatch(openGoalModal());
+    dispatch(openGoalModal('create'));
   };
 
   const handleAddMealClick = (meal: Meal) => {
@@ -86,7 +89,7 @@ const Home: React.FC = () => {
                   className="calendar-date-input-hidden"
                   type="date"
                   value={selectedDate}
-                  onChange={(e) => setSelectedDate(e.target.value)}
+                  onChange={e => setSelectedDate(e.target.value)}
                 />
               </div>
               <ThemeToggle />
@@ -99,7 +102,7 @@ const Home: React.FC = () => {
                 <div className="goals-actions">
                   <button
                     type="button"
-                    className={`goals-add-btn }`}
+                    className="goals-add-btn"
                     onClick={handleAddGoal}
                     aria-label="Add daily goal"
                   >
@@ -111,7 +114,7 @@ const Home: React.FC = () => {
                       type="button"
                       className="goals-menu__trigger"
                       aria-label="Edit daily goal"
-                      onClick={() => dispatch(openGoalModal())}
+                      onClick={() => dispatch(openGoalModal('edit'))}
                     >
                       <FiEdit size={16} />
                     </button>
@@ -138,7 +141,7 @@ const Home: React.FC = () => {
                     <div
                       className="goals-summary-circle__outer"
                       style={{
-                        ['--goals-progress-deg' as any]: `${progressDeg}deg`
+                        ['--goals-progress-deg' as any]: `${progressDeg}deg`,
                       }}
                     >
                       <div className="goals-summary-circle__inner">
@@ -200,34 +203,31 @@ const Home: React.FC = () => {
               </div>
 
               <div className="meals-list">
-                {meals.map((meal) => {
+                {meals.map(meal => (
+                  <div key={meal.id} className="meal-row">
+                    <div className="meal-left">
+                      <div className={`meal-icon meal-icon--${meal.id}`} />
 
-                  return (
-                    <div key={meal.id} className="meal-row">
-                      <div className="meal-left">
-                        <div className={`meal-icon meal-icon--${meal.id}`} />
+                      <div className="meal-info">
+                        <div className="meal-title">{meal.name}</div>
 
-                        <div className="meal-info">
-                          <div className="meal-title">{meal.name}</div>
-
-                          <div className="meal-kcal-row">
-                          </div>
-                          <span className="meal-kcal-text">
-                            {meal.currentKcal} kcal
-                          </span>
-                        </div>
+                        <div className="meal-kcal-row" />
+                        <span className="meal-kcal-text">
+                          {meal.currentKcal} kcal
+                        </span>
                       </div>
-
-                      <button
-                        type="button"
-                        className="meal-add-btn"
-                        onClick={() => handleAddMealClick(meal)}
-                        aria-label={`Add food to ${meal.name}`}>
-                        <FiPlus size={18} />
-                      </button>
                     </div>
-                  );
-                })}
+
+                    <button
+                      type="button"
+                      className="meal-add-btn"
+                      onClick={() => handleAddMealClick(meal)}
+                      aria-label={`Add food to ${meal.name}`}
+                    >
+                      <FiPlus size={18} />
+                    </button>
+                  </div>
+                ))}
               </div>
             </section>
             <MainMenu />
