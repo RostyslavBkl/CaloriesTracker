@@ -15,10 +15,9 @@
 
 .meals-header {
   display: flex;
-  align-items: right;
-  /* width: 300px; */
+  align-items: center;
+  justify-content: space-between;
   margin-top: 6px;
-  flex-direction: column;
 }
 
 .meals-list {
@@ -26,6 +25,7 @@
   flex-direction: column;
   gap: 8px;
   margin-top: 8px;
+  width: 100%;
 }
 
 .meal-row {
@@ -35,9 +35,11 @@
   cursor: pointer;
   padding: 10px 10px;
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(15, 23, 42, 0.8);
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.7);
+  background: var(--meal-row-bg);
+  border: 1px solid var(--meal-row-border);
+  box-shadow: var(--shadow);
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .meal-left {
@@ -137,10 +139,10 @@
   display: block;
 }
 
-// MODAL WINDOW FOR MEAL'S ITEMS
 .modal-item {
   position: absolute;
 }
+
 .modal-fullscreen {
   position: absolute;
   top: 0;
@@ -237,7 +239,7 @@
 .meal-item-info {
   display: flex;
   flex-direction: column;
-  align-item: start;
+  align-items: start;
   gap: 4px;
 }
 
@@ -264,6 +266,7 @@
 .modal-title-box {
   justify-content: center;
 }
+
 .item-modal-title {
   margin: 0;
   font-size: 18px;

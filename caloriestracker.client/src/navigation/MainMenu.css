@@ -1,41 +1,67 @@
-.main-menu {
+.bottom-nav {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 12px;
+  width: calc(100% - 40px);
+  padding: 2px 6px;
+  height: 44px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #333;
-  padding: 0 10px;
-  height: 50px;
+  gap: 4px;
+  background: var(--card);
+  border-radius: 999px;
+  box-shadow: var(--shadow);
+  z-index: 10;
 }
 
-.main-menu ul {
+.bottom-nav__item {
+  flex: 1 1 0;
   display: flex;
-  list-style-type: none;
-  padding: 0;
-  margin: 0;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 0 4px;
+  border-radius: 999px;
+  font-size: 14px;
+  color: var(--muted);
 }
 
-.main-menu ul li {
-  margin-right: 20px;
+.bottom-nav__item svg {
+  width: 18px;
+  height: 18px;
 }
 
-.main-menu ul li:last-child {
-  margin-right: 0;
+.bottom-nav__item--active {
+  background: rgba(96, 165, 250, 0.12);
+  color: var(--accent);
 }
 
-.main-menu ul li a,
-.main-menu ul li button {
-  color: white;
-  text-decoration: none;
-  background: none;
+.bottom-nav__icon {
+  width: 2px;
+  height: 2px;
   border: none;
-  cursor: pointer;
-  display: inline-block;
-  padding: 10px 15px;
-  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.main-menu ul li a:hover,
-.main-menu ul li button:hover {
-  text-decoration: underline;
+.bottom-nav__item:hover {
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.meal-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  padding: 10px;
+  border-radius: 12px;
+  background: var(--meal-row-bg);
+  border: 1px solid var(--meal-row-border);
+  box-shadow: var(--shadow);
+  width: 100%;
+  box-sizing: border-box;
 }

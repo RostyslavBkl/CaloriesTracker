@@ -2,9 +2,6 @@
 using CaloriesTracker.Server.Models.Nutrition;
 using CaloriesTracker.Server.Repositories;
 using CaloriesTracker.Server.Repositories.Interfaces;
-using Microsoft.AspNetCore.Http;
-using System.Numerics;
-using System.Reflection.Metadata;
 
 namespace CaloriesTracker.Server.Services.NutritionalGoalServices
 {
@@ -58,11 +55,11 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
         public async Task<NutritionGoal?> GetActiveGoal()
         {
             var userId = await GetUserId();
-            if(userId == Guid.Empty)
+            if (userId == Guid.Empty)
                 throw new UnauthorizedAccessException("User not authenticated");
 
             var goal = await _goalRepo.GetActiveGoal(userId);
-        
+
             return goal;
         }
 
@@ -70,11 +67,11 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
         {
             var userId = await GetUserId();
             var currGoal = await GetActiveGoal();
-            
+
             goal.StartDate ??= DateTime.UtcNow.Date;
             if (goal.StartDate > DateTime.UtcNow.Date)
                 throw new ArgumentException("The goal cannot be set for the future");
-          
+
             ValidateGoal(goal);
             await CalculateNutritionPlan(goal, plan);
 
@@ -86,14 +83,14 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
         }
 
         public async Task<NutritionGoal> UpdateGoal(NutritionGoal goal, Plan plan)
-        {           
+        {
             var userId = await GetUserId();
             await CalculateNutritionPlan(goal, plan);
 
             ValidateGoal(goal);
 
             var upd = await _goalRepo.UpdateGoal(goal, userId);
-       
+
             return upd;
         }
 
@@ -131,7 +128,7 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
 
         private void ValidateCustomPlan(NutritionGoal goal)
         {
-            if(goal.ProteinG.HasValue && goal.FatG.HasValue && goal.CarbG.HasValue)
+            if (goal.ProteinG.HasValue && goal.FatG.HasValue && goal.CarbG.HasValue)
             {
                 var totalKcal = (goal.ProteinG.Value * 4m) + (goal.FatG.Value * 9m)
                     + (goal.CarbG.Value * 4m);
@@ -145,13 +142,13 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             }
         }
 
-     
+
         private void ValidateGoal(NutritionGoal goal)
         {
             // валідація калорій і бжв
             if (goal.TargetCalories <= 0)
                 throw new ArgumentException("TargetCalories must be positive", nameof(goal.TargetCalories));
-            if(goal.TargetCalories < 1000 || goal.TargetCalories > 3500)
+            if (goal.TargetCalories < 1000 || goal.TargetCalories > 3500)
                 throw new ArgumentException("Target calories must be in the range 1000-3500 kcal per day", nameof(goal.TargetCalories));
             if (goal.ProteinG.HasValue && goal.ProteinG.Value < 0)
                 throw new ArgumentException("Proteins must be positive", nameof(goal.ProteinG));
@@ -176,7 +173,5 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
                     throw new ArgumentException("The difference between EndDate and StartDate must be at least one day");
             }
         }
-
-
     }
 }
