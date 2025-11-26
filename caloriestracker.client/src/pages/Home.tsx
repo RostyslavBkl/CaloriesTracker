@@ -8,6 +8,8 @@ import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionGoalS
 import { NutritionGoalModal } from '../nutrition/nutritionGoalModal';
 import { RootState } from '../store';
 import './Home.css';
+import '../index.css';
+import ThemeToggle from '../ThemeTongle';
 
 type Meal = {
   id: string;
@@ -24,8 +26,6 @@ const Home: React.FC = () => {
   });
 
   const { activeGoal, loading } = useSelector((s: RootState) => s.nutritionGoal);
-
-  //const isAddDisabled = !!activeGoal || loading;
 
   useEffect(() => {
     dispatch(getActiveGoalRequest());
@@ -72,7 +72,7 @@ const Home: React.FC = () => {
       <div className="stage">
         <div className="board board--home">
           <div className="containerbox containerbox--with-nav home-layout">
-            <div className="home-top-row">
+            <div className="home-top-row page-header">
               <div className="calendar-icon-wrapper">
                 <button
                   type="button"
@@ -89,6 +89,7 @@ const Home: React.FC = () => {
                   onChange={(e) => setSelectedDate(e.target.value)}
                 />
               </div>
+              <ThemeToggle />
             </div>
 
             <section className="home-block home-block--goals">

@@ -1,24 +1,18 @@
 import React from 'react';
-import { useAppDispatch } from '../store/hooks';
 import AuthorizeView from '../authorization/AuthorizeView';
 import MainMenu from '../navigation/MainMenu';
 import ThemeToggle from '../ThemeTongle';
 
 const Foods: React.FC = () => {
-  const dispatch = useAppDispatch();
-
   return (
     <AuthorizeView>
       <div className="stage">
         <div className="board board--home">
           <div className="containerbox containerbox--with-nav">
-            <div className="form-header">
-              <div className="header-left">
-                <h3 style={{ marginTop: 0 }}>Foods</h3>
-              </div>
-              <div
-                className="header-right"
-                style={{ display: 'flex', gap: 8, alignItems: 'center' }}>
+            <div className="page-header">
+              <h3 className="page-header__title">Foods</h3>
+
+              <div className="page-header__right">
                 <ThemeToggle />
               </div>
             </div>
@@ -32,7 +26,8 @@ const Foods: React.FC = () => {
                 color: 'var(--muted)',
                 padding: '20px',
                 textAlign: 'center',
-              }}>
+              }}
+            >
               <span>Foods page — content will appear here.</span>
             </div>
 

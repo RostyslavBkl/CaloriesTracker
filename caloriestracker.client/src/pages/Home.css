@@ -8,16 +8,16 @@
 .home-top-row {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
   margin-bottom: 4px;
 }
 
 .home-square {
-  background: rgba(15, 23, 36, 0.7);
+  background: var(--card);
   border-radius: 12px;
   padding: 8px 10px;
-  border: 1px solid rgba(148, 163, 184, 0.25);
-  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.4);
+  border: 1px solid var(--input-border);
+  box-shadow: var(--shadow);
 }
 
 .home-square--date {
@@ -56,7 +56,7 @@
   display: flex;
   flex-direction: column;
   gap: 6px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  border: 1px solid var(--input-border);
 }
 
 .home-block--goals {
@@ -75,14 +75,6 @@
 .home-block__placeholder {
   font-size: 13px;
   color: var(--muted);
-}
-
-.home-logout-btn {
-  position: absolute;
-  top: 10px;
-  right: 16px;
-  padding: 6px 12px;
-  font-size: 13px;
 }
 
 .calendar-icon-wrapper {
@@ -134,7 +126,7 @@
   height: 26px;
   border: none;
   background: transparent;
-  color: #ffffff;
+  color: var(--accent);
   font-size: 22px;
   font-weight: 600;
   line-height: 1;
@@ -146,7 +138,7 @@
 }
 
 .goals-add-btn:hover {
-  opacity: 0.7;
+  opacity: 0.8;
 }
 
 .goals-menu__trigger:hover {
@@ -191,8 +183,8 @@
   top: 26px;
   background: var(--card);
   border-radius: 10px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-  box-shadow: 0 10px 25px rgba(15, 23, 42, 0.6);
+  border: 1px solid var(--input-border);
+  box-shadow: var(--shadow);
   padding: 4px 0;
   min-width: 110px;
   z-index: 10;
@@ -214,11 +206,11 @@
 }
 
 .goals-menu__item--danger {
-  color: #f97373;
+  color: var(--danger);
 }
 
 .goals-content {
-  --goals-accent: #38bdf8;
+  --goals-accent: var(--accent);
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -232,8 +224,8 @@
   border-radius: 14px;
   background: linear-gradient(135deg,
       rgba(56, 189, 248, 0.25),
-      rgba(15, 23, 42, 0.96));
-  border: 1px solid rgba(56, 189, 248, 0.45);
+      var(--card));
+  border: 1px solid rgba(56, 189, 248, 0.55);
 }
 
 .goals-summary-left {
@@ -277,17 +269,16 @@
   border-radius: 999px;
   padding: 6px;
 
-  background:
-    conic-gradient(var(--goals-accent) 0deg,
+  background: conic-gradient(var(--goals-accent) 0deg,
       var(--goals-accent) var(--goals-progress-deg),
-      rgba(30, 41, 59, 0.9) var(--goals-progress-deg));
+      var(--card) var(--goals-progress-deg));
 }
 
 .goals-summary-circle__inner {
   width: 100%;
   height: 100%;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.98);
+  background: var(--bg);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -315,8 +306,8 @@
   border-radius: 10px;
   padding: 8px 8px 10px;
   font-size: 11px;
-  background: rgba(15, 23, 42, 0.96);
-  border: 1px solid rgba(148, 163, 184, 0.35);
+  background: var(--card);
+  border: 1px solid var(--input-border);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -327,19 +318,19 @@
 .macro-card--carbs {
   background: linear-gradient(90deg,
       rgba(190, 242, 100, 0.35),
-      rgba(15, 23, 42, 0.96));
+      var(--card));
 }
 
 .macro-card--protein {
   background: linear-gradient(90deg,
       rgba(253, 186, 116, 0.35),
-      rgba(15, 23, 42, 0.96));
+      var(--card));
 }
 
 .macro-card--fats {
   background: linear-gradient(90deg,
       rgba(125, 211, 252, 0.35),
-      rgba(15, 23, 42, 0.96));
+      var(--card));
 }
 
 .macro-card__label {
@@ -354,7 +345,7 @@
   position: relative;
   height: 6px;
   border-radius: 999px;
-  background: rgba(15, 23, 42, 0.9);
+  background: rgba(148, 163, 184, 0.25);
   overflow: hidden;
 }
 
@@ -396,9 +387,9 @@
   justify-content: space-between;
   padding: 10px 10px;
   border-radius: 12px;
-  background: rgba(15, 23, 42, 0.95);
-  border: 1px solid rgba(15, 23, 42, 0.8);
-  box-shadow: 0 6px 14px rgba(15, 23, 42, 0.7);
+  background: var(--card);
+  border: 1px solid var(--input-border);
+  box-shadow: var(--shadow);
 }
 
 .meal-left {
@@ -466,7 +457,7 @@
   height: 32px;
   border-radius: 999px;
   border: none;
-  background: #38bdf8;
+  background: var(--accent);
   color: #ffffff;
   display: flex;
   align-items: center;
