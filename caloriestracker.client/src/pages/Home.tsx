@@ -1,22 +1,25 @@
+// src/pages/Home.tsx (або де у тебе лежить цей компонент)
+
 import React, { useEffect, useState } from 'react';
 import { FiCalendar, FiPlus, FiEdit } from 'react-icons/fi';
 import { useAppDispatch } from '../store/hooks';
 import { useSelector } from 'react-redux';
 import AuthorizeView from '../authorization/AuthorizeView';
 import MainMenu from '../navigation/MainMenu';
-import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionSlice';
+import {
+  openGoalModal,
+  getActiveGoalRequest,
+} from '../nutrition/nutritionSlice';
 import { NutritionGoalModal } from '../nutrition/nutritionModal';
 import { RootState } from '../store';
 import './Home.css';
 import '../index.css';
+import '../features/meal/components/meals.css';
 import ThemeToggle from '../ThemeTongle';
 import { selectNutritionGoalState } from '../nutrition/nutritionSelectors';
 
-type Meal = {
-  id: string;
-  name: string;
-  currentKcal: number;
-};
+import DailyMeals from '../features/meal/components/DailyMeals';
+import { selectTodaySummary } from '../features/meal/mealSelectors';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,11 +33,11 @@ const Home: React.FC = () => {
     selectNutritionGoalState(state)
   );
 
-  useEffect(() => {
-    dispatch(getActiveGoalRequest());
-  }, [dispatch]);
+  // 🔥 Тягнемо сумарні нутрієнти за день з mealів
+  const daySummary = useSelector(selectTodaySummary);
 
-  const consumedKcal = 550;
+  // Фактично спожиті калорії з meals
+  const consumedKcal = daySummary.kcal;
 
   const targetKcal = activeGoal?.targetCalories ?? 0;
   const remainingKcal = Math.max(targetKcal - consumedKcal, 0);
@@ -46,28 +49,26 @@ const Home: React.FC = () => {
   const proteinsTarget = activeGoal?.proteinG ?? 0;
   const fatsTarget = activeGoal?.fatG ?? 0;
 
-  const carbsCurrent = 0;
-  const proteinsCurrent = 0;
-  const fatsCurrent = 0;
+  // Поточні макроси з mealів
+  const carbsCurrent = daySummary.carbsG;
+  const proteinsCurrent = daySummary.proteinG;
+  const fatsCurrent = daySummary.fatG;
 
   const carbsPercent =
     carbsTarget === 0 ? 0 : Math.min((carbsCurrent / carbsTarget) * 100, 100);
   const proteinsPercent =
-    proteinsTarget === 0 ? 0 : Math.min((proteinsCurrent / proteinsTarget) * 100, 100);
+    proteinsTarget === 0
+      ? 0
+      : Math.min((proteinsCurrent / proteinsTarget) * 100, 100);
   const fatsPercent =
     fatsTarget === 0 ? 0 : Math.min((fatsCurrent / fatsTarget) * 100, 100);
 
-  const meals: Meal[] = [
-    { id: 'breakfast', name: 'Breakfast', currentKcal: 0 },
-    { id: 'lunch', name: 'Lunch', currentKcal: 0 },
-  ];
+  useEffect(() => {
+    dispatch(getActiveGoalRequest());
+  }, [dispatch]);
 
   const handleAddGoal = () => {
     dispatch(openGoalModal('create'));
-  };
-
-  const handleAddMealClick = (meal: Meal) => {
-    console.log('Add to meal:', meal.id);
   };
 
   return (
@@ -89,7 +90,7 @@ const Home: React.FC = () => {
                   className="calendar-date-input-hidden"
                   type="date"
                   value={selectedDate}
-                  onChange={e => setSelectedDate(e.target.value)}
+                  onChange={(e) => setSelectedDate(e.target.value)}
                 />
               </div>
               <ThemeToggle />
@@ -133,7 +134,7 @@ const Home: React.FC = () => {
                       Target: {targetKcal} kcal
                     </span>
                     <span className="goals-summary-remaining">
-                      Remaining: {remainingKcal} kcal
+                      Remaining: {remainingKcal.toFixed(0)} kcal
                     </span>
                   </div>
 
@@ -146,7 +147,7 @@ const Home: React.FC = () => {
                     >
                       <div className="goals-summary-circle__inner">
                         <span className="goals-circle-value">
-                          {remainingKcal}
+                          {remainingKcal.toFixed(0)}
                         </span>
                         <span className="goals-circle-unit">kcal</span>
                       </div>
@@ -158,7 +159,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--carbs">
                     <div className="macro-card__label">carbs</div>
                     <div className="macro-card__values">
-                      {carbsCurrent} / {carbsTarget.toFixed(0)} g
+                      {carbsCurrent.toFixed(1)} / {carbsTarget.toFixed(0)} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -171,7 +172,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--protein">
                     <div className="macro-card__label">proteins</div>
                     <div className="macro-card__values">
-                      {proteinsCurrent} / {proteinsTarget.toFixed(0)} g
+                      {proteinsCurrent.toFixed(1)} / {proteinsTarget.toFixed(0)} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -184,7 +185,7 @@ const Home: React.FC = () => {
                   <div className="macro-card macro-card--fats">
                     <div className="macro-card__label">fats</div>
                     <div className="macro-card__values">
-                      {fatsCurrent} / {fatsTarget.toFixed(0)} g
+                      {fatsCurrent.toFixed(1)} / {fatsTarget.toFixed(0)} g
                     </div>
                     <div className="macro-card__bar">
                       <div
@@ -197,39 +198,7 @@ const Home: React.FC = () => {
               </div>
             </section>
 
-            <section className="home-block home-block--meals">
-              <div className="meals-header">
-                <span className="home-block__title">Today&apos;s meals</span>
-              </div>
-
-              <div className="meals-list">
-                {meals.map(meal => (
-                  <div key={meal.id} className="meal-row">
-                    <div className="meal-left">
-                      <div className={`meal-icon meal-icon--${meal.id}`} />
-
-                      <div className="meal-info">
-                        <div className="meal-title">{meal.name}</div>
-
-                        <div className="meal-kcal-row" />
-                        <span className="meal-kcal-text">
-                          {meal.currentKcal} kcal
-                        </span>
-                      </div>
-                    </div>
-
-                    <button
-                      type="button"
-                      className="meal-add-btn"
-                      onClick={() => handleAddMealClick(meal)}
-                      aria-label={`Add food to ${meal.name}`}
-                    >
-                      <FiPlus size={18} />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </section>
+            <DailyMeals />
             <MainMenu />
           </div>
         </div>

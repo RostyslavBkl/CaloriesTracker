@@ -1,11 +1,14 @@
+// src/features/meal/mealSelectors.ts
+
 import { RootState } from "../../store/index";
 import { createSelector } from "@reduxjs/toolkit";
 import { Meal } from "./mealTypes";
 import { selectFoods } from "../food/foodSelectors";
 
 // конкретний день
-export const selectMealsByDay = (diaryDayId: string) => (state: RootState) =>
-  state.meal.mealsByDay[diaryDayId] || [];
+export const selectMealsByDay =
+  (diaryDayId: string) => (state: RootState) =>
+    state.meal.mealsByDay[diaryDayId] || [];
 
 export const selectMealsLoading = (state: RootState) => state.meal.loading;
 
@@ -50,6 +53,28 @@ export const selectTodayMealsWithSummary = createSelector(
   [selectTodayMeals, selectFoods],
   (meals, foods) => {
     return meals.map((meal) => calculateMealSummary(meal, foods));
+  }
+);
+
+// 🔥 НОВИЙ СЕЛЕКТОР: сумарні нутрієнти за день
+export const selectTodaySummary = createSelector(
+  [selectTodayMealsWithSummary],
+  (mealsWithSummary) => {
+    return mealsWithSummary.reduce(
+      (acc, meal) => {
+        const s =
+          (meal as any).summary || // якщо типи не розширені, щоб TS не бурчав
+          { proteinG: 0, fatG: 0, carbsG: 0, kcal: 0 };
+
+        return {
+          proteinG: acc.proteinG + s.proteinG,
+          fatG: acc.fatG + s.fatG,
+          carbsG: acc.carbsG + s.carbsG,
+          kcal: acc.kcal + s.kcal,
+        };
+      },
+      { proteinG: 0, fatG: 0, carbsG: 0, kcal: 0 }
+    );
   }
 );
 

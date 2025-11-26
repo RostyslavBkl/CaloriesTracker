@@ -1,5 +1,4 @@
 ﻿using CaloriesTracker.Server.GraphQL.Type;
-using CaloriesTracker.Server.GraphQL.Types.DiaryDay;
 using CaloriesTracker.Server.Services.FoodService;
 using GraphQL;
 using GraphQL.Types;
@@ -11,7 +10,7 @@ namespace CaloriesTracker.Server.GraphQL.Queries
         public FoodQuery()
         {
             Field<FoodType>("food")
-                .Argument<IdGraphType>("id")
+                .Argument<GuidGraphType>("id")
                 .ResolveAsync(async context =>
                 {
                     var service = context.RequestServices!.GetRequiredService<FoodService>();

@@ -1,20 +1,16 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { createEpicMiddleware, combineEpics } from "redux-observable";
 
-// Auth
 import authReducer from "../auth/AuthSlices";
 import { authEpics } from "../auth/Epics";
 
-// Meal
 import mealReducer from "../features/meal/mealSlices/mealSlice";
 import { mealEpics } from "../features/meal/mealEpic";
 import updMealItemReducer from "../features/meal/mealSlices/mealItemUpdSlice";
 
-// Food
 import foodReducer from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";
 
-// Nutrition
 import nutritionReducer from "../nutrition/nutritionSlice";
 import { nutritionEpics } from "../nutrition/nutritionEpics";
 
