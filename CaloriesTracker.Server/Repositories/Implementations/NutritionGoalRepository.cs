@@ -98,10 +98,10 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 await conn.OpenAsync();
 
                 var activeGoal = await GetActiveGoal(userId);
-                if(activeGoal == null)
+                if (activeGoal == null)
                     throw new InvalidOperationException($"Active goal not found for user");
 
-                var sql =  @"UPDATE NutritionGoals " +
+                var sql = @"UPDATE NutritionGoals " +
                     "SET StartDate = @StartDate, " +
                     "EndDate = @EndDate, " +
                     "TargetCalories = @TargetCalories, " +
@@ -142,9 +142,9 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 using var conn = _connectionFactory.Create();
                 await conn.OpenAsync();
 
-                var sql = @"UPDATE NutritionGoals " + 
+                var sql = @"UPDATE NutritionGoals " +
                     "SET EndDate = @EndDate, IsActive = 0 " +
-                    "OUTPUT INSERTED.* "+
+                    "OUTPUT INSERTED.* " +
                     "WHERE Id = @Id AND UserId = @UserId";
 
                 var deactivate = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(sql, new
@@ -154,7 +154,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     EndDate = DateTime.UtcNow.Date
                 });
 
-                if(deactivate == null)
+                if (deactivate == null)
                     throw new InvalidOperationException($"Goal: {id} not found for user {userId}");
 
                 return deactivate;
@@ -162,6 +162,38 @@ namespace CaloriesTracker.Server.Repositories.Implementations
             catch (SqlException ex)
             {
                 _logger.LogError(ex, "Database error while deactivating goal: {id} for user {userId}", id, userId);
+                throw;
+            }
+        }
+
+        public async Task<NutritionGoal?> GetGoalForDate(Guid userId, DateTime date)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("UserId cannot be empty", nameof(userId));
+
+            var targetDate = date.Date;
+
+            try
+            {
+                using var conn = _connectionFactory.Create();
+                await conn.OpenAsync();
+
+                var sql = @"
+                    SELECT TOP 1 *
+                    FROM NutritionGoals
+                    WHERE UserId = @UserId
+                      AND StartDate <= @Date
+                      AND (EndDate IS NULL OR EndDate >= @Date)
+                    ORDER BY StartDate DESC;";
+
+                var goal = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(sql,
+                    new { UserId = userId, Date = targetDate });
+
+                return goal;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while getting goal for date {date} for user {userId}", targetDate, userId);
                 throw;
             }
         }
