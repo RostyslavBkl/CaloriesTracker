@@ -5,9 +5,12 @@ import {
   getFoodById,
   getFoodByIdFailure,
   getFoodByIdSuccess,
+  searchFoodFailure,
+  searchFoodRequest,
+  searchFoodSuccess,
 } from "./foodSlice";
 import { foodsApi } from "./foodApi";
-import { FoodResponse } from "./foodType";
+import { FoodResponse, SearchFoodResponse } from "./foodType";
 
 export const getFoodByIdEpic = (action$: Observable<Action>) => {
   return action$.pipe(
@@ -25,4 +28,24 @@ export const getFoodByIdEpic = (action$: Observable<Action>) => {
   );
 };
 
-export const foodEpics = [getFoodByIdEpic];
+export const searchFoodEpic = (action$: Observable<Action>) => {
+  return action$.pipe(
+    ofType(searchFoodRequest.type),
+    mergeMap((action: PayloadAction<string>) => {
+      const query = action.payload;
+      console.log(query);
+      return foodsApi.searchFood(query).pipe(
+        map((res: SearchFoodResponse) => {
+          console.log("Raw response:", res);
+          console.log("Search result:", res.searchFood);
+          return searchFoodSuccess(res.searchFood);
+        }),
+        catchError((err) =>
+          of(searchFoodFailure(err.message || "Failed to load meals"))
+        )
+      );
+    })
+  );
+};
+
+export const foodEpics = [getFoodByIdEpic, searchFoodEpic];

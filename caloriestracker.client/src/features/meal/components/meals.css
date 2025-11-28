@@ -1,21 +1,6 @@
-.home-block {
-  background: var(--card);
-  border-radius: 14px;
-  padding: 14px 12px;
-  box-shadow: var(--shadow);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  border: 1px solid rgba(148, 163, 184, 0.35);
-}
-
-.home-block--meals {
-  min-height: 180px;
-}
-
 .meals-header {
   display: flex;
-  align-items: center;
+  align-items: start;
   justify-content: space-between;
   margin-top: 6px;
   flex-direction: column;
@@ -391,4 +376,30 @@
 .edit-weight-input[value] {
   font-size: 16px;
   font-weight: 600;
+}
+
+/*SEARCH FOOD*/
+
+.search-food-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.search-food-input {
+  width: 100%;
+  padding-left: 40px !important;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top;
+}
+
+.search-btn{
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }

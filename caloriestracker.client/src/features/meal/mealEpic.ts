@@ -14,7 +14,6 @@ import {
   updateMealItemSuccess,
 } from "./mealSlices/mealItemUpdSlice";
 import {
-  Meal,
   MealItem,
   UpdateMealItemInput,
   UpdateMealItemResponse,

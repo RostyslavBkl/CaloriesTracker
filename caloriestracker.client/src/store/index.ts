@@ -8,7 +8,7 @@ import mealReducer from "../features/meal/mealSlices/mealSlice";
 import { mealEpics } from "../features/meal/mealEpic";
 import updMealItemReducer from "../features/meal/mealSlices/mealItemUpdSlice";
 
-import foodReducer from "../features/food/foodSlice";
+import foodReducer, { searchFoodReduces } from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";
 
 import nutritionReducer from "../nutrition/nutritionSlice";
@@ -21,6 +21,7 @@ export const store = configureStore({
     auth: authReducer,
     meal: mealReducer,
     food: foodReducer,
+    searchFood: searchFoodReduces,
     updateMealItem: updMealItemReducer,
     nutritionGoal: nutritionReducer,
   },

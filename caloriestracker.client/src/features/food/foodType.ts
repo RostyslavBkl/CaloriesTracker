@@ -26,3 +26,15 @@ export interface FoodState {
 export interface FoodResponse {
   food: Food;
 }
+
+// Search Food
+export interface SearchFoodState {
+  query: string;
+  result: string[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface SearchFoodResponse {
+  searchFood: string[];
+}
