@@ -34,7 +34,8 @@ const Home: React.FC = () => {
     return selectedDate === today;
   }, [selectedDate]);
 
-  const goalForSelectedDay = (diaryGoalSummary as any) ?? activeGoal;
+  const goalForSelectedDay = isToday
+    ? ((diaryGoalSummary as any) ?? activeGoal) : (diaryGoalSummary as any);
 
   const consumedKcal = daySummary.kcal;
   const targetKcal = goalForSelectedDay?.targetCalories ?? 0;
@@ -60,7 +61,6 @@ const Home: React.FC = () => {
       dispatch(getDiaryByDateRequest({ date: selectedDate }));
     }
   }, [dispatch, selectedDate]);
-
 
   const handleAddGoal = () => dispatch(openGoalModal('create'));
 

@@ -99,34 +99,32 @@ namespace CaloriesTracker.Server.Repositories.Implementations
 
                 var activeGoal = await GetActiveGoal(userId);
                 if (activeGoal == null)
-                    throw new InvalidOperationException($"Active goal not found for user");
+                    throw new InvalidOperationException("Active goal not found for user");
 
-                var sql = @"UPDATE NutritionGoals " +
-                    "SET StartDate = @StartDate, " +
-                    "EndDate = @EndDate, " +
-                    "TargetCalories = @TargetCalories, " +
-                    "ProteinG = @ProteinG, " +
-                    "FatG = @FatG, " +
-                    "CarbG = @CarbG " +
-                    "OUTPUT INSERTED.*  " +
-                    "WHERE id = @Id AND userId = @UserId";
+                var sql = @"
+            UPDATE NutritionGoals
+            SET 
+                TargetCalories = @TargetCalories,
+                ProteinG = @ProteinG,
+                FatG = @FatG,
+                CarbG = @CarbG
+            OUTPUT INSERTED.*
+            WHERE Id = @ActiveGoalId AND UserId = @UserId";
 
-                var updGoal = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(sql, new
+                var updated = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(sql, new
                 {
-                    Id = activeGoal.Id,
+                    ActiveGoalId = activeGoal.Id,
                     UserId = userId,
-                    StartDate = activeGoal?.StartDate,
-                    EndDate = goal.EndDate ?? activeGoal?.EndDate,
-                    TargetCalories = goal.TargetCalories > 0 ? goal.TargetCalories : activeGoal?.TargetCalories,
+                    TargetCalories = goal.TargetCalories,
                     ProteinG = goal.ProteinG,
                     FatG = goal.FatG,
-                    CarbG = goal.CarbG,
+                    CarbG = goal.CarbG
                 });
 
-                if (updGoal == null)
-                    throw new InvalidOperationException($"Failed to update goal {goal.Id}");
+                if (updated == null)
+                    throw new InvalidOperationException($"Failed to update active goal for user {userId}");
 
-                return updGoal;
+                return updated;
             }
             catch (SqlException ex)
             {
@@ -165,5 +163,38 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 throw;
             }
         }
+        public async Task<NutritionGoal?> GetGoalForDate(Guid userId, DateTime date)
+        {
+            if (userId == Guid.Empty)
+                throw new ArgumentException("UserId cannot be empty", nameof(userId));
+
+            try
+            {
+                using var conn = _connectionFactory.Create();
+                await conn.OpenAsync();
+
+                var targetDate = date.Date;
+
+                var sql = @"
+            SELECT TOP 1 *
+            FROM NutritionGoals
+            WHERE UserId = @UserId
+              AND StartDate <= @Date
+              AND (EndDate IS NULL OR EndDate >= @Date)
+            ORDER BY IsActive DESC, StartDate DESC;";
+
+                var goal = await conn.QueryFirstOrDefaultAsync<NutritionGoal>(
+                    sql,
+                    new { UserId = userId, Date = targetDate });
+
+                return goal;
+            }
+            catch (SqlException ex)
+            {
+                _logger.LogError(ex, "Database error while getting goal for date {date} for user {userId}", date, userId);
+                throw;
+            }
+        }
+
     }
 }

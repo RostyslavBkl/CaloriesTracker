@@ -51,7 +51,7 @@ type GetDiaryByDateResponse = {
 export const diaryApi = {
   getDiaryByDate(date: string): Promise<DiaryDayDetails | null> {
     return fetchGraphQL<GetDiaryByDateResponse>(getDiaryByDateQuery, { date }).then(
-      d => d.getRecordByDate
+      date => date.getRecordByDate
     );
   },
 };
