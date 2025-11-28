@@ -4,7 +4,7 @@ import { useSelector } from 'react-redux';
 import AuthorizeView from '../authorization/AuthorizeView';
 import MainMenu from '../navigation/MainMenu';
 import { useAppDispatch } from '../store/hooks';
-import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionSlice';
+import { openGoalModal } from '../nutrition/nutritionSlice';
 import { NutritionGoalModal } from '../nutrition/nutritionModal';
 import { RootState } from '../store';
 import './Home.css';
@@ -14,6 +14,8 @@ import ThemeToggle from '../ThemeTongle';
 import { selectNutritionGoalState } from '../nutrition/nutritionSelectors';
 import DailyMeals from '../features/meal/components/DailyMeals';
 import { selectTodaySummary } from '../features/meal/mealSelectors';
+import { selectDiaryGoalSummary } from '../features/diary/diarySelectors';
+import { getDiaryByDateRequest } from '../features/diary/diarySlice';
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -25,13 +27,14 @@ const Home: React.FC = () => {
     selectNutritionGoalState(state)
   );
   const daySummary = useSelector(selectTodaySummary);
+  const diaryGoalSummary = useSelector(selectDiaryGoalSummary);
 
   const isToday = useMemo(() => {
     const today = new Date().toISOString().slice(0, 10);
     return selectedDate === today;
   }, [selectedDate]);
 
-  const goalForSelectedDay = activeGoal;
+  const goalForSelectedDay = (diaryGoalSummary as any) ?? activeGoal;
 
   const consumedKcal = daySummary.kcal;
   const targetKcal = goalForSelectedDay?.targetCalories ?? 0;
@@ -53,8 +56,11 @@ const Home: React.FC = () => {
     fatsTarget === 0 ? 0 : Math.min((daySummary.fatG / fatsTarget) * 100, 100);
 
   useEffect(() => {
-    dispatch(getActiveGoalRequest());
-  }, [dispatch]);
+    if (selectedDate) {
+      dispatch(getDiaryByDateRequest({ date: selectedDate }));
+    }
+  }, [dispatch, selectedDate]);
+
 
   const handleAddGoal = () => dispatch(openGoalModal('create'));
 
