@@ -1,6 +1,5 @@
 ﻿using CaloriesTracker.Server.GraphQL.Types.NutritionGoal;
 using CaloriesTracker.Server.Services.NutritionalGoalServices;
-using GraphQL;
 using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Queries
@@ -20,14 +19,6 @@ namespace CaloriesTracker.Server.GraphQL.Queries
                 {
                     var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
                     return await service.GetGoalsHistory();
-                });
-            Field<NutritionGoalType>("getGoalForDate")
-                .Argument<NonNullGraphType<DateGraphType>>("date")
-                .ResolveAsync(async context =>
-                {
-                    var service = context.RequestServices!.GetRequiredService<NutritionalGoalService>();
-                    var date = context.GetArgument<DateTime>("date");
-                    return await service.GetGoalForDate(date);
                 });
         }
     }

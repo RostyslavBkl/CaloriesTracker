@@ -4,11 +4,7 @@ import { useSelector } from 'react-redux';
 import AuthorizeView from '../authorization/AuthorizeView';
 import MainMenu from '../navigation/MainMenu';
 import { useAppDispatch } from '../store/hooks';
-import {
-  openGoalModal,
-  getActiveGoalRequest,
-  getGoalForDateRequest,
-} from '../nutrition/nutritionSlice';
+import { openGoalModal, getActiveGoalRequest } from '../nutrition/nutritionSlice';
 import { NutritionGoalModal } from '../nutrition/nutritionModal';
 import { RootState } from '../store';
 import './Home.css';
@@ -25,7 +21,7 @@ const Home: React.FC = () => {
     () => new Date().toISOString().slice(0, 10)
   );
 
-  const { activeGoal, diaryDayGoal, loading } = useSelector((state: RootState) =>
+  const { activeGoal, loading } = useSelector((state: RootState) =>
     selectNutritionGoalState(state)
   );
   const daySummary = useSelector(selectTodaySummary);
@@ -35,7 +31,7 @@ const Home: React.FC = () => {
     return selectedDate === today;
   }, [selectedDate]);
 
-  const goalForSelectedDay = isToday ? activeGoal : diaryDayGoal ?? null;
+  const goalForSelectedDay = activeGoal;
 
   const consumedKcal = daySummary.kcal;
   const targetKcal = goalForSelectedDay?.targetCalories ?? 0;
@@ -59,10 +55,6 @@ const Home: React.FC = () => {
   useEffect(() => {
     dispatch(getActiveGoalRequest());
   }, [dispatch]);
-
-  useEffect(() => {
-    dispatch(getGoalForDateRequest({ date: selectedDate }));
-  }, [dispatch, selectedDate]);
 
   const handleAddGoal = () => dispatch(openGoalModal('create'));
 
@@ -127,7 +119,7 @@ const Home: React.FC = () => {
                       </span>
                       <span className="goals-summary-target">
                         Target:{' '}
-                        {goalForSelectedDay ? `${targetKcal} kcal` : 'no goal for this day'}
+                        {goalForSelectedDay ? `${targetKcal} kcal` : 'no goal'}
                       </span>
                       <span className="goals-summary-remaining">
                         Remaining: {remainingKcal.toFixed(0)} kcal
@@ -191,7 +183,6 @@ const Home: React.FC = () => {
                   </div>
                 </div>
               </section>
-
               <DailyMeals />
             </div>
             <MainMenu />

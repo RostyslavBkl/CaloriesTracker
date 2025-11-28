@@ -5,7 +5,6 @@ export type GoalModalMode = 'create' | 'edit';
 
 export interface NutritionGoalState {
   activeGoal: NutritionGoal | null;
-  diaryDayGoal: NutritionGoal | null;
   loading: boolean;
   error: string | null;
   isModalOpen: boolean;
@@ -14,7 +13,6 @@ export interface NutritionGoalState {
 
 const initialState: NutritionGoalState = {
   activeGoal: null,
-  diaryDayGoal: null,
   loading: false,
   error: null,
   isModalOpen: false,
@@ -44,19 +42,6 @@ const nutritionGoalSlice = createSlice({
       state.activeGoal = action.payload;
     },
     getActiveGoalFailure(state, action: PayloadAction<string>) {
-      state.loading = false;
-      state.error = action.payload;
-    },
-
-    getGoalForDateRequest(state, _action: PayloadAction<{ date: string }>) {
-      state.loading = true;
-      state.error = null;
-    },
-    getGoalForDateSuccess(state, action: PayloadAction<NutritionGoal | null>) {
-      state.loading = false;
-      state.diaryDayGoal = action.payload;
-    },
-    getGoalForDateFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
     },
@@ -99,9 +84,6 @@ export const {
   getActiveGoalRequest,
   getActiveGoalSuccess,
   getActiveGoalFailure,
-  getGoalForDateRequest,
-  getGoalForDateSuccess,
-  getGoalForDateFailure,
   setGoalRequest,
   setGoalSuccess,
   setGoalFailure,

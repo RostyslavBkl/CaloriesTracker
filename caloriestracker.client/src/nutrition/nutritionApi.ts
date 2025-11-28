@@ -36,21 +36,6 @@ const getActiveGoalQuery = `
   }
 `;
 
-const getGoalForDateQuery = `
-  query($date: Date!) {
-    getGoalForDate(date: $date) {
-      id
-      startDate
-      endDate
-      targetCalories
-      proteinG
-      fatG
-      carbG
-      isActive
-    }
-  }
-`;
-
 const setGoalMutationBalanced = `
   mutation($targetCalories: Int!) {
     setGoal(
@@ -144,7 +129,6 @@ const updateGoalMutationCustom = `
 `;
 
 type GetActiveGoalResponse = { getActive: NutritionGoal | null };
-type GetGoalForDateResponse = { getGoalForDate: NutritionGoal | null };
 type SetGoalResponse = { setGoal: NutritionGoal };
 type UpdateGoalResponse = { updateGoal: NutritionGoal };
 
@@ -153,11 +137,6 @@ export const nutritionApi = {
     return fetchGraphQL<GetActiveGoalResponse>(getActiveGoalQuery).then(
       data => data.getActive
     );
-  },
-
-  getGoalForDate(date: string): Promise<NutritionGoal | null> {
-    return fetchGraphQL<GetGoalForDateResponse>(getGoalForDateQuery, { date })
-      .then(data => data.getGoalForDate);
   },
 
   setGoal(payload: SetGoalPayload): Promise<NutritionGoal> {

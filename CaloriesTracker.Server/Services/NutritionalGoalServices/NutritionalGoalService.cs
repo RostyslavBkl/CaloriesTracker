@@ -52,14 +52,6 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             return history;
         }
 
-        public async Task<NutritionGoal?> GetGoalForDate(DateTime date)
-        {
-            var userId = await GetUserId();
-            if (userId == Guid.Empty)
-                throw new UnauthorizedAccessException("User not authenticated");
-
-            return await _goalRepo.GetGoalForDate(userId, date.Date);
-        }
 
         public async Task<NutritionGoal?> GetActiveGoal()
         {

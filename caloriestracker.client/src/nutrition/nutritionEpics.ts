@@ -2,9 +2,6 @@ import { AnyAction } from '@reduxjs/toolkit';
 import { ofType } from 'redux-observable';
 import { mergeMap } from 'rxjs';
 import {
-  getGoalForDateRequest,
-  getGoalForDateSuccess,
-  getGoalForDateFailure,
   getActiveGoalRequest,
   getActiveGoalSuccess,
   getActiveGoalFailure,
@@ -27,18 +24,6 @@ export const getActiveGoalEpic = (action$: any) =>
         .then(goal => getActiveGoalSuccess(goal))
         .catch((err: Error) => getActiveGoalFailure(err.message))
     )
-  );
-
-export const getGoalForDateEpic = (action$: any) =>
-  action$.pipe(
-    ofType(getGoalForDateRequest.type),
-    mergeMap((action: AnyAction) => {
-      const { date } = action.payload as { date: string };
-      return nutritionApi
-        .getGoalForDate(date)
-        .then(goal => getGoalForDateSuccess(goal))
-        .catch((err: Error) => getGoalForDateFailure(err.message));
-    })
   );
 
 export const setGoalEpic = (action$: any) =>
@@ -67,7 +52,6 @@ export const updateGoalEpic = (action$: any) =>
 
 export const nutritionEpics = [
   getActiveGoalEpic,
-  getGoalForDateEpic,
   setGoalEpic,
   updateGoalEpic,
 ];
