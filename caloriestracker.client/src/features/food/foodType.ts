@@ -17,6 +17,11 @@ export interface Food {
   totalKcal: number;
 }
 
+export interface CartItem extends Food {
+  qty: number;
+  customWeightG: number | null;
+}
+
 export interface FoodState {
   foods: { [foodId: string]: Food };
   loading: boolean;

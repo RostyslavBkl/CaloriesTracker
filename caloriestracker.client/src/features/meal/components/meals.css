@@ -222,7 +222,7 @@
   border-bottom: 3px solid rgba(15, 23, 42, 0.95);
 }
 
-.meal-item-info {
+.meal-item-info, .food-add-card {
   display: flex;
   flex-direction: column;
   align-items: start;
@@ -402,4 +402,210 @@
   display: flex;
   align-items: center;
   gap: 4px;
+}
+
+.add-food-btn{
+  padding: 0;
+  background-color: var(--card);
+}
+
+.food-add-card{
+  flex-direction: row;
+  gap: 1rem;
+}
+
+.add-food-btn:hover{
+  /* border: none; */
+  border-color: var(--card);
+}
+
+.add-food-btn:hover .onHover {
+  stroke: #646cff;
+}
+
+.dish-icon{
+  position: absolute;
+  cursor: pointer;
+  padding: 8px;
+  background: #2563eb;
+  border-radius: 50%;
+  bottom: 20px;
+  right: 20px;
+
+   box-shadow: 0 4px 12px rgba(0,0,0,0.15); /* легка тінь */
+  transition: 
+    background 0.25s ease,
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.dish-icon:hover {
+  background: #60a5fa;                           
+   box-shadow: 0 6px 18px rgba(0,0,0,0.20);
+}
+
+.dish-icon span {
+  position: absolute;
+  top: -5px;
+  right: 0;
+  background: red;
+  width: 20px;
+  height: 20px;
+  padding: 2px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/*FOOD CART*/
+.food-cart-item {
+  background: var(--card-soft);
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.2s ease;
+}
+
+.food-cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.food-cart-title-section {
+  flex: 1;
+}
+
+.food-cart-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0 0 4px 0;
+}
+
+.food-cart-weight {
+  font-size: 13px;
+  color: #718096;
+  font-weight: 500;
+}
+
+.food-cart-remove {
+  background: inherit;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.food-cart-remove:hover {
+  transform: scale(1.1);
+  border: none;
+}
+
+.icon:hover path{
+  fill: #FF6B6B
+}
+
+.food-cart-calories {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.calories-label {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+}
+
+.calories-value {
+  font-size: 20px;
+  font-weight: 700;
+  color: white;
+}
+
+.food-cart-macros {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.macro-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.macro-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.macro-label {
+  font-size: 14px;
+  font-weight: 600;
+  flex: 1;
+}
+
+.macro-value {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.food-cart-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.qtn-btn{
+  background: inherit;
+}
+
+.qty-btn:hover:not(:disabled) {
+  border-color: #667eea;
+  /* background: #f7fafc; */
+  color: #667eea;
+  transform: scale(1.05);
+}
+
+.qty-btn:active:not(:disabled) {
+  transform: scale(0.95);
+}
+
+.qty-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.qty-btn-minus:hover:not(:disabled) {
+  border-color: #fc8181;
+  color: #e53e3e;
+}
+
+.qty-btn-plus:hover:not(:disabled) {
+  border-color: #68d391;
+  color: #38a169;
+}
+
+.qty-display {
+  font-size: 18px;
+  font-weight: 600;
+  min-width: 40px;
+  text-align: center;
 }
