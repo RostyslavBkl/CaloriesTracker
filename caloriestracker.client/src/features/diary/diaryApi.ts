@@ -22,7 +22,7 @@ function fetchGraphQL<TResponse>(
 }
 
 const getDiaryByDateQuery = `
-  query($date: Date!) {
+  query ($date: Date!) {
     getRecordByDate(date: $date) {
       diaryDayId
       userId
@@ -38,11 +38,16 @@ const getDiaryByDateQuery = `
         id
         mealType
         eatenAt
+        items {
+          id
+          foodId
+          dishId
+          weightG
+        }
       }
     }
   }
 `;
-
 
 type GetDiaryByDateResponse = {
   getRecordByDate: DiaryDayDetails | null;

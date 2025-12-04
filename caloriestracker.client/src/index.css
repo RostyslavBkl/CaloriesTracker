@@ -179,11 +179,6 @@ td {
   /* щоб скрол не вирізався за округлення */
 }
 
-.containerbox--with-nav {
-  padding-bottom: 100px;
-  /* відступ під bottom-nav */
-}
-
 /* контент, який скролиться */
 .containerbox__content {
   flex: 1;
@@ -442,10 +437,6 @@ input:focus {
   h1 {
     font-size: 3.2em;
   }
-}
-
-.containerbox--with-nav {
-  padding-bottom: 100px;
 }
 
 .page-header {
