@@ -7,9 +7,9 @@ import {
   selectTodayMealsWithSummary,
 } from "../mealSelectors";
 import { getMealsByDay } from "../mealSlices/mealSlice";
-import { Meal, MealType } from "../mealTypes";
-// import "../../../index.css";
-// import "../../../pages/Home.css";
+import { Meal } from "../mealTypes";
+import "../../../index.css";
+import "../../../pages/Home.css";
 import "./meals.css";
 import { getFoodById, searchFoodRequest } from "../../food/foodSlice";
 
@@ -20,7 +20,6 @@ import {
   selectSearchFoodObj,
 } from "../../food/foodSelectors";
 import { CartItem, Food } from "../../food/foodType";
-import { it } from "node:test";
 
 const mealTypes = ["BREAKFAST", "LUNCH", "DINNER", "SNACK", "OTHER"];
 
@@ -207,6 +206,14 @@ function SearchWindow({
     );
   };
 
+  const updateWeight = (foodId: string, newWeight: number) => {
+    setCart(
+      cart.map((item) =>
+        item.id === foodId ? { ...item, customWeightG: newWeight } : item
+      )
+    );
+  };
+
   const removeFoodFromCart = (foodId: string) => {
     setCart(cart.filter((item) => item.id !== foodId));
   };
@@ -235,7 +242,10 @@ function SearchWindow({
   if (showСart) {
     return (
       <div className="modal-fullscreen">
-        <div className="modal-header-fullscreen">
+        <div
+          className="modal-header-fullscreen"
+          style={{ position: "relative" }}
+        >
           <button
             className="modal-back-arrow"
             onClick={() => setShowCart(false)}
@@ -272,11 +282,19 @@ function SearchWindow({
                   food={food}
                   key={food.id}
                   onUpdateQty={updQty}
+                  onUpdateWeight={updateWeight}
                   onRemove={removeFoodFromCart}
                 />
               ))}
             </div>
           </>
+        )}
+        {cart.length > 0 ? (
+          <button className="btn" style={{ marginBottom: "80px" }}>
+            Add to Meal{" "}
+          </button>
+        ) : (
+          ""
         )}
       </div>
     );
@@ -448,7 +466,7 @@ function FoodCard({
             />
           </svg>
         </button>
-        <div onClick={() => onOpen(food)}>
+        <div onClick={() => onOpen(food)} style={{ maxWidth: "100%" }}>
           <p>{food?.name}</p>
           <div className="item-nutr">
             <span>{food.totalKcal} kcal, </span>
@@ -489,54 +507,37 @@ function FoodInfoModal({ food, onClose }: { food: Food; onClose: () => void }) {
   );
 }
 
-// function FoodCartRepresent({ food }: { food: CartItem }) {
-//   return (
-//     <div>
-//       <p>
-//         {food.name} ({food.weightG} g)
-//       </p>
-//       <div className="food-cart-item">
-//         <div className="legend-text-box">
-//           <div
-//             className="legend-color"
-//             style={{ backgroundColor: "#FF6B6B" }}
-//           />
-//           <span className="legend-text">Protein: {food.proteinG}g</span>
-//         </div>
-//         <div className="legend-text-box">
-//           <div
-//             className="legend-color"
-//             style={{ backgroundColor: "#FFA94D" }}
-//           />
-//           <span className="legend-text">Fat: {food.fatG}g</span>
-//         </div>
-//         <div className="legend-text-box">
-//           <div
-//             className="legend-color"
-//             style={{ backgroundColor: "#4ECDC4" }}
-//           />
-//           <span className="legend-text">Carbs: {food.carbsG}g</span>
-//         </div>
-//         <button>-</button>
-//         <span>{food.qty}</span>
-//         <button>+</button>
-//         {/* update weight */}
-//         {/* delete */}
-//       </div>
-//     </div>
-//   );
-// }
 function FoodCartRepresent({
   food,
   onUpdateQty,
+  onUpdateWeight,
   onRemove,
 }: {
   food: CartItem;
   onUpdateQty: (foodId: string, change: number) => void;
+  onUpdateWeight: (foodId: string, newWeight: number) => void;
   onRemove: (foodId: string) => void;
 }) {
-  const totalWeight = food.customWeightG! * food.qty;
+  const [isEditing, setIsEditing] = useState(false);
+  const [weight, setWeight] = useState<number>(food.customWeightG || 100);
+
+  const totalWeight = weight * food.qty;
   const nutrition = calculateFoodNutrition(food, totalWeight);
+
+  useEffect(() => {
+    setWeight(food.customWeightG || 100);
+  }, [food.customWeightG]);
+
+  const handleBlur = () => {
+    setIsEditing(false);
+    if (weight <= 0) {
+      setWeight(food.customWeightG || 100);
+      return;
+    }
+    if (onUpdateWeight && weight !== food.customWeightG) {
+      onUpdateWeight(food.id, weight);
+    }
+  };
 
   return (
     <div className="food-cart-item">
@@ -545,8 +546,52 @@ function FoodCartRepresent({
           <h3 className="food-cart-title">
             {food.name} ({nutrition.totalKcal} kcal)
           </h3>
+          <div>
+            <div className="edit-weight-btn">
+              {isEditing ? (
+                <input
+                  autoFocus
+                  type="text"
+                  className="edit-weight-input"
+                  value={weight}
+                  onChange={(e) => setWeight(Number(e.target.value))}
+                  onBlur={handleBlur}
+                />
+              ) : (
+                <span className="weight-display">{food.customWeightG} g</span>
+              )}
+              <button
+                className="edit-btn"
+                onClick={() => setIsEditing(true)}
+                aria-label="Edit weight"
+              >
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21.2799 6.40005L11.7399 15.94C10.7899 16.89 7.96987 17.33 7.33987 16.7C6.70987 16.07 7.13987 13.25 8.08987 12.3L17.6399 2.75002C17.8754 2.49308 18.1605 2.28654 18.4781 2.14284C18.7956 1.99914 19.139 1.92124 19.4875 1.9139C19.8359 1.90657 20.1823 1.96991 20.5056 2.10012C20.8289 2.23033 21.1225 2.42473 21.3686 2.67153C21.6147 2.91833 21.8083 3.21243 21.9376 3.53609C22.0669 3.85976 22.1294 4.20626 22.1211 4.55471C22.1128 4.90316 22.0339 5.24635 21.8894 5.5635C21.7448 5.88065 21.5375 6.16524 21.2799 6.40005V6.40005Z"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                  <path
+                    d="M11 4H6C4.93913 4 3.92178 4.42142 3.17163 5.17157C2.42149 5.92172 2 6.93913 2 8V18C2 19.0609 2.42149 20.0783 3.17163 20.8284C3.92178 21.5786 4.93913 22 6 22H17C19.21 22 20 20.2 20 18V13"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </button>
+            </div>
+          </div>
           <span className="food-cart-weight">
-            {food.customWeightG}g × {food.qty} = {totalWeight}g
+            {weight}g × {food.qty} = {totalWeight}g
           </span>
         </div>
         <button
