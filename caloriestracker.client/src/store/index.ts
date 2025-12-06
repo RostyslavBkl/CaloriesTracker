@@ -7,6 +7,7 @@ import { authEpics } from "../auth/Epics";
 import mealReducer from "../features/meal/mealSlices/mealSlice";
 import { mealEpics } from "../features/meal/mealEpic";
 import updMealItemReducer from "../features/meal/mealSlices/mealItemUpdSlice";
+import { createMealReducer } from "../features/meal/mealSlices/mealSlice";
 
 import foodReducer, { searchFoodReduces } from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";
@@ -20,6 +21,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     meal: mealReducer,
+    createMeal: createMealReducer,
     food: foodReducer,
     searchFood: searchFoodReduces,
     updateMealItem: updMealItemReducer,

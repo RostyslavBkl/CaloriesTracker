@@ -4,6 +4,9 @@ import { of, Observable } from "rxjs";
 import { Action, PayloadAction } from "@reduxjs/toolkit";
 import { mealsApi } from "./mealApi";
 import {
+  createMealWithItems,
+  createMealWithItemsFailure,
+  createMealWithItemsSuccess,
   getMealsByDay,
   getMealsByDayFailure,
   getMealsByDaySuccess,
@@ -14,6 +17,8 @@ import {
   updateMealItemSuccess,
 } from "./mealSlices/mealItemUpdSlice";
 import {
+  CreateMealInput,
+  CreateMealWithItemsResponse,
   MealItem,
   UpdateMealItemInput,
   UpdateMealItemResponse,
@@ -95,6 +100,25 @@ export const updateMealItemEpic = (
         );
       }
     )
+  );
+};
+
+export const createMealWithItemsEpic = (action$: Observable<Action>) => {
+  return action$.pipe(
+    ofType(createMealWithItems.type),
+    switchMap((action: PayloadAction<CreateMealInput>) => {
+      const mealInput = action.payload;
+      return mealsApi.createMealWithItems(mealInput).pipe(
+        map((res: CreateMealWithItemsResponse) => {
+          return createMealWithItemsSuccess(mealInput.items);
+        }),
+        catchError((error) =>
+          of(
+            createMealWithItemsFailure(error.message || "Failed to create meal")
+          )
+        )
+      );
+    })
   );
 };
 

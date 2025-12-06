@@ -54,3 +54,26 @@ export interface UpdateMealItemState {
 export interface UpdateMealItemResponse {
   updateMealItem: boolean;
 }
+
+// Create Meal with Items
+export interface CreateMealInput {
+  mealType: MealType;
+  eatenAt: Date | null;
+  items: MealItemInput[];
+}
+
+export interface MealItemInput {
+  dishId: string | null;
+  foodId: string | null;
+  weightG: number | null;
+}
+
+export interface CreateMealState {
+  items: MealItem[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface CreateMealWithItemsResponse {
+  createMealWithItems: string; // meal ID
+}

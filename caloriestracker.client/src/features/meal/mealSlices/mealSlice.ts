@@ -1,17 +1,29 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MealsState, Meal, MealItem } from "../mealTypes";
+import {
+  MealsState,
+  Meal,
+  MealItem,
+  CreateMealInput,
+  CreateMealState,
+} from "../mealTypes";
 import { updateMealItemSuccess } from "./mealItemUpdSlice";
 
-const initialState: MealsState = {
+const mealsInitialState: MealsState = {
   mealsByDay: {},
   currDayId: null,
   loading: false,
   error: null,
 };
 
+const createMealInitialState: CreateMealState = {
+  items: [],
+  loading: false,
+  error: null,
+};
+
 const mealSlice = createSlice({
   name: "meal",
-  initialState,
+  initialState: mealsInitialState,
   reducers: {
     // GET
     getMealsByDay: (state, action: PayloadAction<string>) => {
@@ -61,6 +73,27 @@ const mealSlice = createSlice({
   },
 });
 
+const createMealSlice = createSlice({
+  name: "createMeal",
+  initialState: createMealInitialState,
+  reducers: {
+    // CREATE
+    createMealWithItems: (state, action: PayloadAction<CreateMealInput>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    createMealWithItemsSuccess: (state, action: PayloadAction<MealItem[]>) => {
+      state.items = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    createMealWithItemsFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
+});
+
 export const {
   getMealsByDay,
   getMealsByDaySuccess,
@@ -68,4 +101,11 @@ export const {
   updateMealItemInState,
 } = mealSlice.actions;
 
+export const {
+  createMealWithItems,
+  createMealWithItemsSuccess,
+  createMealWithItemsFailure,
+} = createMealSlice.actions;
+
+export const createMealReducer = createMealSlice.reducer;
 export default mealSlice.reducer;
