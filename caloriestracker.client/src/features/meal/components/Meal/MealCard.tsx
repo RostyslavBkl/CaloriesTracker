@@ -1,4 +1,5 @@
 import { Meal } from "../../mealTypes";
+// import { useState, useRef, useEffect } from "react";
 
 export default function MealCard({
   meal,

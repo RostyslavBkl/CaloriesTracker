@@ -110,6 +110,7 @@ export const createMealWithItemsEpic = (action$: Observable<Action>) => {
       const mealInput = action.payload;
       return mealsApi.createMealWithItems(mealInput).pipe(
         map((res: CreateMealWithItemsResponse) => {
+          console.log(res.createMealWithItems);
           return createMealWithItemsSuccess(mealInput.items);
         }),
         catchError((error) =>
@@ -122,4 +123,8 @@ export const createMealWithItemsEpic = (action$: Observable<Action>) => {
   );
 };
 
-export const mealEpics = [getMealsByDayEpic, updateMealItemEpic];
+export const mealEpics = [
+  getMealsByDayEpic,
+  updateMealItemEpic,
+  createMealWithItemsEpic,
+];

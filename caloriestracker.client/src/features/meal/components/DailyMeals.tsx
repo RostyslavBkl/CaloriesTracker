@@ -6,8 +6,8 @@ import {
   selectTodayMeals,
   selectTodayMealsWithSummary,
 } from "../mealSelectors";
-import { getMealsByDay } from "../mealSlices/mealSlice";
-import { Meal } from "../mealTypes";
+import { createMealWithItems, getMealsByDay } from "../mealSlices/mealSlice";
+import { CreateMealInput, Meal, MealType } from "../mealTypes";
 import "../../../index.css";
 import "../../../pages/Home.css";
 import "./meals.css";
@@ -34,8 +34,9 @@ function DailyMeals() {
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [selectedMealType, setSelectedMealType] = useState<string | null>(null);
 
-  const DIARY_DAY_ID = "a92573f9-1704-48fc-a261-2df6c0d10604";
-  // const DIARY_DAY_ID = "2629bcfd-4ff2-48d4-b81d-72685246b19d";
+  // const DIARY_DAY_ID = "a92573f9-1704-48fc-a261-2df6c0d10604";
+  const DIARY_DAY_ID = "1ec2ab17-076f-49da-8f06-3ccd86fb24d9";
+  console.log(meals);
 
   useEffect(() => {
     dispatch(getMealsByDay(DIARY_DAY_ID));
@@ -178,6 +179,23 @@ function SearchWindow({
   const [cart, setCart] = useState<CartItem[] | []>([]);
   const [showСart, setShowCart] = useState(false);
 
+  const handleCreateMeal = () => {
+    const MealInput: CreateMealInput = {
+      mealType: mealType as MealType,
+      eatenAt: null,
+      items: cart.map((item) => ({
+        dishId: null,
+        foodId: item.id,
+        weightG: (item.customWeightG || item.weightG!) * item.qty,
+      })),
+    };
+
+    dispatch(createMealWithItems(MealInput));
+    setCart([]);
+    onClose();
+    window.location.reload();
+  };
+
   const addFoodToCart = (food: Food, customWeight?: number) => {
     const existItem = cart.find((item) => item.id === food.id);
     const weight = customWeight || food.weightG;
@@ -191,6 +209,7 @@ function SearchWindow({
     } else {
       setCart([...cart, { ...food, qty: 1, customWeightG: weight }]);
     }
+    // setQuery("");
   };
 
   const updQty = (foodId: string, change: number) => {
@@ -247,6 +266,7 @@ function SearchWindow({
   }
 
   if (showСart) {
+    console.log(cart);
     return (
       <div className="modal-fullscreen">
         <div
@@ -297,7 +317,11 @@ function SearchWindow({
           </>
         )}
         {cart.length > 0 ? (
-          <button className="btn" style={{ marginBottom: "80px" }}>
+          <button
+            className="btn"
+            style={{ marginBottom: "80px" }}
+            onClick={handleCreateMeal}
+          >
             Add to Meal{" "}
           </button>
         ) : (
