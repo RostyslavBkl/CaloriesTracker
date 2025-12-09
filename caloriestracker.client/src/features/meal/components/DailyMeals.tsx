@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   selectMealsError,
@@ -6,7 +6,6 @@ import {
   selectTodayMeals,
   selectTodayMealsWithSummary,
 } from "../mealSelectors";
-import { getMealsByDay } from "../mealSlices/mealSlice";
 import { Meal } from "../mealTypes";
 import "../../../index.css";
 import "../../../pages/Home.css";
@@ -18,7 +17,7 @@ import MealCard from "./Meal/MealCard";
 
 const mealTypes = ["BREAKFAST", "LUNCH", "DINNER", "SNACK", "OTHER"];
 
-function DailyMeals() {
+export const DailyMeals: React.FC = () => {
   const dispatch = useAppDispatch();
   const mealsWithSummary = useAppSelector(selectTodayMealsWithSummary);
   const meals = useAppSelector(selectTodayMeals);
@@ -27,18 +26,12 @@ function DailyMeals() {
 
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
 
-
-  const DIARY_DAY_ID = "a181502d-7d50-407c-a1ea-3e554c613741";
-  // const DIARY_DAY_ID = "58b62db9-53d9-4923-80f5-69768f5b8a61";
-
   useEffect(() => {
-    dispatch(getMealsByDay(DIARY_DAY_ID));
-  }, [dispatch]);
-
-  useEffect(() => {
-    meals.forEach((meal) => {
-      meal.items.forEach((item) => {
-        dispatch(getFoodById(item.foodId!));
+    meals.forEach(meal => {
+      meal.items.forEach(item => {
+        if (item.foodId) {
+          dispatch(getFoodById(item.foodId));
+        }
       });
     });
   }, [dispatch, meals]);
@@ -80,9 +73,9 @@ function DailyMeals() {
 
           <div className="meals-list">
             {mealsWithSummary.length === 0 ? (
-              mealTypes.map((type) => <MealTemplate key={type} mealType={type} />)
+              mealTypes.map(type => <MealTemplate key={type} mealType={type} />)
             ) : (
-              mealsWithSummary.map((meal) => (
+              mealsWithSummary.map(meal => (
                 <MealCard key={meal.id} meal={meal} onOpenModal={openModal} />
               ))
             )}
@@ -91,7 +84,7 @@ function DailyMeals() {
       )}
     </>
   );
-}
+};
 
 function MealTemplate({ mealType }: { mealType: string }) {
   return (
@@ -107,10 +100,8 @@ function MealTemplate({ mealType }: { mealType: string }) {
       <button
         type="button"
         className="meal-add-btn"
-        // onClick={() => handleAddMealClick(meal)}
         aria-label={`Add food to ${mealType}`}
       >
-        {/* <FiPlus size={18} /> */}
       </button>
     </div>
   );
