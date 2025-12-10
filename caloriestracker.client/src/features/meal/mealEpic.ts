@@ -7,6 +7,9 @@ import {
   createMealWithItems,
   createMealWithItemsFailure,
   createMealWithItemsSuccess,
+  deleteMeal,
+  deleteMealFailure,
+  deleteMealSuccess,
   getMealsByDay,
   getMealsByDayFailure,
   getMealsByDaySuccess,
@@ -19,6 +22,7 @@ import {
 import {
   CreateMealInput,
   CreateMealWithItemsResponse,
+  DeleteMealResponse,
   MealItem,
   UpdateMealItemInput,
   UpdateMealItemResponse,
@@ -123,8 +127,26 @@ export const createMealWithItemsEpic = (action$: Observable<Action>) => {
   );
 };
 
+const deleteMealEpic = (action$: Observable<Action>) => {
+  return action$.pipe(
+    ofType(deleteMeal.type),
+    switchMap((action: PayloadAction<string>) => {
+      const mealId = action.payload;
+      return mealsApi.deleteMeal(mealId).pipe(
+        map((res: DeleteMealResponse) => {
+          return deleteMealSuccess(res.deleteMeal);
+        }),
+        catchError((error) =>
+          of(deleteMealFailure(error.message || "Failed to delete meal"))
+        )
+      );
+    })
+  );
+};
+
 export const mealEpics = [
   getMealsByDayEpic,
   updateMealItemEpic,
   createMealWithItemsEpic,
+  deleteMealEpic,
 ];

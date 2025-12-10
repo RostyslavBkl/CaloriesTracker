@@ -2,6 +2,7 @@ import gql from "../apiService";
 import {
   CreateMealInput,
   CreateMealWithItemsResponse,
+  DeleteMealResponse,
   MealsByDayResponse,
   UpdateMealItemInput,
   UpdateMealItemResponse,
@@ -42,6 +43,12 @@ mutation AddMeals($meal: CreateMealInput!){
 }
 `;
 
+const DELETE_MEAL = `
+mutation deleteMeal($mealId: Guid!){
+  deleteMeal(mealId: $mealId)
+}
+`;
+
 export const mealsApi = {
   getMealsByDay: (diaryDayId: string) =>
     gql<MealsByDayResponse>(GET_MEALS_BY_DAY, { id: diaryDayId }),
@@ -49,4 +56,6 @@ export const mealsApi = {
     gql<UpdateMealItemResponse>(UPDATE_MEAL_ITEM, { input }),
   createMealWithItems: (meal: CreateMealInput) =>
     gql<CreateMealWithItemsResponse>(CREATE_MEAL_WITH_ITEMS, { meal }),
+  deleteMeal: (mealId: string) =>
+    gql<DeleteMealResponse>(DELETE_MEAL, { mealId }),
 };

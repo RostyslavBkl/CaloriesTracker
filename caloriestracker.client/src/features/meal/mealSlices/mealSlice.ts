@@ -5,8 +5,10 @@ import {
   MealItem,
   CreateMealInput,
   CreateMealState,
+  DeleteMealState,
 } from "../mealTypes";
 import { updateMealItemSuccess } from "./mealItemUpdSlice";
+import { act } from "react";
 
 const mealsInitialState: MealsState = {
   mealsByDay: {},
@@ -17,6 +19,13 @@ const mealsInitialState: MealsState = {
 
 const createMealInitialState: CreateMealState = {
   items: [],
+  loading: false,
+  error: null,
+};
+
+const deleteMealInitialState: DeleteMealState = {
+  isDeleted: false,
+  mealId: null,
   loading: false,
   error: null,
 };
@@ -94,6 +103,27 @@ const createMealSlice = createSlice({
   },
 });
 
+const deleteMealSlice = createSlice({
+  name: "delete",
+  initialState: deleteMealInitialState,
+  reducers: {
+    deleteMeal: (state, action: PayloadAction<string>) => {
+      state.mealId = action.payload;
+      state.loading = true;
+      state.error = null;
+    },
+    deleteMealSuccess: (state, action: PayloadAction<boolean>) => {
+      state.isDeleted = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    deleteMealFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
+});
+
 export const {
   getMealsByDay,
   getMealsByDaySuccess,
@@ -107,5 +137,9 @@ export const {
   createMealWithItemsFailure,
 } = createMealSlice.actions;
 
+export const { deleteMeal, deleteMealSuccess, deleteMealFailure } =
+  deleteMealSlice.actions;
+
 export const createMealReducer = createMealSlice.reducer;
+export const deleteMealReducer = deleteMealSlice.reducer;
 export default mealSlice.reducer;

@@ -77,3 +77,15 @@ export interface CreateMealState {
 export interface CreateMealWithItemsResponse {
   createMealWithItems: string; // meal ID
 }
+
+// Delete Meal
+export interface DeleteMealState {
+  isDeleted: boolean;
+  mealId: string | null;
+  loading: boolean;
+  error: string | null;
+}
+
+export interface DeleteMealResponse {
+  deleteMeal: boolean;
+}

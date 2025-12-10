@@ -16,6 +16,7 @@
 
 .meal-row {
   display: flex;
+  position: relative;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
@@ -26,6 +27,7 @@
   box-shadow: var(--shadow);
   width: 100%;
   box-sizing: border-box;
+  z-index: 2;
 }
 
 .meal-left {
@@ -73,6 +75,32 @@
   font-size: 14px;
   font-weight: 600;
   margin: 0;
+}
+
+.meal-row-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.meal-delete-btn {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 60px;
+  background: #ff4444;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+  z-index: 1;
+  padding:0;
+}
+
+.meal-delete-btn:hover {
+  background: #cc0000;
 }
 
 .meal-kcal-row {

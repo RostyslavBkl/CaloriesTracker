@@ -35,7 +35,7 @@ function DailyMeals() {
   const [selectedMealType, setSelectedMealType] = useState<string | null>(null);
 
   // const DIARY_DAY_ID = "a92573f9-1704-48fc-a261-2df6c0d10604";
-  const DIARY_DAY_ID = "1ec2ab17-076f-49da-8f06-3ccd86fb24d9";
+  const DIARY_DAY_ID = "35dc3309-958a-432f-ad60-41156fd785d8";
   console.log(meals);
 
   useEffect(() => {
@@ -193,7 +193,7 @@ function SearchWindow({
     dispatch(createMealWithItems(MealInput));
     setCart([]);
     onClose();
-    window.location.reload();
+    // window.location.reload();
   };
 
   const addFoodToCart = (food: Food, customWeight?: number) => {

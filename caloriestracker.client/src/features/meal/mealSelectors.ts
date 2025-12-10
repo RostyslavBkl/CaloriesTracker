@@ -100,3 +100,7 @@ export const selectUpdatedMealItemError = (state: RootState) =>
   state.updateMealItem.error;
 export const selectUpdatedMealItem = (state: RootState, itemId: string) =>
   state.updateMealItem.updatedItem[itemId];
+
+// delete
+export const isDeleted = (state: RootState) => state.deleteMeal.isDeleted;
+export const loading = (state: RootState) => state.deleteMeal.loading;
