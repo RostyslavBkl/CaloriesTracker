@@ -456,10 +456,6 @@ input:focus {
   }
 }
 
-.containerbox--with-nav {
-  padding-bottom: 100px;
-} 
-
 .page-header {
   display: flex;
   align-items: center;

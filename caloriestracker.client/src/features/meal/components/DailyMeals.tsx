@@ -6,7 +6,7 @@ import {
   selectTodayMeals,
   selectTodayMealsWithSummary,
 } from "../mealSelectors";
-import { createMealWithItems, getMealsByDay } from "../mealSlices/mealSlice";
+import { createMealWithItems } from "../mealSlices/mealSlice";
 import { CreateMealInput, Meal, MealType } from "../mealTypes";
 import "../../../index.css";
 import "../../../pages/Home.css";
@@ -35,14 +35,10 @@ export const DailyMeals: React.FC = () => {
   const [selectedMealType, setSelectedMealType] = useState<string | null>(null);
 
   // const DIARY_DAY_ID = "a92573f9-1704-48fc-a261-2df6c0d10604";
-  const DIARY_DAY_ID = "35dc3309-958a-432f-ad60-41156fd785d8";
-  console.log(meals);
-
-
 
   useEffect(() => {
-    meals.forEach(meal => {
-      meal.items.forEach(item => {
+    meals.forEach((meal) => {
+      meal.items.forEach((item) => {
         if (item.foodId) {
           dispatch(getFoodById(item.foodId));
         }

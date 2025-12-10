@@ -1,26 +1,26 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { FiCalendar, FiPlus, FiEdit } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
-import AuthorizeView from '../authorization/AuthorizeView';
-import MainMenu from '../navigation/MainMenu';
-import { useAppDispatch } from '../store/hooks';
-import { openGoalModal } from '../nutrition/nutritionSlice';
-import { NutritionGoalModal } from '../nutrition/nutritionModal';
-import { RootState } from '../store';
-import './Home.css';
-import '../index.css';
-import '../features/meal/components/meals.css';
-import ThemeToggle from '../ThemeTongle';
-import { selectNutritionGoalState } from '../nutrition/nutritionSelectors';
-import DailyMeals from '../features/meal/components/DailyMeals';
-import { selectTodaySummary } from '../features/meal/mealSelectors';
-import { selectDiaryGoalSummary } from '../features/diary/diarySelectors';
-import { getDiaryByDateRequest } from '../features/diary/diarySlice';
+import React, { useEffect, useState, useMemo } from "react";
+import { FiCalendar, FiPlus, FiEdit } from "react-icons/fi";
+import { useSelector } from "react-redux";
+import AuthorizeView from "../authorization/AuthorizeView";
+import MainMenu from "../navigation/MainMenu";
+import { useAppDispatch } from "../store/hooks";
+import { openGoalModal } from "../nutrition/nutritionSlice";
+import { NutritionGoalModal } from "../nutrition/nutritionModal";
+import { RootState } from "../store";
+import "./Home.css";
+import "../index.css";
+import "../features/meal/components/meals.css";
+import ThemeToggle from "../ThemeTongle";
+import { selectNutritionGoalState } from "../nutrition/nutritionSelectors";
+import DailyMeals from "../features/meal/components/DailyMeals";
+import { selectTodaySummary } from "../features/meal/mealSelectors";
+import { selectDiaryGoalSummary } from "../features/diary/diarySelectors";
+import { getDiaryByDateRequest } from "../features/diary/diarySlice";
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [selectedDate, setSelectedDate] = useState(
-    () => new Date().toISOString().slice(0, 10)
+  const [selectedDate, setSelectedDate] = useState(() =>
+    new Date().toISOString().slice(0, 10)
   );
 
   const { activeGoal, loading } = useSelector((state: RootState) =>
@@ -35,7 +35,8 @@ const Home: React.FC = () => {
   }, [selectedDate]);
 
   const goalForSelectedDay = isToday
-    ? ((diaryGoalSummary as any) ?? activeGoal) : (diaryGoalSummary as any);
+    ? (diaryGoalSummary as any) ?? activeGoal
+    : (diaryGoalSummary as any);
 
   const consumedKcal = daySummary.kcal;
   const targetKcal = goalForSelectedDay?.targetCalories ?? 0;
@@ -50,7 +51,9 @@ const Home: React.FC = () => {
   const fatsTarget = goalForSelectedDay?.fatG ?? 0;
 
   const carbsPercent =
-    carbsTarget === 0 ? 0 : Math.min((daySummary.carbsG / carbsTarget) * 100, 100);
+    carbsTarget === 0
+      ? 0
+      : Math.min((daySummary.carbsG / carbsTarget) * 100, 100);
   const proteinsPercent =
     proteinsTarget === 0
       ? 0
@@ -125,12 +128,12 @@ const Home: React.FC = () => {
                       <span className="goals-summary-percent">
                         {loading ? "..." : `${percent.toFixed(1)}%`}
                       </span>
-                      <span className="goals-summary-target">
+                      {/* <span className="goals-summary-target">
                         Target: {targetKcal} kcal
-                      </span>
+                      </span> */}
                       <span className="goals-summary-target">
-                        Target:{' '}
-                        {goalForSelectedDay ? `${targetKcal} kcal` : 'no goal'}
+                        Target:{" "}
+                        {goalForSelectedDay ? `${targetKcal} kcal` : "no goal"}
                       </span>
                       <span className="goals-summary-remaining">
                         Remaining: {remainingKcal.toFixed(0)} kcal
