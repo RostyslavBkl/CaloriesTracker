@@ -1,7 +1,5 @@
-﻿using CaloriesTracker.Server.GraphQL.Types.DiaryDay;
-using CaloriesTracker.Server.GraphQL.Types.MealTypes;
+﻿using CaloriesTracker.Server.GraphQL.Types.MealTypes;
 using CaloriesTracker.Server.Models;
-using CaloriesTracker.Server.Models.Diary;
 using CaloriesTracker.Server.Models.Meal;
 using CaloriesTracker.Server.Services;
 using CaloriesTracker.Server.Services.DiaryDayServices;
@@ -21,11 +19,29 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
                     try
                     {
                         var mealService = ctx.RequestServices!.GetRequiredService<MealService>();
+                        var diaryDayService = ctx.RequestServices!.GetRequiredService<DiaryDayService>();
+
                         var input = ctx.GetArgument<CreateMealDto>("input");
-                        
+
+                        var date = input.Date.Date;
+
+                        var diaryDayDetails = await diaryDayService.GetRecordByDate(date);
+
+                        Guid diaryDayId;
+
+                        if (diaryDayDetails == null || diaryDayDetails.DiaryDayId == Guid.Empty)
+                        {
+                            var created = await diaryDayService.CreateRecord();
+                            diaryDayId = created.Id;
+                        }
+                        else
+                        {
+                            diaryDayId = diaryDayDetails.DiaryDayId;
+                        }
+
                         var meal = new Meal
                         {
-                            //DiaryDayId = input.DiaryDayId,
+                            DiaryDayId = diaryDayId,
                             MealType = input.MealType,
                             EatenAt = input.EatenAt
                         };
@@ -95,7 +111,7 @@ namespace CaloriesTracker.Server.GraphQL.Mutations
         }
 
         private record CreateMealDto(
-            //Guid DiaryDayId,
+            DateTime Date,
             MealType MealType,
             DateTimeOffset? EatenAt,
             List<MealItemDto>? Items);
