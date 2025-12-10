@@ -27,6 +27,7 @@ import {
   UpdateMealItemInput,
   UpdateMealItemResponse,
 } from "./mealTypes";
+import { getDiaryByDateRequest } from "../diary/diarySlice";
 import { RootState } from "../../store";
 
 export const getMealsByDayEpic = (action$: Observable<Action>) => {
@@ -107,15 +108,29 @@ export const updateMealItemEpic = (
   );
 };
 
-export const createMealWithItemsEpic = (action$: Observable<Action>) => {
+export const createMealWithItemsEpic = (
+  action$: Observable<Action>,
+  state$: Observable<RootState>
+) => {
   return action$.pipe(
     ofType(createMealWithItems.type),
-    switchMap((action: PayloadAction<CreateMealInput>) => {
+    withLatestFrom(state$),
+    switchMap(([action, state]: [PayloadAction<CreateMealInput>, RootState]) => {
       const mealInput = action.payload;
+      const selectedDate = state.diary.selectedDate;
       return mealsApi.createMealWithItems(mealInput).pipe(
-        map((res: CreateMealWithItemsResponse) => {
-          console.log(res.createMealWithItems);
-          return createMealWithItemsSuccess(mealInput.items);
+        mergeMap((res: CreateMealWithItemsResponse) => {
+          console.log("Created meal id:", res.createMealWithItems);
+
+          const nextActions: Action[] = [
+            createMealWithItemsSuccess(mealInput.items),
+          ];
+
+          if (selectedDate) {
+            nextActions.push(getDiaryByDateRequest({ date: selectedDate }));
+          }
+
+          return of(...nextActions);
         }),
         catchError((error) =>
           of(

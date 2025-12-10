@@ -56,11 +56,16 @@ export interface UpdateMealItemResponse {
 }
 
 // Create Meal with Items
-export interface CreateMealInput {
+export type CreateMealInput = {
+  date: string;
   mealType: MealType;
-  eatenAt: Date | null;
-  items: MealItemInput[];
-}
+  eatenAt: string | null;
+  items: {
+    dishId: string | null;
+    foodId: string | null;
+    weightG: number | null;
+  }[];
+};
 
 export interface MealItemInput {
   dishId: string | null;
