@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../store/hooks";
 import {
   selectMealsError,
@@ -24,7 +24,7 @@ import { MacronutrientsCircle } from "./MealItem/MealItemModal";
 
 const mealTypes = ["BREAKFAST", "LUNCH", "DINNER", "SNACK", "OTHER"];
 
-function DailyMeals() {
+export const DailyMeals: React.FC = () => {
   const dispatch = useAppDispatch();
   const mealsWithSummary = useAppSelector(selectTodayMealsWithSummary);
   const meals = useAppSelector(selectTodayMeals);
@@ -38,14 +38,14 @@ function DailyMeals() {
   const DIARY_DAY_ID = "35dc3309-958a-432f-ad60-41156fd785d8";
   console.log(meals);
 
-  useEffect(() => {
-    dispatch(getMealsByDay(DIARY_DAY_ID));
-  }, [dispatch]);
+
 
   useEffect(() => {
-    meals.forEach((meal) => {
-      meal.items.forEach((item) => {
-        dispatch(getFoodById(item.foodId!));
+    meals.forEach(meal => {
+      meal.items.forEach(item => {
+        if (item.foodId) {
+          dispatch(getFoodById(item.foodId));
+        }
       });
     });
   }, [dispatch, meals]);
@@ -117,7 +117,7 @@ function DailyMeals() {
       )}
     </>
   );
-}
+};
 
 function MealTemplate({
   mealType,

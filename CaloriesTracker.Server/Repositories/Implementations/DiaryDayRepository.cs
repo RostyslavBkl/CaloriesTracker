@@ -4,7 +4,6 @@ using CaloriesTracker.Server.Models.Meal;
 using CaloriesTracker.Server.Models.Nutrition;
 using CaloriesTracker.Server.Repositories.Interfaces;
 using Dapper;
-using GraphQL.Types.Relay.DataObjects;
 using Microsoft.Data.SqlClient;
 
 namespace CaloriesTracker.Server.Repositories.Implementations
@@ -42,7 +41,7 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     NutritionGoalId = currGoal.Id
                 });
 
-             
+
                 return diaryDay;
             }
             catch (SqlException ex)
@@ -59,18 +58,20 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                 using var conn = _connectionFactory.Create();
                 await conn.OpenAsync();
 
+                var targetDate = date.Date;
+
                 var sql = @"
-                SELECT 
-                    d.Id AS DiaryDayId, d.UserId, d.Date, 
-                    n.Id AS NutritionGoalId, n.TargetCalories, n.ProteinG, n.FatG, n.CarbG, 
-                    m.Id As Id, m.MealType, m.EatenAt,
-                    mi.Id AS Id,mi.DishId, mi.FoodId, mi.WeightG
-                FROM DiaryDays d
-                LEFT JOIN NutritionGoals n ON d.NutritionGoalId = n.Id
-                LEFT JOIN Meals m ON m.DiaryDayId = d.Id
-                LEFT JOIN MealItems mi ON mi.MealId = m.Id
-                WHERE d.UserId = @UserId AND d.Date = @Date
-                ORDER BY m.Id, mi.Id;";
+            SELECT 
+                d.Id AS DiaryDayId, d.UserId, d.Date, 
+                n.Id AS NutritionGoalId, n.TargetCalories, n.ProteinG, n.FatG, n.CarbG, 
+                m.Id As Id, m.MealType, m.EatenAt,
+                mi.Id AS Id, mi.DishId, mi.FoodId, mi.WeightG
+            FROM DiaryDays d
+            LEFT JOIN NutritionGoals n ON d.NutritionGoalId = n.Id
+            LEFT JOIN Meals m ON m.DiaryDayId = d.Id
+            LEFT JOIN MealItems mi ON mi.MealId = m.Id
+            WHERE d.UserId = @UserId AND d.Date = @Date
+            ORDER BY m.Id, mi.Id;";
 
                 var diaryDict = new Dictionary<Guid, DiaryDayDetails>();
                 var mealDict = new Dictionary<Guid, Meal>();
@@ -79,31 +80,64 @@ namespace CaloriesTracker.Server.Repositories.Implementations
                     sql,
                     (diary, goal, meal, item) =>
                     {
-                        if(!diaryDict.TryGetValue(diary.DiaryDayId, out var currentDay))
+                        if (!diaryDict.TryGetValue(diary.DiaryDayId, out var currentDay))
                         {
                             currentDay = diary;
                             currentDay.nutritionGoalSummary = goal;
                             currentDay.Meals = new List<Meal>();
-                            diaryDict.Add(currentDay.DiaryDayId, currentDay); 
+                            diaryDict.Add(currentDay.DiaryDayId, currentDay);
                         }
-                        if(meal != null && !mealDict.ContainsKey(meal.Id))
+
+                        if (meal != null && !mealDict.ContainsKey(meal.Id))
                         {
                             meal.Items = new List<MealItem>();
                             currentDay.Meals.Add(meal);
                             mealDict.Add(meal.Id, meal);
                         }
+
                         if (item != null && meal != null)
+                        {
                             mealDict[meal.Id].Items.Add(item);
+                        }
+
                         return currentDay;
                     },
                     new
                     {
                         UserId = userId,
-                        Date = date
+                        Date = targetDate
                     },
                     splitOn: "NutritionGoalId, Id, Id"
-                    );
-                return diaryDict.Values.FirstOrDefault();
+                );
+
+                var diaryDay = diaryDict.Values.FirstOrDefault();
+
+                if (diaryDay != null)
+                {
+                    return diaryDay;
+                }
+
+                var goalForDate = await _goalRepo.GetGoalForDate(userId, targetDate);
+                if (goalForDate == null)
+                {
+                    return null;
+                }
+
+                return new DiaryDayDetails
+                {
+                    DiaryDayId = Guid.Empty,
+                    UserId = userId,
+                    Date = targetDate,
+                    nutritionGoalSummary = new NutritionGoalSummary
+                    {
+                        NutritionGoalId = goalForDate.Id,
+                        TargetCalories = goalForDate.TargetCalories,
+                        ProteinG = goalForDate.ProteinG ?? 0,
+                        FatG = goalForDate.FatG ?? 0,
+                        CarbG = goalForDate.CarbG ?? 0
+                    },
+                    Meals = new List<Meal>()
+                };
             }
             catch (SqlException ex)
             {

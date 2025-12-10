@@ -8,7 +8,8 @@ import {
   DeleteMealState,
 } from "../mealTypes";
 import { updateMealItemSuccess } from "./mealItemUpdSlice";
-import { act } from "react";
+import { DiaryDayDetails } from "../../diary/diaryType";
+import { getDiaryByDateSuccess } from "../../diary/diarySlice";
 
 const mealsInitialState: MealsState = {
   mealsByDay: {},
@@ -79,6 +80,23 @@ const mealSlice = createSlice({
         });
       });
     });
+
+    builder.addCase(
+      getDiaryByDateSuccess,
+      (state, action: PayloadAction<DiaryDayDetails | null>) => {
+        const diary = action.payload;
+
+        if (!diary) {
+          state.currDayId = null;
+          return;
+        }
+
+        const { diaryDayId, meals } = diary;
+
+        state.currDayId = diaryDayId;
+        state.mealsByDay[diaryDayId] = meals ?? [];
+      }
+    );
   },
 });
 

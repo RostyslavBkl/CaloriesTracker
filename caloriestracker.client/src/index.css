@@ -187,10 +187,6 @@ td {
   /* щоб скрол не вирізався за округлення */
 }
 
-/* .containerbox--with-nav {
-  padding-bottom: 100px;
-} */
-
 /* контент, який скролиться */
 .containerbox__content {
   flex: 1;
@@ -460,9 +456,9 @@ input:focus {
   }
 }
 
-/* .containerbox--with-nav {
+.containerbox--with-nav {
   padding-bottom: 100px;
-} */
+} 
 
 .page-header {
   display: flex;
