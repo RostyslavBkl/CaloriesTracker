@@ -1,7 +1,5 @@
 ﻿using CaloriesTracker.Server.GraphQL.Types.NutritionGoal;
-using CaloriesTracker.Server.Services.FoodService;
 using CaloriesTracker.Server.Services.NutritionalGoalServices;
-using GraphQL;
 using GraphQL.Types;
 
 namespace CaloriesTracker.Server.GraphQL.Queries

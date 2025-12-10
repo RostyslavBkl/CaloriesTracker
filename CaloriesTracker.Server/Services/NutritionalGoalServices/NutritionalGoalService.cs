@@ -52,6 +52,7 @@ namespace CaloriesTracker.Server.Services.NutritionalGoalServices
             return history;
         }
 
+
         public async Task<NutritionGoal?> GetActiveGoal()
         {
             var userId = await GetUserId();

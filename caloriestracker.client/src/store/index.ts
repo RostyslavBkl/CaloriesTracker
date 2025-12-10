@@ -6,7 +6,11 @@ import { authEpics } from "../auth/Epics";
 
 import mealReducer from "../features/meal/mealSlices/mealSlice";
 import { mealEpics } from "../features/meal/mealEpic";
+
 import updMealItemReducer from "../features/meal/mealSlices/mealItemUpdSlice";
+
+import { diaryEpics } from "../features/diary/diaryEpics";
+import diaryReducer from "../features/diary/diarySlice";
 
 import foodReducer from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";
@@ -23,6 +27,7 @@ export const store = configureStore({
     food: foodReducer,
     updateMealItem: updMealItemReducer,
     nutritionGoal: nutritionReducer,
+    diary: diaryReducer,
   },
   middleware: (getDefault) =>
     getDefault({ serializableCheck: false }).concat(epicMiddleware),
@@ -35,7 +40,8 @@ const rootEpic = combineEpics(
   ...(authEpics as any[]),
   ...(mealEpics as any[]),
   ...(foodEpics as any[]),
-  ...(nutritionEpics as any[])
+  ...(nutritionEpics as any[]),
+  ...(diaryEpics as any[])
 );
 
 epicMiddleware.run(rootEpic);
