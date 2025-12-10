@@ -17,6 +17,11 @@ export interface Food {
   totalKcal: number;
 }
 
+export interface CartItem extends Food {
+  qty: number;
+  customWeightG: number | null;
+}
+
 export interface FoodState {
   foods: { [foodId: string]: Food };
   loading: boolean;
@@ -25,4 +30,16 @@ export interface FoodState {
 
 export interface FoodResponse {
   food: Food;
+}
+
+// Search Food
+export interface SearchFoodState {
+  query: string;
+  result: string[];
+  loading: boolean;
+  error: string | null;
+}
+
+export interface SearchFoodResponse {
+  searchFood: string[];
 }

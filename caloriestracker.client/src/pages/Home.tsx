@@ -1,26 +1,26 @@
-import React, { useEffect, useState, useMemo } from 'react';
-import { FiCalendar, FiPlus, FiEdit } from 'react-icons/fi';
-import { useSelector } from 'react-redux';
-import AuthorizeView from '../authorization/AuthorizeView';
-import MainMenu from '../navigation/MainMenu';
-import { useAppDispatch } from '../store/hooks';
-import { openGoalModal } from '../nutrition/nutritionSlice';
-import { NutritionGoalModal } from '../nutrition/nutritionModal';
-import { RootState } from '../store';
-import './Home.css';
-import '../index.css';
-import '../features/meal/components/meals.css';
-import ThemeToggle from '../ThemeTongle';
-import { selectNutritionGoalState } from '../nutrition/nutritionSelectors';
-import DailyMeals from '../features/meal/components/DailyMeals';
-import { selectTodaySummary } from '../features/meal/mealSelectors';
-import { selectDiaryGoalSummary } from '../features/diary/diarySelectors';
-import { getDiaryByDateRequest } from '../features/diary/diarySlice';
+import React, { useEffect, useState, useMemo } from "react";
+import { FiCalendar, FiPlus, FiEdit } from "react-icons/fi";
+import { useSelector } from "react-redux";
+import AuthorizeView from "../authorization/AuthorizeView";
+import MainMenu from "../navigation/MainMenu";
+import { useAppDispatch } from "../store/hooks";
+import { openGoalModal } from "../nutrition/nutritionSlice";
+import { NutritionGoalModal } from "../nutrition/nutritionModal";
+import { RootState } from "../store";
+import "./Home.css";
+import "../index.css";
+import "../features/meal/components/meals.css";
+import ThemeToggle from "../ThemeTongle";
+import { selectNutritionGoalState } from "../nutrition/nutritionSelectors";
+import DailyMeals from "../features/meal/components/DailyMeals";
+import { selectTodaySummary } from "../features/meal/mealSelectors";
+import { selectDiaryGoalSummary } from "../features/diary/diarySelectors";
+import { getDiaryByDateRequest } from "../features/diary/diarySlice";
 
 const Home: React.FC = () => {
   const dispatch = useAppDispatch();
-  const [selectedDate, setSelectedDate] = useState(
-    () => new Date().toISOString().slice(0, 10)
+  const [selectedDate, setSelectedDate] = useState(() =>
+    new Date().toISOString().slice(0, 10)
   );
 
   const { activeGoal, loading } = useSelector((state: RootState) =>
@@ -35,7 +35,8 @@ const Home: React.FC = () => {
   }, [selectedDate]);
 
   const goalForSelectedDay = isToday
-    ? ((diaryGoalSummary as any) ?? activeGoal) : (diaryGoalSummary as any);
+    ? (diaryGoalSummary as any) ?? activeGoal
+    : (diaryGoalSummary as any);
 
   const consumedKcal = daySummary.kcal;
   const targetKcal = goalForSelectedDay?.targetCalories ?? 0;
@@ -50,9 +51,13 @@ const Home: React.FC = () => {
   const fatsTarget = goalForSelectedDay?.fatG ?? 0;
 
   const carbsPercent =
-    carbsTarget === 0 ? 0 : Math.min((daySummary.carbsG / carbsTarget) * 100, 100);
+    carbsTarget === 0
+      ? 0
+      : Math.min((daySummary.carbsG / carbsTarget) * 100, 100);
   const proteinsPercent =
-    proteinsTarget === 0 ? 0 : Math.min((daySummary.proteinG / proteinsTarget) * 100, 100);
+    proteinsTarget === 0
+      ? 0
+      : Math.min((daySummary.proteinG / proteinsTarget) * 100, 100);
   const fatsPercent =
     fatsTarget === 0 ? 0 : Math.min((daySummary.fatG / fatsTarget) * 100, 100);
 
@@ -62,7 +67,7 @@ const Home: React.FC = () => {
     }
   }, [dispatch, selectedDate]);
 
-  const handleAddGoal = () => dispatch(openGoalModal('create'));
+  const handleAddGoal = () => dispatch(openGoalModal("create"));
 
   return (
     <AuthorizeView>
@@ -82,7 +87,7 @@ const Home: React.FC = () => {
                   className="calendar-date-input-hidden"
                   type="date"
                   value={selectedDate}
-                  onChange={e => setSelectedDate(e.target.value)}
+                  onChange={(e) => setSelectedDate(e.target.value)}
                 />
               </div>
               <ThemeToggle />
@@ -106,7 +111,7 @@ const Home: React.FC = () => {
                         type="button"
                         className="goals-menu__trigger"
                         aria-label="Edit daily goal"
-                        onClick={() => dispatch(openGoalModal('edit'))}
+                        onClick={() => dispatch(openGoalModal("edit"))}
                       >
                         <FiEdit size={16} />
                       </button>
@@ -121,11 +126,14 @@ const Home: React.FC = () => {
                         Daily intake ({selectedDate})
                       </span>
                       <span className="goals-summary-percent">
-                        {loading ? '...' : `${percent.toFixed(1)}%`}
+                        {loading ? "..." : `${percent.toFixed(1)}%`}
                       </span>
+                      {/* <span className="goals-summary-target">
+                        Target: {targetKcal} kcal
+                      </span> */}
                       <span className="goals-summary-target">
-                        Target:{' '}
-                        {goalForSelectedDay ? `${targetKcal} kcal` : 'no goal'}
+                        Target:{" "}
+                        {goalForSelectedDay ? `${targetKcal} kcal` : "no goal"}
                       </span>
                       <span className="goals-summary-remaining">
                         Remaining: {remainingKcal.toFixed(0)} kcal
@@ -135,7 +143,9 @@ const Home: React.FC = () => {
                     <div className="goals-summary-circle">
                       <div
                         className="goals-summary-circle__outer"
-                        style={{ ['--goals-progress-deg' as any]: `${progressDeg}deg` }}
+                        style={{
+                          ["--goals-progress-deg" as any]: `${progressDeg}deg`,
+                        }}
                       >
                         <div className="goals-summary-circle__inner">
                           <span className="goals-circle-value">
@@ -151,7 +161,8 @@ const Home: React.FC = () => {
                     <div className="macro-card macro-card--carbs">
                       <div className="macro-card__label">carbs</div>
                       <div className="macro-card__values">
-                        {daySummary.carbsG.toFixed(1)} / {carbsTarget.toFixed(0)} g
+                        {daySummary.carbsG.toFixed(1)} /{" "}
+                        {carbsTarget.toFixed(0)} g
                       </div>
                       <div className="macro-card__bar">
                         <div
@@ -164,7 +175,8 @@ const Home: React.FC = () => {
                     <div className="macro-card macro-card--protein">
                       <div className="macro-card__label">proteins</div>
                       <div className="macro-card__values">
-                        {daySummary.proteinG.toFixed(1)} / {proteinsTarget.toFixed(0)} g
+                        {daySummary.proteinG.toFixed(1)} /{" "}
+                        {proteinsTarget.toFixed(0)} g
                       </div>
                       <div className="macro-card__bar">
                         <div

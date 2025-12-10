@@ -132,7 +132,7 @@ export default function MealItemModal({
   );
 }
 
-function MacronutrientsCircle({
+export function MacronutrientsCircle({
   protein,
   fat,
   carbs,

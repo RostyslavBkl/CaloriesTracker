@@ -4,6 +4,12 @@ import { of, Observable } from "rxjs";
 import { Action, PayloadAction } from "@reduxjs/toolkit";
 import { mealsApi } from "./mealApi";
 import {
+  createMealWithItems,
+  createMealWithItemsFailure,
+  createMealWithItemsSuccess,
+  deleteMeal,
+  deleteMealFailure,
+  deleteMealSuccess,
   getMealsByDay,
   getMealsByDayFailure,
   getMealsByDaySuccess,
@@ -14,7 +20,9 @@ import {
   updateMealItemSuccess,
 } from "./mealSlices/mealItemUpdSlice";
 import {
-  Meal,
+  CreateMealInput,
+  CreateMealWithItemsResponse,
+  DeleteMealResponse,
   MealItem,
   UpdateMealItemInput,
   UpdateMealItemResponse,
@@ -99,4 +107,46 @@ export const updateMealItemEpic = (
   );
 };
 
-export const mealEpics = [getMealsByDayEpic, updateMealItemEpic];
+export const createMealWithItemsEpic = (action$: Observable<Action>) => {
+  return action$.pipe(
+    ofType(createMealWithItems.type),
+    switchMap((action: PayloadAction<CreateMealInput>) => {
+      const mealInput = action.payload;
+      return mealsApi.createMealWithItems(mealInput).pipe(
+        map((res: CreateMealWithItemsResponse) => {
+          console.log(res.createMealWithItems);
+          return createMealWithItemsSuccess(mealInput.items);
+        }),
+        catchError((error) =>
+          of(
+            createMealWithItemsFailure(error.message || "Failed to create meal")
+          )
+        )
+      );
+    })
+  );
+};
+
+const deleteMealEpic = (action$: Observable<Action>) => {
+  return action$.pipe(
+    ofType(deleteMeal.type),
+    switchMap((action: PayloadAction<string>) => {
+      const mealId = action.payload;
+      return mealsApi.deleteMeal(mealId).pipe(
+        map((res: DeleteMealResponse) => {
+          return deleteMealSuccess(res.deleteMeal);
+        }),
+        catchError((error) =>
+          of(deleteMealFailure(error.message || "Failed to delete meal"))
+        )
+      );
+    })
+  );
+};
+
+export const mealEpics = [
+  getMealsByDayEpic,
+  updateMealItemEpic,
+  createMealWithItemsEpic,
+  deleteMealEpic,
+];

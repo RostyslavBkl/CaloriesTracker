@@ -1,4 +1,4 @@
-export type Plan = 'Balanced' | 'Custom';
+export type Plan = "Balanced" | "Custom";
 
 export interface NutritionGoal {
   id: string;
@@ -12,12 +12,12 @@ export interface NutritionGoal {
 }
 
 export interface SetGoalPayloadBalanced {
-  plan: 'Balanced';
+  plan: "Balanced";
   targetCalories: number;
 }
 
 export interface SetGoalPayloadCustom {
-  plan: 'Custom';
+  plan: "Custom";
   targetCalories: number;
   proteinG: number;
   fatG: number;

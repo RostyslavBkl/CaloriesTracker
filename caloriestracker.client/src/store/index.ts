@@ -13,6 +13,10 @@ import { diaryEpics } from "../features/diary/diaryEpics";
 import diaryReducer from "../features/diary/diarySlice";
 
 import foodReducer from "../features/food/foodSlice";
+import { createMealReducer } from "../features/meal/mealSlices/mealSlice";
+import { deleteMealReducer } from "../features/meal/mealSlices/mealSlice";
+
+import foodReducer, { searchFoodReduces } from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";
 
 import nutritionReducer from "../nutrition/nutritionSlice";
@@ -24,7 +28,10 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     meal: mealReducer,
+    createMeal: createMealReducer,
+    deleteMeal: deleteMealReducer,
     food: foodReducer,
+    searchFood: searchFoodReduces,
     updateMealItem: updMealItemReducer,
     nutritionGoal: nutritionReducer,
     diary: diaryReducer,

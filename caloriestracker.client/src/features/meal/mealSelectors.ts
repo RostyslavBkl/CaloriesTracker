@@ -6,9 +6,8 @@ import { Meal } from "./mealTypes";
 import { selectFoods } from "../food/foodSelectors";
 
 // конкретний день
-export const selectMealsByDay =
-  (diaryDayId: string) => (state: RootState) =>
-    state.meal.mealsByDay[diaryDayId] || [];
+export const selectMealsByDay = (diaryDayId: string) => (state: RootState) =>
+  state.meal.mealsByDay[diaryDayId] || [];
 
 export const selectMealsLoading = (state: RootState) => state.meal.loading;
 
@@ -56,15 +55,18 @@ export const selectTodayMealsWithSummary = createSelector(
   }
 );
 
-// 🔥 НОВИЙ СЕЛЕКТОР: сумарні нутрієнти за день
+// НОВИЙ СЕЛЕКТОР: сумарні нутрієнти за день
 export const selectTodaySummary = createSelector(
   [selectTodayMealsWithSummary],
   (mealsWithSummary) => {
     return mealsWithSummary.reduce(
       (acc, meal) => {
-        const s =
-          (meal as any).summary || // якщо типи не розширені, щоб TS не бурчав
-          { proteinG: 0, fatG: 0, carbsG: 0, kcal: 0 };
+        const s = (meal as any).summary || {
+          proteinG: 0,
+          fatG: 0,
+          carbsG: 0,
+          kcal: 0,
+        };
 
         return {
           proteinG: acc.proteinG + s.proteinG,
@@ -98,3 +100,7 @@ export const selectUpdatedMealItemError = (state: RootState) =>
   state.updateMealItem.error;
 export const selectUpdatedMealItem = (state: RootState, itemId: string) =>
   state.updateMealItem.updatedItem[itemId];
+
+// delete
+export const isDeleted = (state: RootState) => state.deleteMeal.isDeleted;
+export const loading = (state: RootState) => state.deleteMeal.loading;

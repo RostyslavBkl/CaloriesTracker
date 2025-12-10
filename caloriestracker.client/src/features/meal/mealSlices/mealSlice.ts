@@ -1,19 +1,39 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { MealsState, Meal, MealItem } from "../mealTypes";
+import {
+  MealsState,
+  Meal,
+  MealItem,
+  CreateMealInput,
+  CreateMealState,
+  DeleteMealState,
+} from "../mealTypes";
 import { updateMealItemSuccess } from "./mealItemUpdSlice";
 import { DiaryDayDetails } from "../../diary/diaryType";
 import { getDiaryByDateSuccess } from "../../diary/diarySlice";
 
-const initialState: MealsState = {
+const mealsInitialState: MealsState = {
   mealsByDay: {},
   currDayId: null,
   loading: false,
   error: null,
 };
 
+const createMealInitialState: CreateMealState = {
+  items: [],
+  loading: false,
+  error: null,
+};
+
+const deleteMealInitialState: DeleteMealState = {
+  isDeleted: false,
+  mealId: null,
+  loading: false,
+  error: null,
+};
+
 const mealSlice = createSlice({
   name: "meal",
-  initialState,
+  initialState: mealsInitialState,
   reducers: {
     // GET
     getMealsByDay: (state, action: PayloadAction<string>) => {
@@ -80,6 +100,48 @@ const mealSlice = createSlice({
   },
 });
 
+const createMealSlice = createSlice({
+  name: "createMeal",
+  initialState: createMealInitialState,
+  reducers: {
+    // CREATE
+    createMealWithItems: (state, action: PayloadAction<CreateMealInput>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    createMealWithItemsSuccess: (state, action: PayloadAction<MealItem[]>) => {
+      state.items = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    createMealWithItemsFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
+});
+
+const deleteMealSlice = createSlice({
+  name: "delete",
+  initialState: deleteMealInitialState,
+  reducers: {
+    deleteMeal: (state, action: PayloadAction<string>) => {
+      state.mealId = action.payload;
+      state.loading = true;
+      state.error = null;
+    },
+    deleteMealSuccess: (state, action: PayloadAction<boolean>) => {
+      state.isDeleted = action.payload;
+      state.loading = false;
+      state.error = null;
+    },
+    deleteMealFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+  },
+});
+
 export const {
   getMealsByDay,
   getMealsByDaySuccess,
@@ -87,4 +149,15 @@ export const {
   updateMealItemInState,
 } = mealSlice.actions;
 
+export const {
+  createMealWithItems,
+  createMealWithItemsSuccess,
+  createMealWithItemsFailure,
+} = createMealSlice.actions;
+
+export const { deleteMeal, deleteMealSuccess, deleteMealFailure } =
+  deleteMealSlice.actions;
+
+export const createMealReducer = createMealSlice.reducer;
+export const deleteMealReducer = deleteMealSlice.reducer;
 export default mealSlice.reducer;
