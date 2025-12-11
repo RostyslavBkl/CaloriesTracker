@@ -10,25 +10,36 @@
   padding: 20px;
 }
 
-.containerbox__content::-webkit-scrollbar {
-  display: none;
+.food-top-card {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  margin-bottom: 16px;
 }
 
-.food-name-input {
-  background: transparent;
-  border: none;
-  color: var(--muted);
-  font-size: 1.2rem;
+.food-top-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--card-strong);
+}
+
+.food-top-card-title {
+  font-size: 1.05rem;
   font-weight: 600;
-  text-align: center;
-  width: 100%;
-  outline: none;
-  padding: 0;
+  color: var(--text);
 }
 
-.food-name-input::placeholder {
-  color: var(--muted);
-  opacity: 0.5;
+.food-top-card-body {
+  padding: 14px 18px 18px;
+}
+
+.food-top-card-body .modal-item-nutr-details,
+.food-top-card-body .macronutrients-circle-container {
+  width: 100%;
 }
 
 .food-fields-card {
@@ -117,4 +128,19 @@
 
 .food-save-btn:active {
   transform: translateY(0);
+}
+
+.food-delete-btn {
+  background: transparent;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: var(--danger);
+  font-weight: 500;
+  padding: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.food-delete-btn:hover {
+  background: rgba(248, 113, 113, 0.08);
 }

@@ -44,6 +44,13 @@ export interface SearchFoodResponse {
   searchFood: string[];
 }
 
+export interface FoodModalProps {
+  food: Food | null;
+  onClose: () => void;
+  onSubmit: (values: CreateFoodInput) => void;
+  onDelete?: () => void;
+}
+
 export interface CreateFoodInput {
   name: string;
   weightG?: number | null;
@@ -51,10 +58,19 @@ export interface CreateFoodInput {
   fatG?: number | null;
   carbsG?: number | null;
 }
+
 export interface CreateCustomFoodResponse {
   createCustomFood: Food;
 }
 
 export interface GetUserFoodsResponse {
   getListCustomFood: Food[];
+}
+
+export interface UpdateCustomFoodResponse {
+  updateCustomFood: Food;
+}
+
+export interface DeleteCustomFoodResponse {
+  deleteCustomFood: Food;
 }

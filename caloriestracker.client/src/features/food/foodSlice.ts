@@ -56,6 +56,32 @@ const foodSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+
+    updateCustomFoodRequest: (state, action: PayloadAction<{ id: string; food: CreateFoodInput }>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    updateCustomFoodSuccess: (state, action: PayloadAction<Food>) => {
+      state.loading = false;
+      state.foods[action.payload.id] = action.payload;
+    },
+    updateCustomFoodFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    deleteCustomFoodRequest: (state, action: PayloadAction<string>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteCustomFoodSuccess: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      delete state.foods[action.payload];
+    },
+    deleteCustomFoodFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -89,6 +115,12 @@ export const {
   loadUserFood,
   loadUserFoodsFailure,
   loadUserFoodsSuccess,
+  updateCustomFoodRequest,
+  updateCustomFoodSuccess,
+  updateCustomFoodFailure,
+  deleteCustomFoodRequest,
+  deleteCustomFoodSuccess,
+  deleteCustomFoodFailure,
 } = foodSlice.actions;
 
 export const { searchFoodRequest, searchFoodSuccess, searchFoodFailure } =

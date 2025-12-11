@@ -14,9 +14,11 @@ import {
   createCustomFoodRequest,
   loadUserFood,
   searchFoodRequest,
+  updateCustomFoodRequest,
+  deleteCustomFoodRequest,
 } from "../features/food/foodSlice";
 import FoodModal from "../features/food/foodModal";
-import { CreateFoodInput } from "../features/food/foodType";
+import { CreateFoodInput, Food } from "../features/food/foodType";
 
 const Foods: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -30,6 +32,7 @@ const Foods: React.FC = () => {
 
   const [query, setQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingFood, setEditingFood] = useState<Food | null>(null);
 
   useEffect(() => {
     dispatch(loadUserFood());
@@ -45,12 +48,50 @@ const Foods: React.FC = () => {
     if (value.trim().length === 0) {
       return;
     }
+
     dispatch(searchFoodRequest(value));
   };
 
-  const handleCreateFood = (values: CreateFoodInput) => {
-    dispatch(createCustomFoodRequest(values));
+  const handleCreateClick = () => {
+    setEditingFood(null);
+    setIsModalOpen(true);
+  };
+
+  const handleFoodClick = (food: Food) => {
+    setEditingFood(food);
+    setIsModalOpen(true);
+  };
+
+  const handleSubmitFood = (values: CreateFoodInput) => {
+    if (editingFood) {
+      dispatch(
+        updateCustomFoodRequest({
+          id: editingFood.id,
+          food: values,
+        })
+      );
+    } else {
+      dispatch(createCustomFoodRequest(values));
+    }
     setIsModalOpen(false);
+    setEditingFood(null);
+  };
+
+  const handleDeleteFood = () => {
+    if (!editingFood) return;
+
+    if (!window.confirm(`Delete "${editingFood.name}"?`)) {
+      return;
+    }
+
+    dispatch(deleteCustomFoodRequest(editingFood.id));
+    setIsModalOpen(false);
+    setEditingFood(null);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setEditingFood(null);
   };
 
   return (
@@ -64,7 +105,7 @@ const Foods: React.FC = () => {
                 <button
                   type="button"
                   className="meal-add-btn"
-                  onClick={() => setIsModalOpen(true)}
+                  onClick={handleCreateClick}
                   aria-label="Add food"
                   style={{ marginRight: 12 }}
                 >
@@ -110,7 +151,11 @@ const Foods: React.FC = () => {
                 ) : (
                   <div className="modal-items-list">
                     {listToShow.map((f) => (
-                      <div key={f.id} className="meal-item">
+                      <div
+                        key={f.id}
+                        className="meal-item"
+                        onClick={() => handleFoodClick(f)}
+                      >
                         <div className="meal-item-info">
                           <p>{f.name}</p>
                           <div className="item-nutr">
@@ -130,11 +175,12 @@ const Foods: React.FC = () => {
           </div>
         </div>
       </div>
-
       {isModalOpen && (
         <FoodModal
-          onClose={() => setIsModalOpen(false)}
-          onSubmit={handleCreateFood}
+          food={editingFood}
+          onClose={handleCloseModal}
+          onSubmit={handleSubmitFood}
+          onDelete={editingFood ? handleDeleteFood : undefined}
         />
       )}
     </AuthorizeView>

@@ -1,17 +1,14 @@
 import { useMemo, useState } from "react";
-import { CreateFoodInput } from "./foodType";
-import { Food } from "./foodType";
+import { CreateFoodInput, FoodModalProps } from "./foodType";
 import { MacronutrientsCircle } from "../meal/components/MealItem/MealItemModal";
-import React from "react";
 import "./food.css";
 
-interface FoodModalProps {
-  food?: Food | null;
-  onClose: () => void;
-  onSubmit: (values: CreateFoodInput) => void;
-}
-
-export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
+export default function FoodModal({
+  food,
+  onClose,
+  onSubmit,
+  onDelete,
+}: FoodModalProps) {
   const isEdit = !!food;
 
   const [name, setName] = useState(food?.name ?? "");
@@ -48,39 +45,42 @@ export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
     };
   }, [weightG, proteinG, fatG, carbsG]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    onSubmit({
+  const handleSubmit = () => {
+    const payload: CreateFoodInput = {
       name: name.trim(),
       weightG: weightG === "" ? undefined : Number(weightG),
       proteinG: proteinG === "" ? undefined : Number(proteinG),
       fatG: fatG === "" ? undefined : Number(fatG),
       carbsG: carbsG === "" ? undefined : Number(carbsG),
-    });
+    };
+
+    onSubmit(payload);
   };
 
   return (
     <div className="food-modal-backdrop">
       <div className="containerbox">
         <div className="containerbox__content">
-          <div className="modal-header-fullscreen">
-            <button className="modal-back-arrow" onClick={onClose}>
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
-                <path
-                  d="M32 15H3.41l8.29-8.29-1.41-1.42-10 10a1 1 0 0 0 0 1.41l10 10 1.41-1.41L3.41 17H32z"
-                  data-name="4-Arrow Left"
-                  fill="var(--muted)"
-                />
-              </svg>
-            </button>
-            <h2>{isEdit ? "Edit Food" : "Add Food"}</h2>
-            <div style={{ width: "24px" }}></div>
-          </div>
+          <div className="food-top-card">
+            <div className="food-top-card-header">
+              <button className="modal-back-arrow" onClick={onClose}>
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                  <path
+                    d="M32 15H3.41l8.29-8.29-1.41-1.42-10 10a1 1 0 0 0 0 1.41l10 10 1.41-1.41L3.41 17H32z"
+                    data-name="4-Arrow Left"
+                    fill="var(--muted)"
+                  />
+                </svg>
+              </button>
 
-          <div className="modal-meal-info">
+              <span className="food-top-card-title">
+                {isEdit ? "Edit Food" : "Add Food"}
+              </span>
 
-            <div className="modal-item-nutr-details">
+              <div style={{ width: 24 }} />
+            </div>
+
+            <div className="food-top-card-body">
               <MacronutrientsCircle
                 protein={proteinKcal}
                 fat={fatKcal}
@@ -152,12 +152,36 @@ export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
             </div>
           </div>
 
-          <button className="food-save-btn" onClick={handleSubmit}>
-            {isEdit ? "Save changes" : "Save food"}
-          </button>
+          <div
+            style={{
+              display: "flex",
+              gap: 8,
+              marginTop: 16,
+            }}
+          >
+            {isEdit && onDelete && (
+              <button
+                type="button"
+                className="food-delete-btn"
+                onClick={onDelete}
+                style={{ flex: 1 }}
+              >
+                Delete
+              </button>
+            )}
+
+            <button
+              type="button"
+              className="food-save-btn"
+              onClick={handleSubmit}
+              style={{ flex: 2 }}
+            >
+              {isEdit ? "Save changes" : "Save food"}
+            </button>
+          </div>
           <h1></h1>
         </div>
       </div>
-    </div >
+    </div>
   );
 }
