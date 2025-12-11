@@ -8,9 +8,12 @@ import {
   searchFoodFailure,
   searchFoodRequest,
   searchFoodSuccess,
+  createCustomFoodFailure,
+  createCustomFoodRequest,
+  createCustomFoodSuccess,
 } from "./foodSlice";
 import { foodsApi } from "./foodApi";
-import { FoodResponse, SearchFoodResponse } from "./foodType";
+import { CreateCustomFoodResponse, CreateFoodInput, FoodResponse, SearchFoodResponse } from "./foodType";
 
 export const getFoodByIdEpic = (action$: Observable<Action>) => {
   return action$.pipe(
@@ -48,4 +51,19 @@ export const searchFoodEpic = (action$: Observable<Action>) => {
   );
 };
 
-export const foodEpics = [getFoodByIdEpic, searchFoodEpic];
+export const createCustomFoodEpic = (action$: Observable<Action>) => {
+  return action$.pipe(
+    ofType(createCustomFoodRequest.type),
+    mergeMap((action: PayloadAction<CreateFoodInput>) =>
+      foodsApi.createCustomFood(action.payload).pipe(
+        map((res: CreateCustomFoodResponse) =>
+          createCustomFoodSuccess(res.createCustomFood)
+        ),
+        catchError((err) =>
+          of(createCustomFoodFailure(err.message || "Failed to create food"))
+        )
+      )
+    )
+  );
+};
+export const foodEpics = [getFoodByIdEpic, searchFoodEpic, createCustomFoodEpic];

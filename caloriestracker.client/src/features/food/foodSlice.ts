@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Food, FoodState, SearchFoodState } from "./foodType";
+import { CreateFoodInput, Food, FoodState, SearchFoodState } from "./foodType";
 
 const foodInitialState: FoodState = {
   foods: {},
@@ -30,6 +30,18 @@ const foodSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    createCustomFoodRequest: (state, action: PayloadAction<CreateFoodInput>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    createCustomFoodSuccess: (state, action: PayloadAction<Food>) => {
+      state.loading = false;
+      state.foods[action.payload.id] = action.payload;
+    },
+    createCustomFoodFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -53,7 +65,7 @@ const searchFoodSlice = createSlice({
   },
 });
 
-export const { getFoodById, getFoodByIdSuccess, getFoodByIdFailure } =
+export const { getFoodById, getFoodByIdSuccess, getFoodByIdFailure, createCustomFoodFailure, createCustomFoodRequest, createCustomFoodSuccess } =
   foodSlice.actions;
 
 export const { searchFoodRequest, searchFoodSuccess, searchFoodFailure } =

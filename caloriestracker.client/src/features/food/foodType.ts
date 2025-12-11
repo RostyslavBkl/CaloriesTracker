@@ -43,3 +43,14 @@ export interface SearchFoodState {
 export interface SearchFoodResponse {
   searchFood: string[];
 }
+
+export interface CreateFoodInput {
+  name: string;
+  weightG?: number | null;
+  proteinG?: number | null;
+  fatG?: number | null;
+  carbsG?: number | null;
+}
+export interface CreateCustomFoodResponse {
+  createCustomFood: Food;
+}
