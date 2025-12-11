@@ -157,7 +157,7 @@ export function MacronutrientsCircle({
           <circle
             cx="60"
             cy="60"
-            r="55"
+            r="50"
             fill="none"
             stroke="#e0e0e0"
             strokeWidth="12"
@@ -176,6 +176,44 @@ export function MacronutrientsCircle({
             kcal
           </text>
         </svg>
+        <div className="macronutrients-legend">
+          <div className="legend-item">
+            <div className="legend-text-box">
+              <div
+                className="legend-color"
+                style={{ backgroundColor: "#FF6B6B" }}
+              />
+              <span className="legend-text">Protein</span>
+            </div>
+            <div>
+              <span>0g (0%)</span>
+            </div>
+          </div>
+          <div className="legend-item">
+            <div className="legend-text-box">
+              <div
+                className="legend-color"
+                style={{ backgroundColor: "#FFA94D" }}
+              />
+              <span className="legend-text">Fat</span>
+            </div>
+            <div>
+              <span>0g (0%)</span>
+            </div>
+          </div>
+          <div className="legend-item">
+            <div className="legend-text-box">
+              <div
+                className="legend-color"
+                style={{ backgroundColor: "#4ECDC4" }}
+              />
+              <span className="legend-text">Carbs</span>
+            </div>
+            <div>
+              <span>0g (0%)</span>
+            </div>
+          </div>
+        </div>
       </div>
     );
   }
@@ -236,7 +274,7 @@ export function MacronutrientsCircle({
       A ${radius} ${radius} 0 ${proteinLargeArc} 1 
       ${proteinEnd.x} ${proteinEnd.y}`}
             stroke="#FF6B6B"
-            strokeWidth="6" // ← ось тут міняєш товщину
+            strokeWidth="6"
             fill="none"
             strokeLinecap="round"
           />
@@ -263,9 +301,6 @@ export function MacronutrientsCircle({
           fill="none"
           strokeLinecap="round"
         />
-
-        {/* Center circle for text */}
-        {/* <circle cx={centerX} cy={centerY} r="28" fill="white" /> */}
 
         {/* Total kcal text */}
         <text

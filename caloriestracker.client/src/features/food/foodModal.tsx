@@ -62,31 +62,25 @@ export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
 
   return (
     <div className="food-modal-backdrop">
-      <div className="food-modal">
-        <div className="food-modal-header">
-          <button className="food-modal-back-btn" onClick={onClose}>
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
-              <path
-                d="M32 15H3.41l8.29-8.29-1.41-1.42-10 10a1 1 0 0 0 0 1.41l10 10 1.41-1.41L3.41 17H32z"
-                data-name="4-Arrow Left"
-                fill="var(--muted)"
-              />
-            </svg>
-          </button>
-        </div>
+      <div className="containerbox">
+        <div className="containerbox__content">
+          <div className="modal-header-fullscreen">
+            <button className="modal-back-arrow" onClick={onClose}>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30">
+                <path
+                  d="M32 15H3.41l8.29-8.29-1.41-1.42-10 10a1 1 0 0 0 0 1.41l10 10 1.41-1.41L3.41 17H32z"
+                  data-name="4-Arrow Left"
+                  fill="var(--muted)"
+                />
+              </svg>
+            </button>
+            <h2>{isEdit ? "Edit Food" : "Add Food"}</h2>
+            <div style={{ width: "24px" }}></div>
+          </div>
 
-        <div className="food-modal-body">
-          <div className="food-macro-card">
-            <div className="food-title-box">
-              <input
-                className="food-name-input"
-                placeholder="Food name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-              />
-            </div>
+          <div className="modal-meal-info">
 
-            <div className="food-macro-chart">
+            <div className="modal-item-nutr-details">
               <MacronutrientsCircle
                 protein={proteinKcal}
                 fat={fatKcal}
@@ -100,14 +94,14 @@ export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
 
           <div className="food-fields-card">
             <div className="food-field-row">
-              <span className="food-field-label">Weight (g)</span>
+              <span className="food-field-label">Food name</span>
               <div className="food-field-input-wrap">
                 <input
-                  type="number"
-                  className="food-field-input"
-                  value={weightG}
-                  onChange={(e) => setWeightG(e.target.value)}
-                  placeholder="100"
+                  type="text"
+                  className="food-field-input food-field-input--name"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
+                  placeholder="Food name"
                 />
               </div>
             </div>
@@ -137,7 +131,7 @@ export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
             </div>
 
             <div className="food-field-row">
-              <span className="food-field-label">Carbs (g)</span>
+              <span className="food-field-label">Carb (g)</span>
               <div className="food-field-input-wrap">
                 <input
                   type="number"
@@ -161,9 +155,9 @@ export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
           <button className="food-save-btn" onClick={handleSubmit}>
             {isEdit ? "Save changes" : "Save food"}
           </button>
+          <h1></h1>
         </div>
       </div>
-    </div>
+    </div >
   );
-
 }

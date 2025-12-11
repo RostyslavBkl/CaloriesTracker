@@ -1,140 +1,120 @@
-/* ===== Food Modal Styles ===== */
-
 .food-modal-backdrop {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
+  background: rgb(14, 26, 41);
+  backdrop-filter: blur(4px);
   z-index: 999;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-.food-modal {
-  width: 100%;
-  max-width: 380px;
-  background: #0f172a;
-  /* card */
-  border-radius: 16px;
   padding: 20px;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  color: var(--text);
-  animation: foodModalFade 0.22s ease-out;
 }
 
-@keyframes foodModalFade {
-  from {
-    opacity: 0;
-    transform: translateY(14px);
-  }
-
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.containerbox__content::-webkit-scrollbar {
+  display: none;
 }
 
-/* Header */
-.food-modal-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.food-modal-back-btn {
-  background: rgba(148, 163, 184, 0.15);
+.food-name-input {
+  background: transparent;
   border: none;
-  padding: 6px;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.food-modal-back-btn:hover {
-  background: rgba(148, 163, 184, 0.25);
-}
-
-/* Title */
-.food-modal-title {
-  text-align: center;
-  margin: 10px 0 20px;
+  color: var(--muted);
   font-size: 1.2rem;
   font-weight: 600;
-  color: var(--text);
+  text-align: center;
+  width: 100%;
+  outline: none;
+  padding: 0;
 }
 
-/* Macronutrients container */
-.food-macro-box {
-  background: #1e293b;
-  padding: 20px;
-  border-radius: 14px;
-  margin-bottom: 20px;
+.food-name-input::placeholder {
+  color: var(--muted);
+  opacity: 0.5;
 }
 
-/* Weight input box */
-.food-weight-box {
-  background: #1e293b;
-  padding: 14px 18px;
+.food-fields-card {
+  background: var(--card);
   border-radius: 14px;
+  padding: 0 20px;
+  margin: 24px 0 16px 0;
+  box-shadow: var(--shadow);
+}
+
+.food-field-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 14px 0;
+  border-bottom: 3px solid rgba(15, 23, 42, 0.95);
 }
 
-.food-weight-label {
-  color: var(--muted);
-  font-size: 0.9rem;
+.food-field-row:last-child {
+  border-bottom: none;
 }
 
-.food-weight-value {
-  font-size: 1.1rem;
+.food-field-label {
+  color: var(--text);
+  font-size: 0.95rem;
   font-weight: 500;
 }
 
-.food-edit-btn {
-  background: none;
-  border: none;
-  padding: 4px;
-  margin-left: 6px;
-  cursor: pointer;
-  color: var(--muted);
+.food-field-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.food-edit-btn:hover {
+.food-field-input {
+  width: 60px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
   color: var(--text);
+  text-align: left;
 }
 
-/* Input version */
-.food-weight-input {
-  background: transparent;
-  border: 1px solid rgba(148, 163, 184, 0.3);
-  padding: 6px 8px;
-  width: 80px;
-  border-radius: 8px;
-  color: var(--text);
-  outline: none;
+.food-field-input--name {
+  width: 250px;
 }
 
-.food-weight-input:focus {
+.food-field-input::-webkit-outer-spin-button,
+.food-field-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.food-field-input:focus {
   border-color: var(--accent);
+  background: rgba(148, 163, 184, 0.15);
 }
 
-/* Footer button */
+.food-field-static {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
 .food-save-btn {
   background: #2563eb;
   color: #fff;
   width: 100%;
   font-size: 1rem;
-  padding: 12px;
-  border-radius: 10px;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 12px;
   border: none;
-  margin-top: 20px;
+  margin-top: auto;
   box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
   cursor: pointer;
-  transition: 0.15s;
+  transition: all 0.2s;
 }
 
 .food-save-btn:hover {
   background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
+}
+
+.food-save-btn:active {
+  transform: translateY(0);
 }
