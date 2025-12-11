@@ -1,26 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AuthorizeView from "../authorization/AuthorizeView";
 import MainMenu from "../navigation/MainMenu";
 import ThemeToggle from "../ThemeTongle";
-import { useAppDispatch, useAppSelector } from "../../src/store/hooks";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
   selectFoods,
   selectFoodLoading,
   selectFoodError,
+  selectSearchFoodObj,
+  selectSearchFoodLoading,
 } from "../features/food/foodSelectors";
-import { createCustomFoodRequest } from "../features/food/foodSlice";
+import {
+  createCustomFoodRequest,
+  loadUserFood,
+  searchFoodRequest,
+} from "../features/food/foodSlice";
 import FoodModal from "../features/food/foodModal";
 import { CreateFoodInput } from "../features/food/foodType";
 
 const Foods: React.FC = () => {
   const dispatch = useAppDispatch();
+
   const foodsMap = useAppSelector(selectFoods);
   const loading = useAppSelector(selectFoodLoading);
   const error = useAppSelector(selectFoodError);
 
-  const foods = Object.values(foodsMap); // якщо зберігаєш як { [id]: Food }
+  const searchFoods = useAppSelector(selectSearchFoodObj);
+  const searchLoading = useAppSelector(selectSearchFoodLoading);
 
+  const [query, setQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    dispatch(loadUserFood());
+  }, []);
+
+  const allFoods = Object.values(foodsMap);
+  const listToShow = query.trim().length > 0 ? searchFoods : allFoods;
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    setQuery(value);
+
+    if (value.trim().length === 0) {
+      return;
+    }
+    dispatch(searchFoodRequest(value));
+  };
 
   const handleCreateFood = (values: CreateFoodInput) => {
     dispatch(createCustomFoodRequest(values));
@@ -48,37 +74,56 @@ const Foods: React.FC = () => {
               </div>
             </div>
 
-            {loading && (
-              <div style={{ padding: 16 }}>Loading...</div>
-            )}
-            {error && (
-              <div style={{ padding: 16, color: "red" }}>{error}</div>
-            )}
+            <div className="containerbox__content">
+              <div style={{ marginBottom: 12 }}>
+                <input
+                  type="text"
+                  placeholder="Search foods..."
+                  value={query}
+                  onChange={handleSearchChange}
+                  style={{ width: "100%" }}
+                />
+              </div>
 
-            <div
-              style={{
-                minHeight: 240,
-                padding: 20,
-              }}
-            >
-              {foods.length === 0 ? (
-                <span style={{ color: "var(--muted)" }}>
-                  No foods yet. Add your first one using the plus button.
-                </span>
-              ) : (
-                <div className="modal-items-list">
-                  {foods.map((f) => (
-                    <div key={f.id} className="meal-item">
-                      <div className="meal-item-info">
-                        <p>{f.name}</p>
-                        <div className="item-nutr">
-                          <span>{Math.round(f.totalKcal)} kcal / 100 g</span>
+              {loading && !searchLoading && (
+                <div style={{ padding: 16 }}>Loading...</div>
+              )}
+              {error && (
+                <div style={{ padding: 16, color: "red" }}>{error}</div>
+              )}
+              {searchLoading && query.trim().length > 0 && (
+                <div style={{ padding: 16 }}>Searching...</div>
+              )}
+
+              <div
+                style={{
+                  minHeight: 240,
+                  padding: 20,
+                }}
+              >
+                {listToShow.length === 0 ? (
+                  <span style={{ color: "var(--muted)" }}>
+                    {query.trim().length > 0
+                      ? "No foods found for this query."
+                      : "No foods yet. Add your first one using the plus button."}
+                  </span>
+                ) : (
+                  <div className="modal-items-list">
+                    {listToShow.map((f) => (
+                      <div key={f.id} className="meal-item">
+                        <div className="meal-item-info">
+                          <p>{f.name}</p>
+                          <div className="item-nutr">
+                            <span>
+                              {Math.round(f.totalKcal)} kcal&nbsp;/&nbsp;100 g
+                            </span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
 
             <MainMenu />

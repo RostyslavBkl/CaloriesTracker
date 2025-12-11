@@ -11,9 +11,12 @@ import {
   createCustomFoodFailure,
   createCustomFoodRequest,
   createCustomFoodSuccess,
+  loadUserFood,
+  loadUserFoodsSuccess,
+  loadUserFoodsFailure,
 } from "./foodSlice";
 import { foodsApi } from "./foodApi";
-import { CreateCustomFoodResponse, CreateFoodInput, FoodResponse, SearchFoodResponse } from "./foodType";
+import { CreateCustomFoodResponse, CreateFoodInput, FoodResponse, GetUserFoodsResponse, SearchFoodResponse } from "./foodType";
 
 export const getFoodByIdEpic = (action$: Observable<Action>) => {
   return action$.pipe(
@@ -31,25 +34,22 @@ export const getFoodByIdEpic = (action$: Observable<Action>) => {
   );
 };
 
-export const searchFoodEpic = (action$: Observable<Action>) => {
-  return action$.pipe(
+export const searchFoodEpic = (action$: Observable<Action>) =>
+  action$.pipe(
     ofType(searchFoodRequest.type),
     mergeMap((action: PayloadAction<string>) => {
       const query = action.payload;
-      console.log(query);
+
       return foodsApi.searchFood(query).pipe(
-        map((res: SearchFoodResponse) => {
-          console.log("Raw response:", res);
-          console.log("Search result:", res.searchFood);
-          return searchFoodSuccess(res.searchFood);
-        }),
+        map((res: SearchFoodResponse) =>
+          searchFoodSuccess(res.searchFood)
+        ),
         catchError((err) =>
-          of(searchFoodFailure(err.message || "Failed to load meals"))
+          of(searchFoodFailure(err.message || "Failed to search foods"))
         )
       );
     })
   );
-};
 
 export const createCustomFoodEpic = (action$: Observable<Action>) => {
   return action$.pipe(
@@ -66,4 +66,21 @@ export const createCustomFoodEpic = (action$: Observable<Action>) => {
     )
   );
 };
-export const foodEpics = [getFoodByIdEpic, searchFoodEpic, createCustomFoodEpic];
+
+export const loadUserFoodsEpic = (action$: Observable<Action>) => {
+  return action$.pipe(
+    ofType(loadUserFood.type),
+    mergeMap(() =>
+      foodsApi.getUserFoods().pipe(
+        map((res: GetUserFoodsResponse) =>
+          loadUserFoodsSuccess(res.getListCustomFood)
+        ),
+        catchError((err) =>
+          of(loadUserFoodsFailure(err.message || "Failed to load foods"))
+        )
+      )
+    )
+  );
+}
+
+export const foodEpics = [getFoodByIdEpic, searchFoodEpic, createCustomFoodEpic, loadUserFoodsEpic];

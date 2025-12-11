@@ -42,6 +42,20 @@ const foodSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    loadUserFood: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    loadUserFoodsSuccess: (state, action: PayloadAction<Food[]>) => {
+      for (const food of action.payload) {
+        state.foods[food.id] = food;
+      }
+      state.loading = false;
+    },
+    loadUserFoodsFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -65,8 +79,17 @@ const searchFoodSlice = createSlice({
   },
 });
 
-export const { getFoodById, getFoodByIdSuccess, getFoodByIdFailure, createCustomFoodFailure, createCustomFoodRequest, createCustomFoodSuccess } =
-  foodSlice.actions;
+export const {
+  getFoodById,
+  getFoodByIdSuccess,
+  getFoodByIdFailure,
+  createCustomFoodFailure,
+  createCustomFoodRequest,
+  createCustomFoodSuccess,
+  loadUserFood,
+  loadUserFoodsFailure,
+  loadUserFoodsSuccess,
+} = foodSlice.actions;
 
 export const { searchFoodRequest, searchFoodSuccess, searchFoodFailure } =
   searchFoodSlice.actions;

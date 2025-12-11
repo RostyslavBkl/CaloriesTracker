@@ -15,7 +15,7 @@ export default function FoodModal({ food, onClose, onSubmit }: FoodModalProps) {
   const isEdit = !!food;
 
   const [name, setName] = useState(food?.name ?? "");
-  const [weightG, setWeightG] = useState<string>(
+  const [weightG] = useState<string>(
     food?.weightG != null ? String(food.weightG) : ""
   );
   const [proteinG, setProteinG] = useState<string>(

@@ -54,3 +54,7 @@ export interface CreateFoodInput {
 export interface CreateCustomFoodResponse {
   createCustomFood: Food;
 }
+
+export interface GetUserFoodsResponse {
+  getListCustomFood: Food[];
+}

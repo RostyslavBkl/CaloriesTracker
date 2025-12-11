@@ -1,5 +1,5 @@
 import gql from "../apiService";
-import { CreateCustomFoodResponse, CreateFoodInput, FoodResponse, SearchFoodResponse } from "./foodType";
+import { CreateCustomFoodResponse, CreateFoodInput, FoodResponse, GetUserFoodsResponse, SearchFoodResponse } from "./foodType";
 
 const GET_FOOD_BY_ID = `
 query GetFoodById($id: Guid!) {
@@ -41,10 +41,28 @@ mutation CreateCustomFood($food: FoodInput!) {
 }
 `;
 
+const GET_USER_FOODS = `
+query GetUserFoods {
+  getListCustomFood {
+    id
+    userId
+    type
+    externalId
+    name
+    weightG
+    proteinG
+    fatG
+    carbsG
+    totalKcal
+  }
+}
+`;
+
 export const foodsApi = {
   getFoodById: (id: string) => gql<FoodResponse>(GET_FOOD_BY_ID, { id: id }),
   searchFood: (query: string) =>
     gql<SearchFoodResponse>(SEARCH_FOOD, { query: query }),
   createCustomFood: (food: CreateFoodInput) =>
     gql<CreateCustomFoodResponse>(CREATE_CUSTOM_FOOD, { food }),
+  getUserFoods: () => gql<GetUserFoodsResponse>(GET_USER_FOODS),
 };
