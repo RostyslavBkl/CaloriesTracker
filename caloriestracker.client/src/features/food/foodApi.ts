@@ -25,7 +25,7 @@ query searchFoodRequest($query: String!){
 `;
 
 const CREATE_CUSTOM_FOOD = `
-mutation CreateCustomFood($food: FoodInputType!) {
+mutation CreateCustomFood($food: FoodInput!) {
   createCustomFood(food: $food) {
     id
     userId
