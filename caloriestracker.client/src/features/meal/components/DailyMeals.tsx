@@ -15,7 +15,11 @@ import { CreateMealInput, Meal, MealType } from "../mealTypes";
 import "../../../index.css";
 import "../../../pages/Home.css";
 import "./meals.css";
-import { getFoodById, searchFoodRequest } from "../../food/foodSlice";
+import {
+  getFoodById,
+  searchFoodRequest,
+  clearSearchResults,
+} from "../../food/foodSlice";
 
 import MealModal from "./Meal/MealModal";
 import MealCard from "./Meal/MealCard";
@@ -193,6 +197,13 @@ function SearchWindow({
   const [showСart, setShowCart] = useState(false);
   const selectedDate = useAppSelector((state) => state.diary.selectedDate);
 
+  useEffect(() => {
+    return () => {
+      dispatch(clearSearchResults());
+      setQuery("");
+    };
+  }, [dispatch]);
+
   const handleCreateMeal = () => {
     if (!selectedDate) {
       console.error("No selectedDate – cannot create meal");
@@ -367,55 +378,62 @@ function SearchWindow({
       </div>
       <div>
         <div className="search-food-wrapper">
-          <input
-            className="search-food-input"
-            type="text"
-            placeholder="Search food..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <svg
-            className="search-icon"
-            width="24px"
-            height="24px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-              stroke="var(--muted)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          <div className="search-input-wrapper">
+            <input
+              className="search-food-input"
+              type="text"
+              placeholder="Search food..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
-          </svg>
-        </div>
-        <div>
-          <button className="btn search-btn">
             <svg
-              width="20px"
-              height="20px"
+              className="search-icon"
+              width="24px"
+              height="24px"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z"
-                stroke="white"
-                strokeWidth="2"
-              />
-              <path
-                d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
-                stroke="white"
+                d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                stroke="var(--muted)"
                 strokeWidth="2"
                 strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
-            <span>Create Food</span>
-          </button>
+          </div>
+
+          <div>
+            <button className="btn search-btn">
+              <svg
+                width="20px"
+                height="20px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z"
+                  stroke="white"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span>Create Food</span>
+            </button>
+          </div>
         </div>
-        <div style={{ marginTop: "1rem" }}>
+
+        <div
+          className="meal-item-wrapper"
+          style={{ marginTop: "1rem", marginBottom: "4rem" }}
+        >
           {query &&
             foods.map((food) => (
               <FoodCard

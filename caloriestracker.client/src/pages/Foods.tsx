@@ -9,6 +9,8 @@ import {
   selectFoodError,
   selectSearchFoodObj,
   selectSearchFoodLoading,
+  selectCustomFoods,
+  selectSearchCustomFoods,
 } from "../features/food/foodSelectors";
 import {
   createCustomFoodRequest,
@@ -23,11 +25,12 @@ import { CreateFoodInput, Food } from "../features/food/foodType";
 const Foods: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const foodsMap = useAppSelector(selectFoods);
+  const foodsMap = useAppSelector(selectCustomFoods);
   const loading = useAppSelector(selectFoodLoading);
   const error = useAppSelector(selectFoodError);
 
-  const searchFoods = useAppSelector(selectSearchFoodObj);
+  const searchFoods = useAppSelector(selectSearchCustomFoods);
+  // const searchFoods = useAppSelector(selectSearchFoodObj);
   const searchLoading = useAppSelector(selectSearchFoodLoading);
 
   const [query, setQuery] = useState("");
@@ -94,6 +97,7 @@ const Foods: React.FC = () => {
     setEditingFood(null);
   };
 
+  console.log(listToShow);
   return (
     <AuthorizeView>
       <div className="stage">
@@ -109,7 +113,21 @@ const Foods: React.FC = () => {
                   aria-label="Add food"
                   style={{ marginRight: 12 }}
                 >
-                  +
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="white"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M4 12H20M12 4V20"
+                      stroke="white"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    ></path>
+                  </svg>
                 </button>
                 <ThemeToggle />
               </div>
@@ -154,6 +172,7 @@ const Foods: React.FC = () => {
                       <div
                         key={f.id}
                         className="meal-item"
+                        style={{ cursor: "pointer" }}
                         onClick={() => handleFoodClick(f)}
                       >
                         <div className="meal-item-info">

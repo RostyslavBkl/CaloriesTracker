@@ -7,6 +7,16 @@ export const selectFoods = (state: RootState) => state.food.foods;
 export const selectFoodLoading = (state: RootState) => state.food.loading;
 export const selectFoodError = (state: RootState) => state.food.error;
 
+export const selectCustomFoods = (state: RootState) => {
+  return Object.values(state.food.foods).filter(
+    (food) => food.type === "CUSTOM"
+  );
+};
+export const selectSearchCustomFoods = (state: RootState) => {
+  return state.searchFood.result
+    .map((id) => state.food.foods[id])
+    .filter((food) => food && food.type === "CUSTOM");
+};
 // Search food
 
 export const selectSearchFoodIds = (state: RootState) =>
