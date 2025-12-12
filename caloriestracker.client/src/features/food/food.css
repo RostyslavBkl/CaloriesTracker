@@ -1,0 +1,146 @@
+.food-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgb(14, 26, 41);
+  backdrop-filter: blur(4px);
+  z-index: 999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.food-top-card {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+
+.food-top-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--card-strong);
+}
+
+.food-top-card-title {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.food-top-card-body {
+  padding: 14px 18px 18px;
+}
+
+.food-top-card-body .modal-item-nutr-details,
+.food-top-card-body .macronutrients-circle-container {
+  width: 100%;
+}
+
+.food-fields-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 0 20px;
+  margin: 24px 0 16px 0;
+  box-shadow: var(--shadow);
+}
+
+.food-field-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 0;
+  border-bottom: 3px solid rgba(15, 23, 42, 0.95);
+}
+
+.food-field-row:last-child {
+  border-bottom: none;
+}
+
+.food-field-label {
+  color: var(--text);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.food-field-input-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.food-field-input {
+  width: 60px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text);
+  text-align: left;
+}
+
+.food-field-input--name {
+  width: 250px;
+}
+
+.food-field-input::-webkit-outer-spin-button,
+.food-field-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.food-field-input:focus {
+  border-color: var(--accent);
+  background: rgba(148, 163, 184, 0.15);
+}
+
+.food-field-static {
+  color: var(--muted);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.food-save-btn {
+  background: #2563eb;
+  color: #fff;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  margin-top: auto;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.food-save-btn:hover {
+  background: #1d4ed8;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.5);
+}
+
+.food-save-btn:active {
+  transform: translateY(0);
+}
+
+.food-delete-btn {
+  background: transparent;
+  border: 1px solid rgba(248, 113, 113, 0.4);
+  color: var(--danger);
+  font-weight: 500;
+  padding: 14px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.food-delete-btn:hover {
+  background: rgba(248, 113, 113, 0.08);
+}

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Food, FoodState, SearchFoodState } from "./foodType";
+import { CreateFoodInput, Food, FoodState, SearchFoodState } from "./foodType";
 
 const foodInitialState: FoodState = {
   foods: {},
@@ -30,6 +30,58 @@ const foodSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    createCustomFoodRequest: (state, action: PayloadAction<CreateFoodInput>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    createCustomFoodSuccess: (state, action: PayloadAction<Food>) => {
+      state.loading = false;
+      state.foods[action.payload.id] = action.payload;
+    },
+    createCustomFoodFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    loadUserFood: (state) => {
+      state.loading = true;
+      state.error = null;
+    },
+    loadUserFoodsSuccess: (state, action: PayloadAction<Food[]>) => {
+      for (const food of action.payload) {
+        state.foods[food.id] = food;
+      }
+      state.loading = false;
+    },
+    loadUserFoodsFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    updateCustomFoodRequest: (state, action: PayloadAction<{ id: string; food: CreateFoodInput }>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    updateCustomFoodSuccess: (state, action: PayloadAction<Food>) => {
+      state.loading = false;
+      state.foods[action.payload.id] = action.payload;
+    },
+    updateCustomFoodFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
+
+    deleteCustomFoodRequest: (state, action: PayloadAction<string>) => {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteCustomFoodSuccess: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      delete state.foods[action.payload];
+    },
+    deleteCustomFoodFailure: (state, action: PayloadAction<string>) => {
+      state.loading = false;
+      state.error = action.payload;
+    },
   },
 });
 
@@ -53,8 +105,23 @@ const searchFoodSlice = createSlice({
   },
 });
 
-export const { getFoodById, getFoodByIdSuccess, getFoodByIdFailure } =
-  foodSlice.actions;
+export const {
+  getFoodById,
+  getFoodByIdSuccess,
+  getFoodByIdFailure,
+  createCustomFoodFailure,
+  createCustomFoodRequest,
+  createCustomFoodSuccess,
+  loadUserFood,
+  loadUserFoodsFailure,
+  loadUserFoodsSuccess,
+  updateCustomFoodRequest,
+  updateCustomFoodSuccess,
+  updateCustomFoodFailure,
+  deleteCustomFoodRequest,
+  deleteCustomFoodSuccess,
+  deleteCustomFoodFailure,
+} = foodSlice.actions;
 
 export const { searchFoodRequest, searchFoodSuccess, searchFoodFailure } =
   searchFoodSlice.actions;
