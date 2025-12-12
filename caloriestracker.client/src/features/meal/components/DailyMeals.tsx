@@ -6,12 +6,20 @@ import {
   selectTodayMeals,
   selectTodayMealsWithSummary,
 } from "../mealSelectors";
-import { createMealWithItems } from "../mealSlices/mealSlice";
+import {
+  createMealWithItems,
+  getMealsByDay,
+  resetDeleteState,
+} from "../mealSlices/mealSlice";
 import { CreateMealInput, Meal, MealType } from "../mealTypes";
 import "../../../index.css";
 import "../../../pages/Home.css";
 import "./meals.css";
-import { getFoodById, searchFoodRequest } from "../../food/foodSlice";
+import {
+  getFoodById,
+  searchFoodRequest,
+  clearSearchResults,
+} from "../../food/foodSlice";
 
 import MealModal from "./Meal/MealModal";
 import MealCard from "./Meal/MealCard";
@@ -21,6 +29,7 @@ import {
 } from "../../food/foodSelectors";
 import { CartItem, Food } from "../../food/foodType";
 import { MacronutrientsCircle } from "./MealItem/MealItemModal";
+import { selectCurrentDiaryDay } from "../../diary/diarySelectors";
 
 const mealTypes = ["BREAKFAST", "LUNCH", "DINNER", "SNACK", "OTHER"];
 
@@ -31,8 +40,20 @@ export const DailyMeals: React.FC = () => {
   const loading = useAppSelector(selectMealsLoading);
   const error = useAppSelector(selectMealsError);
 
+  const currDD = useAppSelector(selectCurrentDiaryDay);
+
+  const isDeleted = useAppSelector((state) => state.deleteMeal.isDeleted);
+  const deleteLoading = useAppSelector((state) => state.deleteMeal.loading);
+
   const [selectedMeal, setSelectedMeal] = useState<Meal | null>(null);
   const [selectedMealType, setSelectedMealType] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (isDeleted && !deleteLoading && currDD?.diaryDayId) {
+      dispatch(getMealsByDay(currDD.diaryDayId));
+      dispatch(resetDeleteState()); // Не забудь експортувати цей action з deleteMealSlice
+    }
+  }, [isDeleted, deleteLoading, dispatch]);
 
   // const DIARY_DAY_ID = "a92573f9-1704-48fc-a261-2df6c0d10604";
 
@@ -174,7 +195,14 @@ function SearchWindow({
   // Food Card
   const [cart, setCart] = useState<CartItem[] | []>([]);
   const [showСart, setShowCart] = useState(false);
-  const selectedDate = useAppSelector(state => state.diary.selectedDate);
+  const selectedDate = useAppSelector((state) => state.diary.selectedDate);
+
+  useEffect(() => {
+    return () => {
+      dispatch(clearSearchResults());
+      setQuery("");
+    };
+  }, [dispatch]);
 
   const handleCreateMeal = () => {
     if (!selectedDate) {
@@ -267,7 +295,7 @@ function SearchWindow({
     );
   }
 
-  if (showСart) { 
+  if (showСart) {
     return (
       <div className="modal-fullscreen">
         <div
@@ -350,55 +378,62 @@ function SearchWindow({
       </div>
       <div>
         <div className="search-food-wrapper">
-          <input
-            className="search-food-input"
-            type="text"
-            placeholder="Search food..."
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-          <svg
-            className="search-icon"
-            width="24px"
-            height="24px"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
-              stroke="var(--muted)"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
+          <div className="search-input-wrapper">
+            <input
+              className="search-food-input"
+              type="text"
+              placeholder="Search food..."
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
             />
-          </svg>
-        </div>
-        <div>
-          <button className="btn search-btn">
             <svg
-              width="20px"
-              height="20px"
+              className="search-icon"
+              width="24px"
+              height="24px"
               viewBox="0 0 24 24"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z"
-                stroke="white"
-                strokeWidth="2"
-              />
-              <path
-                d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
-                stroke="white"
+                d="M15.7955 15.8111L21 21M18 10.5C18 14.6421 14.6421 18 10.5 18C6.35786 18 3 14.6421 3 10.5C3 6.35786 6.35786 3 10.5 3C14.6421 3 18 6.35786 18 10.5Z"
+                stroke="var(--muted)"
                 strokeWidth="2"
                 strokeLinecap="round"
+                strokeLinejoin="round"
               />
             </svg>
-            <span>Create Food</span>
-          </button>
+          </div>
+
+          <div>
+            <button className="btn search-btn">
+              <svg
+                width="20px"
+                height="20px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12Z"
+                  stroke="white"
+                  strokeWidth="2"
+                />
+                <path
+                  d="M15 12L12 12M12 12L9 12M12 12L12 9M12 12L12 15"
+                  stroke="white"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span>Create Food</span>
+            </button>
+          </div>
         </div>
-        <div style={{ marginTop: "1rem" }}>
+
+        <div
+          className="meal-item-wrapper"
+          style={{ marginTop: "1rem", marginBottom: "4rem" }}
+        >
           {query &&
             foods.map((food) => (
               <FoodCard
@@ -738,14 +773,14 @@ function FoodCartRepresent({
               strokeLinejoin="round"
             ></g>
             <g id="SVGRepo_iconCarrier">
-            <path
-              d="M905.92 237.76a32 32 0 0 0-52.48 36.48A416 416 0 1 1 96 512a418.56 418.56 0 0 1 297.28-398.72 32 32 0 1 0-18.24-61.44A480 480 0 1 0 992 512a477.12 477.12 0 0 0-86.08-274.24z"
-              fill="currentColor"
-            />
-            <path
+              <path
+                d="M905.92 237.76a32 32 0 0 0-52.48 36.48A416 416 0 1 1 96 512a418.56 418.56 0 0 1 297.28-398.72 32 32 0 1 0-18.24-61.44A480 480 0 1 0 992 512a477.12 477.12 0 0 0-86.08-274.24z"
+                fill="currentColor"
+              />
+              <path
                 d="M630.72 113.28A413.76 413.76 0 0 1 768 185.28a32 32 0 0 0 39.68-50.24 476.8 476.8 0 0 0-160-83.2 32 32 0 0 0-18.24 61.44zM489.28 86.72a36.8 36.8 0 0 0 10.56 6.72 30.08 30.08 0 0 0 24.32 0 37.12 37.12 0 0 0 10.56-6.72A32 32 0 0 0 544 64a33.6 33.6 0 0 0-9.28-22.72A32 32 0 0 0 505.6 32a20.8 20.8 0 0 0-5.76 1.92 23.68 23.68 0 0 0-5.76 2.88l-4.8 3.84a32 32 0 0 0-6.72 10.56A32 32 0 0 0 480 64a32 32 0 0 0 2.56 12.16 37.12 37.12 0 0 0 6.72 10.56zM726.72 297.28a32 32 0 0 0-45.12 0l-169.6 169.6-169.28-169.6A32 32 0 0 0 297.6 342.4l169.28 169.6-169.6 169.28a32 32 0 1 0 45.12 45.12l169.6-169.28 169.28 169.28a32 32 0 0 0 45.12-45.12L557.12 512l169.28-169.28a32 32 0 0 0 0.32-45.44z"
-              fill="currentColor"
-            />
+                fill="currentColor"
+              />
             </g>
           </svg>
         </button>

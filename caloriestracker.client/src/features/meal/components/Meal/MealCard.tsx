@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { Meal } from "../../mealTypes";
 import { useAppDispatch, useAppSelector } from "../../../../store/hooks";
-import { deleteMeal } from "../../mealSlices/mealSlice";
+import { deleteMeal, getMealsByDay } from "../../mealSlices/mealSlice";
+import { selectCurrentDiaryDay } from "../../../diary/diarySelectors";
 
 export default function MealCard({
   meal,
@@ -42,11 +43,11 @@ export default function MealCard({
       const currentX = e.clientX;
       const diff = startX.current - currentX;
 
-      // Тягнемо вліво (відкриваємо)
+      // Тягнемо вліво
       if (diff >= 0 && diff <= 60) {
         setSwipeOffset(diff);
       }
-      // Тягнемо вправо (закриваємо)
+      // Тягнемо вправо
       else if (diff < 0 && swipeOffset > 0) {
         const newOffset = Math.max(0, swipeOffset + diff);
         setSwipeOffset(newOffset);
@@ -57,7 +58,7 @@ export default function MealCard({
     const handleGlobalMouseUp = () => {
       if (!isDragging) return;
       setIsDragging(false);
-      // Якщо більше ніж на 40px - залишаємо відкритим, інакше закриваємо
+
       if (swipeOffset > 40) {
         setSwipeOffset(60);
       } else {
@@ -75,15 +76,6 @@ export default function MealCard({
       document.removeEventListener("mouseup", handleGlobalMouseUp);
     };
   }, [isDragging, swipeOffset]);
-
-  const isDeleted = useAppSelector((state) => state.deleteMeal.isDeleted);
-  const loading = useAppSelector((state) => state.deleteMeal.loading);
-
-  useEffect(() => {
-    if (isDeleted && !loading) {
-      window.location.reload();
-    }
-  }, [isDeleted, loading]);
 
   return (
     <>

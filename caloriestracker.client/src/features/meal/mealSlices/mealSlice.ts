@@ -139,6 +139,11 @@ const deleteMealSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    resetDeleteState: (state) => {
+      state.isDeleted = false;
+      state.mealId = null;
+      state.error = null;
+    },
   },
 });
 
@@ -155,8 +160,12 @@ export const {
   createMealWithItemsFailure,
 } = createMealSlice.actions;
 
-export const { deleteMeal, deleteMealSuccess, deleteMealFailure } =
-  deleteMealSlice.actions;
+export const {
+  deleteMeal,
+  deleteMealSuccess,
+  deleteMealFailure,
+  resetDeleteState,
+} = deleteMealSlice.actions;
 
 export const createMealReducer = createMealSlice.reducer;
 export const deleteMealReducer = deleteMealSlice.reducer;

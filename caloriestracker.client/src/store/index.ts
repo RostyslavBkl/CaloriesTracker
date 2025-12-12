@@ -15,7 +15,8 @@ import diaryReducer from "../features/diary/diarySlice";
 import { createMealReducer } from "../features/meal/mealSlices/mealSlice";
 import { deleteMealReducer } from "../features/meal/mealSlices/mealSlice";
 
-import foodReducer, { searchFoodReduces } from "../features/food/foodSlice";
+import foodReducer from "../features/food/foodSlice";
+import { searchFoodReduces } from "../features/food/foodSlice";
 import { foodEpics } from "../features/food/foodEpics";
 
 import nutritionReducer from "../nutrition/nutritionSlice";

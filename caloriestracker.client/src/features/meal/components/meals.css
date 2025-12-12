@@ -245,6 +245,17 @@
   width: 100%;
 }
 
+.meal-item-wrapper{
+      margin-top: 1rem;
+    max-height: 430px;
+    overflow-y: hidden;
+    overflow-y: scroll;
+}
+
+.meal-item-wrapper::-webkit-scrollbar {
+  display: none;
+}
+
 .meal-item {
   display: flex;
   align-items: center;
@@ -416,10 +427,20 @@
 /*SEARCH FOOD*/
 
 .search-food-wrapper {
-  position: relative;
+  position: sticky;
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+  align-items: flex-start;
+  gap: 12px;
+  top: 60px;
+  margin-bottom: 10px;
+}
+
+.search-input-wrapper{
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  width: 100%;
 }
 
 .search-food-input {

@@ -30,7 +30,10 @@ const foodSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    createCustomFoodRequest: (state, action: PayloadAction<CreateFoodInput>) => {
+    createCustomFoodRequest: (
+      state,
+      action: PayloadAction<CreateFoodInput>
+    ) => {
       state.loading = true;
       state.error = null;
     },
@@ -57,7 +60,10 @@ const foodSlice = createSlice({
       state.error = action.payload;
     },
 
-    updateCustomFoodRequest: (state, action: PayloadAction<{ id: string; food: CreateFoodInput }>) => {
+    updateCustomFoodRequest: (
+      state,
+      action: PayloadAction<{ id: string; food: CreateFoodInput }>
+    ) => {
       state.loading = true;
       state.error = null;
     },
@@ -102,6 +108,9 @@ const searchFoodSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
+    clearSearchResults: (state) => {
+      state.result = [];
+    },
   },
 });
 
@@ -123,8 +132,12 @@ export const {
   deleteCustomFoodFailure,
 } = foodSlice.actions;
 
-export const { searchFoodRequest, searchFoodSuccess, searchFoodFailure } =
-  searchFoodSlice.actions;
+export const {
+  searchFoodRequest,
+  searchFoodSuccess,
+  searchFoodFailure,
+  clearSearchResults,
+} = searchFoodSlice.actions;
 
 export default foodSlice.reducer;
 export const searchFoodReduces = searchFoodSlice.reducer;
