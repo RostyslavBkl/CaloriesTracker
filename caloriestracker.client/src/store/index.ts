@@ -12,7 +12,6 @@ import updMealItemReducer from "../features/meal/mealSlices/mealItemUpdSlice";
 import { diaryEpics } from "../features/diary/diaryEpics";
 import diaryReducer from "../features/diary/diarySlice";
 
-import foodReducer from "../features/food/foodSlice";
 import { createMealReducer } from "../features/meal/mealSlices/mealSlice";
 import { deleteMealReducer } from "../features/meal/mealSlices/mealSlice";
 
