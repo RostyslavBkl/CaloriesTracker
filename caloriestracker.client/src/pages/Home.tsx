@@ -123,7 +123,7 @@ const Home: React.FC = () => {
                   <div className="goals-summary-card">
                     <div className="goals-summary-left">
                       <span className="goals-summary-label">
-                        Daily intake ({selectedDate})
+                        Daily intake ({formatDate(selectedDate)})
                       </span>
                       <span className="goals-summary-percent">
                         {loading ? "..." : `${percent.toFixed(1)}%`}
@@ -210,6 +210,30 @@ const Home: React.FC = () => {
       <NutritionGoalModal />
     </AuthorizeView>
   );
+};
+
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  const day = date.getDate();
+  const month = new Intl.DateTimeFormat("en-GB", { month: "long" }).format(
+    date
+  );
+
+  const suffix = (day: number) => {
+    if (day > 3 && day < 21) return "th";
+    switch (day % 10) {
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
+    }
+  };
+
+  return `${day}${suffix(day)} ${month}`;
 };
 
 export default Home;
